@@ -4,12 +4,16 @@ import Logo from "../../img/logo_istic.png";
 import { logIn, signUp } from "../../actions/AuthActions.js";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { auth,db } from "../../firebase/firebase";
+import {  createUserWithEmailAndPassword } from "firebase/auth";
+import {doc,setDoc } from "firebase/firestore";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Auth = () => {
   const initialState = {
     firstname: "",
     lastname: "",
-    username: "",
+    email: "",
     password: "",
     confirmpass: "",
   };
@@ -36,13 +40,54 @@ const Auth = () => {
   };
 
   // Form Submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     setConfirmPass(true);
     e.preventDefault();
     if (isSignUp) {
-      data.password === data.confirmpass
+        if(data.password == data.confirmpass){
+          createUserWithEmailAndPassword(auth, data.email, data.password)
+          .then(async(userCredential) => {
+            
+            const user = userCredential.user;
+            const userData = {
+              firstname : data.firstname,
+              lastname  : data.lastname
+            }
+            console.log(user);
+            const ref = doc (db,"users", userCredential.user.uid);
+            const docRef = await setDoc(ref,{userData})
+              .then((re)=>{
+                 toast("register successfully",{
+                  position:"top-center"
+                 });
+                 resetForm();
+                
+                
+              })
+              .catch((e)=>{
+                toast.warn(e.message,{
+                  position:"top-center"
+                });
+                
+              })
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(error);
+            toast.warn(error.message,{
+              position:"top-center"
+            });
+            // ..
+          });
+        }
+        
+     /* data.password === data.confirmpass
         ? dispatch(signUp(data, navigate))
-        : setConfirmPass(false);
+        : setConfirmPass(false); */
+      
+       
     } else {
       dispatch(logIn(data, navigate));
     }
@@ -93,11 +138,11 @@ const Auth = () => {
           <div>
             <input
               required
-              type="text"
-              placeholder="Username"
+              type="email"
+              placeholder="email"
               className="infoInput"
-              name="username"
-              value={data.username}
+              name="email"
+              value={data.email}
               onChange={handleChange}
             />
           </div>
@@ -161,6 +206,7 @@ const Auth = () => {
           </div>
         </form>
       </div>
+      <ToastContainer/>
     </div>
   );
 };
