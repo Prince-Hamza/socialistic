@@ -220,6 +220,7 @@ const Auth = () => {
                 : "Don't have an account Sign up"}
             </span>
             <button
+               
               className="button infoButton"
               type="Submit"
               disabled={loading}

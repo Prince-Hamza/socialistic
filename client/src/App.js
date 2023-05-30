@@ -8,15 +8,17 @@ import Chat from "./pages/Chat/Chat";
 import UserProfile from "./components/UserProfile/UserProfile";
 import { useContext } from "react";
 import AuthContext from "./provider/AuthContext";
+
+
 function App() {
-  const user = useSelector((state) => state.authReducer.authData);
-  const {login} = useContext(AuthContext) 
+  // const user = useSelector((state) => state.authReducer.authData);
+  const { user, login } = useContext(AuthContext)
   console.log(login)
 
-  if(login === null) return(
+  if (login === null) return (
     <div>...loading</div>
   )
-  else{
+  else {
     return (
       <div
         className="App"
@@ -26,12 +28,12 @@ function App() {
               ? "calc(100vh - 2rem)"
               : "auto",
         }}>
-        
+
         <div className="blur" style={{ top: "-18%", right: "0" }}></div>
         <div className="blur" style={{ top: "36%", left: "-8rem" }}></div>
-       
+
         <Routes>
-          
+
           <Route
             path="/"
             element={user ? <Navigate to="home" /> : <Navigate to="auth" />}
@@ -42,7 +44,7 @@ function App() {
           />
           <Route
             path="/auth"
-            element={login ? <UserProfile/> : <Auth />}
+            element={login ? <UserProfile /> : <Auth />}
           />
           <Route
             path="/profile/:id"
@@ -57,17 +59,17 @@ function App() {
               </main>
             }
           /> */}
-  
+
           <Route
             path="/chat"
             element={user ? <Chat /> : <Navigate to="../auth" />}
           />
         </Routes>
-        
+
       </div>
     );
   }
-  
+
 }
 
 export default App;

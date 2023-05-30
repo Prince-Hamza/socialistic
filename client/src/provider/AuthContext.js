@@ -1,38 +1,42 @@
-import React, { createContext ,useEffect, useState} from "react";
-import { auth } from "../firebase/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-const AuthContext =  createContext();
+import React, { createContext, useEffect, useState } from "react"
+import { config } from '../config'
+// import { useNavigate } from "react-router-dom"
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+const AuthContext = createContext()
+
+export const AuthContextProvider = ({ children }) => {
+
+    const [user, setUser] = useState(null)
+    const [login, setLogin] = useState(false)
 
 
-export const AuthContextProvider = ({children}) =>{
-    
-    const [user,setUser] = useState(null)
-    const [login,setLogin] = useState(false)
-    useEffect(()=>{
-        onAuthStateChanged(auth,(user)=>{
-            if(user){
-                setUser(user.displayName)
-                setLogin(true)
-                
-                console.log(user);
-            }
-            else{
-                setLogin(false)
-            }
-           
-            
-        })
-        
+    //if (!firebase.apps.length) firebase.initializeApp(config)
 
-    },[])
-   
-   
-    return(
-        <AuthContext.Provider value={{user,login}}>
+
+    // useEffect(() => {
+    //     // if (!user) setUser(firebase.auth().currentUser)
+    //     if (firebase.auth().currentUser) {
+    //         setUser(user)
+    //         setLogin(true)
+    //     }
+    // }, [user])
+
+    return (
+        <AuthContext.Provider value={{ user, login }}>
             {children}
         </AuthContext.Provider>
     )
 }
 
 export default AuthContext
+
+
+
+
+
+
+
+
+
+
