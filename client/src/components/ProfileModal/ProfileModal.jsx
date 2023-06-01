@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Modal, useMantineTheme } from "@mantine/core";
 import "./ProfileModal.css";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { uploadImage } from "../../actions/UploadAction";
 import { updateUser } from "../../actions/UserAction";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 const ProfileModal = ({ modalOpened, setModalOpened, data }) => {
   const theme = useMantineTheme();
@@ -12,10 +13,9 @@ const ProfileModal = ({ modalOpened, setModalOpened, data }) => {
   const [formData, setFormData] = useState(other);
   const [profileImage, setProfileImage] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
-  const dispatch = useDispatch();
   const param = useParams();
 
-  const { user } = useSelector((state) => state.authReducer.authData);
+  var user = firebase.auth().currentUser  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -40,7 +40,7 @@ const ProfileModal = ({ modalOpened, setModalOpened, data }) => {
       data.append("file", profileImage);
       UserData.profilePicture = fileName;
       try {
-        dispatch(uploadImage(data));
+        // dispatch(uploadImage(data));
       } catch (err) {
         console.log(err);
       }
@@ -52,12 +52,12 @@ const ProfileModal = ({ modalOpened, setModalOpened, data }) => {
       data.append("file", coverImage);
       UserData.coverPicture = fileName;
       try {
-        dispatch(uploadImage(data));
+        // dispatch(uploadImage(data));
       } catch (err) {
         console.log(err);
       }
     }
-    dispatch(updateUser(param.id, UserData));
+    // dispatch(updateUser(param.id, UserData));
     setModalOpened(false);
   };
 

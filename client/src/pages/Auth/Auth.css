@@ -5,6 +5,7 @@
   height: 100vh;
   gap: 4rem;
   position: relative;
+  background-color: whitesmoke;
 }
 
 .Auth > div {
@@ -57,7 +58,7 @@
 
 
 .authForm{
-    background-color: var(--cardColor);
+    background-color: rgba(255, 255, 255, 0.64);
     border-radius: 1rem;
     padding: 1rem;
 }

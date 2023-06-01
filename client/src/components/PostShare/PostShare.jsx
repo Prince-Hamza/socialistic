@@ -5,13 +5,18 @@ import { UilPlayCircle } from "@iconscout/react-unicons";
 import { UilLocationPoint } from "@iconscout/react-unicons";
 import { UilSchedule } from "@iconscout/react-unicons";
 import { UilTimes } from "@iconscout/react-unicons";
-import { useDispatch, useSelector } from "react-redux";
 import { uploadImage, uploadVideo, uploadPost } from "../../actions/UploadAction";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+
+
 
 const PostShare = () => {
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.authReducer.authData);
-  const loading = useSelector((state) => state.postReducer.uploading);
+  // const dispatch = useDispatch();
+  var user = firebase.auth().currentUser  
+  // const loading = useSelector((state) => state.postReducer.uploading);
+
+  const [loading,setLoading] = useState(false)
   const [image, setImage] = useState(null);
   const [video, setVideo] = useState(null);
   const [location, setLocation] = useState(null);
@@ -77,7 +82,7 @@ const PostShare = () => {
       newPost.image = fileName;
       console.log(newPost);
       try {
-        dispatch(uploadImage(data));
+        // dispatch(uploadImage(data));
       } catch (err) {
         console.log(err);
       }
@@ -92,12 +97,12 @@ const PostShare = () => {
       newPost.video = fileName;
       console.log(newPost);
       try {
-        dispatch(uploadVideo(data));
+        // dispatch(uploadVideo(data));
       } catch (err) {
         console.log(err);
       }
   }
-    dispatch(uploadPost(newPost));
+    // dispatch(uploadPost(newPost));
     resetShare();
   };
   

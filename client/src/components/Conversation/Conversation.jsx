@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { getUser } from "../../api/UserRequests";
 
 
 const Conversation = ({ data, currentUser, online }) => {
 
   const [userData, setUserData] = useState(null)
-  const dispatch = useDispatch()
 
   useEffect(()=> {
 
@@ -17,7 +15,6 @@ const Conversation = ({ data, currentUser, online }) => {
       {
           const {data} =await getUser(userId)
          setUserData(data)
-         dispatch({type:"SAVE_USER", data:data})
       }
       catch(error)
       {
@@ -26,7 +23,7 @@ const Conversation = ({ data, currentUser, online }) => {
     }
 
     getUserData();
-  }, [currentUser, data.members, dispatch])
+  }, [currentUser, data.members])
   
   return (
     <>

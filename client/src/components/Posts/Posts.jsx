@@ -4,30 +4,33 @@ import Post from "../Post/Post"
 import { useSelector, useDispatch } from "react-redux"
 import "./Posts.css"
 import { useParams } from "react-router-dom"
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+
 
 const Posts = () => {
 
   const params = useParams();
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.authReducer.authData);
-  let { posts, loading } = useSelector((state) => state.postReducer);
+  // const dispatch = useDispatch();
+  var user = firebase.auth().currentUser  
+  // let { posts, loading } = useSelector((state) => state.postReducer);
 
-  useEffect(() => {
-    dispatch(getTimelinePosts(user._id));
-  }, [dispatch, user._id])
+  // useEffect(() => {
+  //   dispatch(getTimelinePosts(user._id));
+  // }, [dispatch, user._id])
 
-  if (!posts) return "No Posts"
-  if (params.id) posts = posts.filter((post) => post.userId === params.id)
+  // if (!posts) return "No Posts"
+  // if (params.id) posts = posts.filter((post) => post.userId === params.id)
 
   return (
     <div className="Posts">
-      {loading ? (
+      {/* {loading ? (
         "Fetching posts...."
       ) : (
         posts.map((post, id) => {
           return <Post data={post} key={id} />;
         })
-      )}
+      )} */}
     </div>
   )
 }

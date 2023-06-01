@@ -19,3 +19,5 @@ export const LogoSearchResults = ({results}) => {
 }
 
 export default LogoSearchResults;
+
+

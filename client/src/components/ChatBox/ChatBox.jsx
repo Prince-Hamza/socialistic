@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useRef } from "react";
-import { addMessage, getMessages } from "../../api/MessageRequests";
-import { getUser } from "../../api/UserRequests";
-import "./ChatBox.css";
-import { format } from "timeago.js";
+import React, { useEffect, useState } from "react"
+import { useRef } from "react"
+import { addMessage, getMessages } from "../../api/MessageRequests"
+import { getUser } from "../../api/UserRequests"
+import { format } from "timeago.js"
 import InputEmoji from 'react-input-emoji'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import "./ChatBox.css"
 
-const ChatBox = ({ chat, currentUser, setSendMessage,  receivedMessage }) => {
+
+const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
   const [userData, setUserData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
-  const handleChange = (newMessage)=> {
+  const handleChange = (newMessage) => {
     setNewMessage(newMessage)
   }
 
@@ -46,59 +49,59 @@ const ChatBox = ({ chat, currentUser, setSendMessage,  receivedMessage }) => {
 
 
   // Always scroll to last Message
-  useEffect(()=> {
+  useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
-  },[messages])
+  }, [messages])
 
 
 
   // Send Message
-  const handleSend = async(e)=> {
+  const handleSend = async (e) => {
     e.preventDefault()
     const message = {
-      senderId : currentUser,
+      senderId: currentUser,
       text: newMessage,
       chatId: chat._id,
-  }
-  const receiverId = chat.members.find((id)=>id!==currentUser);
-  // send message to socket server
-  setSendMessage({...message, receiverId})
-  // send message to database
-  try {
-    const { data } = await addMessage(message);
-    setMessages([...messages, data]);
-    setNewMessage("");
-  }
-  catch
-  {
-    console.log("error")
-  }
-}
-
-// Receive Message from parent component
-/*useEffect(()=> {
-  console.log("Message Arrived: ", receivedMessage)
-  if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
-    setMessages([...messages, receivedMessage]);
+    }
+    const receiverId = chat.members.find((id) => id !== currentUser);
+    // send message to socket server
+    setSendMessage({ ...message, receiverId })
+    // send message to database
+    try {
+      const { data } = await addMessage(message);
+      setMessages([...messages, data]);
+      setNewMessage("");
+    }
+    catch
+    {
+      console.log("error")
+    }
   }
 
-},[chat, receivedMessage])*/
+  // Receive Message from parent component
+  /*useEffect(()=> {
+    console.log("Message Arrived: ", receivedMessage)
+    if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
+      setMessages([...messages, receivedMessage]);
+    }
+  
+  },[chat, receivedMessage])*/
 
-useEffect(() => {
-  console.log("Message Arrived: ", receivedMessage);
-  if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
-    const updatedMessages = [...messages, receivedMessage];
-    setMessages(updatedMessages);
-    localStorage.setItem("chatMessages", JSON.stringify(updatedMessages));
-  }
-}, [chat, receivedMessage]);
+  useEffect(() => {
+    console.log("Message Arrived: ", receivedMessage);
+    if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
+      const updatedMessages = [...messages, receivedMessage];
+      setMessages(updatedMessages);
+      localStorage.setItem("chatMessages", JSON.stringify(updatedMessages));
+    }
+  }, [chat, receivedMessage]);
 
-useEffect(() => {
-  const storedMessages = localStorage.getItem("chatMessages");
-  if (storedMessages) {
-    setMessages(JSON.parse(storedMessages));
-  }
-}, []);
+  useEffect(() => {
+    const storedMessages = localStorage.getItem("chatMessages");
+    if (storedMessages) {
+      setMessages(JSON.parse(storedMessages));
+    }
+  }, []);
 
 
 
@@ -106,7 +109,7 @@ useEffect(() => {
 
   const scroll = useRef();
   const imageRef = useRef();
-  
+
   return (
     <>
       <div className="ChatBox-container">
@@ -120,9 +123,9 @@ useEffect(() => {
                     src={
                       userData?.profilePicture
                         ? process.env.REACT_APP_PUBLIC_FOLDER +
-                          userData.profilePicture
+                        userData.profilePicture
                         : process.env.REACT_APP_PUBLIC_FOLDER +
-                          "defaultProfile.png"
+                        "defaultProfile.png"
                     }
                     alt="Profile"
                     className="followerImage"
@@ -167,7 +170,7 @@ useEffect(() => {
                 value={newMessage}
                 onChange={handleChange}
               />
-              <div className="send-button button" onClick = {handleSend}>Send</div>
+              <div className="send-button button" onClick={handleSend}>Send</div>
               <input
                 type="file"
                 name=""

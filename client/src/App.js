@@ -1,75 +1,56 @@
-import "./App.css";
-import { Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/Home";
-import Auth from "./pages/Auth/Auth";
-import Profile from "./pages/Profile/Profile";
-import { useSelector } from "react-redux";
-import Chat from "./pages/Chat/Chat";
-import UserProfile from "./components/UserProfile/UserProfile";
-import { useContext } from "react";
-import AuthContext from "./provider/AuthContext";
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { AppContext } from './Context'
+import { useEffect, useState } from 'react'
+import { config } from './config'
+import "bootstrap/dist/css/bootstrap.min.css"
+import './App.css'
+import Home from './pages/Home'
+import Auth from './pages/Auth/Auth'
+import Profile from './pages/Profile/Profile'
+import Chat from './pages/Chat/Chat'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 
 function App() {
-  // const user = useSelector((state) => state.authReducer.authData);
-  const { user, login } = useContext(AuthContext)
-  console.log(login)
+    const [appData, setAppData] = useState({ userInfo: {}, groups: [], selectedGroup: {}, sideBarExpanded: true })
+    if (!firebase.apps.length) firebase.initializeApp(config)
+    var user = firebase.auth().currentUser
 
-  if (login === null) return (
-    <div>...loading</div>
-  )
-  else {
     return (
-      <div
-        className="App"
-        style={{
-          height:
-            window.location.href === "http://localhost:3000/chat"
-              ? "calc(100vh - 2rem)"
-              : "auto",
-        }}>
+        <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
+            <BrowserRouter>
+                <Routes>
 
-        <div className="blur" style={{ top: "-18%", right: "0" }}></div>
-        <div className="blur" style={{ top: "36%", left: "-8rem" }}></div>
+                    <Route
+                        path="/"
+                        element={user ? <Home /> : <Auth />}
+                    />
 
-        <Routes>
+                    <Route
+                        path="/home"
+                        element={<Home />}
+                    />
 
-          <Route
-            path="/"
-            element={user ? <Navigate to="home" /> : <Navigate to="auth" />}
-          />
-          <Route
-            path="/home"
-            element={user ? <Home /> : <Navigate to="../auth" />}
-          />
-          <Route
-            path="/auth"
-            element={login ? <UserProfile /> : <Auth />}
-          />
-          <Route
-            path="/profile/:id"
-            element={user ? <Profile /> : <Navigate to="../auth" />}
-          />
-          {/*
-          <Route
-            path="*"
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>There's nothing here!</p>
-              </main>
-            }
-          /> */}
+                    <Route
+                        path="/auth"
+                        element={<Auth />}
+                    />
+                    <Route
+                        path="/profile/:id"
+                        element={<Profile />}
+                    />
 
-          <Route
-            path="/chat"
-            element={user ? <Chat /> : <Navigate to="../auth" />}
-          />
-        </Routes>
+                    <Route
+                        path="/chat"
+                        element={<Chat />}
+                    />
 
-      </div>
-    );
-  }
-
+                </Routes>
+            </BrowserRouter>
+        </AppContext.Provider>
+    )
 }
 
-export default App;
+export default App
+

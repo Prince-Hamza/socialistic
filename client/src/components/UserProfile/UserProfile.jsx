@@ -2,15 +2,15 @@ import React from 'react'
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import "./UserProfile.css"
-import { auth } from '../../firebase/firebase';
-import { signOut } from 'firebase/auth';
+// import { signOut } from 'firebase/auth';
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 function UserProfile() {
    
     const [isMenuOpen, setMenuOpen] = useState(false);
     const handleSignOut = async () =>{
-        signOut(auth)
-         
+        // signOut(auth)         
     }    
     const handleMenuToggle = () => {
       setMenuOpen(!isMenuOpen);

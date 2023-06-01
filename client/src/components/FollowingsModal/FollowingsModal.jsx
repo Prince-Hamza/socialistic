@@ -3,7 +3,9 @@ import { Modal, useMantineTheme } from "@mantine/core";
 import FollowingsCard from "../FollowingsCard/FollowingsCard";
 
 const FollowingsModal = ({ modalOpened, setModalOpened }) => {
-  const theme = useMantineTheme();
+
+  const theme = useMantineTheme()
+  
   return (
     <Modal
       overlayColor={

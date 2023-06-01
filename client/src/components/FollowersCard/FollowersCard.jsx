@@ -3,8 +3,9 @@ import "./FollowersCard.css";
 import FollowersModal from "../FollowersModal/FollowersModal";
 import { getAllUser } from "../../api/UserRequests";
 import User from "../User/User";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 // Importez votre image par défaut
 //import defaultProfileImage from "../../path/to/defaultProfileImage.jpg";
@@ -13,7 +14,8 @@ const FollowersCard = ({ location }) => {
   const [modalOpened, setModalOpened] = useState(false);
   const [persons, setPersons] = useState([]);
   const [displayCount, setDisplayCount] = useState(8);
-  const { user } = useSelector((state) => state.authReducer.authData);
+  var user = firebase.auth().currentUser
+  user.following = []
 
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
 
@@ -26,14 +28,14 @@ const FollowersCard = ({ location }) => {
   useEffect(() => {
     const fetchPersons = async () => {
       const { data } = await getAllUser(displayCount, [
-        ...user.following,
-        user._id,
+        //...user.following,
+        user.id,
       ]);
-      const filteredPersons = data.filter((person) => person._id !== user._id);
+      const filteredPersons = data.filter((person) => person.id !== user.id);
       setPersons(filteredPersons);
     };
     fetchPersons();
-  }, [user.following, user._id, displayCount]);
+  }, [user.following, user.id, displayCount]);
 
   const handleSeeMore = () => {
     setDisplayCount(persons.length);

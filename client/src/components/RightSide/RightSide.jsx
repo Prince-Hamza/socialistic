@@ -10,13 +10,10 @@ const RightSide = () => {
 
   return (
     <div className="RightSide">
-      {/* Side Navbar */}
 
       <NavIcons />
-      {/* TrendCard */}
       <TrendCard />
 
-      {/* Share buttong */}
       <button className="button r-button" onClick={() => setModalOpened(true)}>
         Share
       </button>

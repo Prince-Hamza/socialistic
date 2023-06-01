@@ -20,33 +20,33 @@ const LogoSearch = () => {
     //setSearchResults(results);
   }, [search]);*/
 
-  /*return (
-    <div className="LogoSearch">
-      <div className="Logo-header">
-        <Link to="../home">
-        <img src={Logo} alt="" />
-        </Link>
-        <span>Social lstic</span>        
-      </div>
-      <div className="Search-global">
-        <div className="Search">
-          <input
-            type="text"
-            name="search"
-            value={search}
-            id="search"
-            placeholder="Istic Search ..."
-            onChange={(e) =>
-              setSearch(e.target.value.toLowerCase().replace(/ /g, ""))
-            }
-          />
-          <div className="s-icon">
-            <UilSearch />
-          </div>          
-        </div>
+/*return (
+  <div className="LogoSearch">
+    <div className="Logo-header">
+      <Link to="../home">
+      <img src={Logo} alt="" />
+      </Link>
+      <span>Social lstic</span>        
+    </div>
+    <div className="Search-global">
+      <div className="Search">
+        <input
+          type="text"
+          name="search"
+          value={search}
+          id="search"
+          placeholder="Istic Search ..."
+          onChange={(e) =>
+            setSearch(e.target.value.toLowerCase().replace(/ /g, ""))
+          }
+        />
+        <div className="s-icon">
+          <UilSearch />
+        </div>          
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 
@@ -83,12 +83,17 @@ const LogoSearch = () => {
 
   return (
     <div className="LogoSearch">
+      <span style={{ marginBottom: '0px' }} />
       <div className="Logo-header">
         <Link to="../home">
           <img src={Logo} alt="" />
         </Link>
         <span>Social lstic</span>
       </div>
+
+      <span style={{ marginBottom: '0px' }} />
+
+
       <div className="Search-global">
         <div className="Search">
           <input
@@ -99,17 +104,22 @@ const LogoSearch = () => {
             placeholder="Istic Search ..."
             onChange={(e) => setSearch(e.target.value)}
           />
+
+          
           <div className="s-icon">
             <UilSearch />
           </div>
+
         </div>
       </div>
+
+
       {/* Render the search results */}
-      <ul>
+      {/* <ul>
         {searchResults.map((result) => (
           <li key={result.id}>{result.title}</li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 };

@@ -14,7 +14,7 @@ import UploadRoute from './routes/UploadRoute.js'
 import ChatRoute from './routes/ChatRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
 import CommentRoute from './routes/CommentRoute.js'
-
+import SchemeRoute from './routes/SchemeRoutes.js'
 
 const app = express();
 
@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 // to serve images inside public folder
-app.use(express.static('public')); 
+app.use(express.static('public'));
 app.use('/images', express.static('images'));
 
 
@@ -36,10 +36,10 @@ const CONNECTION = process.env.MONGODB_CONNECTION
 
 mongoose
   .connect(CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => app.listen(PORT, () => console.log(`Listening at Port ${PORT}`, 
-  " and db is successfully connected")))
+  .then(() => app.listen(PORT, () => console.log(`Listening at Port ${PORT}`,
+    " and db is successfully connected")))
   .catch((error) => console.log(`${error} Mongodb did not connect`));
-  
+
 
 app.use('/auth', AuthRoute);
 app.use('/user', UserRoute)
@@ -48,17 +48,11 @@ app.use('/upload', UploadRoute)
 app.use('/chat', ChatRoute)
 app.use('/message', MessageRoute)
 app.use('/comments', CommentRoute)
-
+app.use('/schemes', SchemeRoute)
 
 
 
 
 // mongodb events 
-
-
-
-
-
-
 
 

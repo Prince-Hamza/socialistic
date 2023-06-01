@@ -1,15 +1,14 @@
 import React, { useState, useRef } from "react"
 import "./TimelineShare.css"
-import { useDispatch, useSelector } from "react-redux"
-import { uploadComment } from "../../actions/UploadAction"
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 const CommentShare = () => {
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.authReducer.authData);
-  const loading = useSelector((state) => state.postReducer.uploading);
   const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(false)
   const desc = useRef();
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
+  var user = firebase.auth().currentUser
 
 
   // handle comment upload
@@ -23,10 +22,9 @@ const CommentShare = () => {
       ...location // ajout des coordonnées géographiques
     };
 
-    dispatch(uploadComment(newComment));
     resetShare();
   };
-  
+
 
   // Reset Comment Share
   const resetShare = () => {
@@ -51,7 +49,7 @@ const CommentShare = () => {
           required
           ref={desc}
         />
-          
+
         <button
           className="button ps-button"
           onClick={handleUpload}
@@ -59,7 +57,7 @@ const CommentShare = () => {
         >
           {loading ? "uploading" : "Share"}
         </button>
-        
+
       </div>
     </div>
   );

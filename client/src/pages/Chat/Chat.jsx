@@ -6,14 +6,14 @@ import NavIcons from "../../components/NavIcons/NavIcons";
 import "./Chat.css";
 import { useEffect } from "react";
 import { userChats } from "../../api/ChatRequests";
-import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 const Chat = () => {
-  
-  const dispatch = useDispatch();
+
   const socket = useRef();
-  const { user } = useSelector((state) => state.authReducer.authData);
+  const user = firebase.auth().currentUser
 
   const [chats, setChats] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -22,33 +22,34 @@ const Chat = () => {
   const [receivedMessage, setReceivedMessage] = useState(null);
 
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
-  
+
   // Get the chat in chat section
   useEffect(() => {
     const getChats = async () => {
       try {
-        const { data } = await userChats(user._id);
+        const { data } = await userChats(user.id);
         setChats(data);
       } catch (error) {
         console.log(error);
       }
     };
     getChats();
-  }, [user._id]);
+  }, [user.id]);
 
   // Connect to Socket.io
   useEffect(() => {
     socket.current = io("ws://localhost:8800");
-    socket.current.emit("new-user-add", user._id);
+    socket.current.emit("new-user-add", user.id);
     socket.current.on("get-users", (users) => {
       setOnlineUsers(users);
     });
-   }, [user]);
+  }, [user]);
 
   // Send Message to socket server
   useEffect(() => {
-    if (sendMessage!==null) {
-      socket.current.emit("send-message", sendMessage);}
+    if (sendMessage !== null) {
+      socket.current.emit("send-message", sendMessage);
+    }
   }, [sendMessage]);
 
 
@@ -65,7 +66,7 @@ const Chat = () => {
 
   //Afficher les utilisateurs actifs dans le chatbox
   const checkOnlineStatus = (chat) => {
-    const chatMember = chat.members.find((member) => member !== user._id);
+    const chatMember = chat.members.find((member) => member !== user.id);
     const online = onlineUsers.find((user) => user.userId === chatMember);
     return online ? true : false;
   };
@@ -82,46 +83,51 @@ const Chat = () => {
   const startChat = (user) => {
     // Mettre à jour l'état pour stocker les données du chat
     setCurrentChat({
-      members: [user.userId, user._id],
+      members: [user.userId, user.id],
       conversation: [],
     });
   };
-    
+
 
   return (
     <div className="Chat">
       {/* Left Side */}
       <div className="Left-side-chat">
         <LogoSearch />
+
+
         <div className="Chat-container">
+
           <h2>Chats</h2>
-          <hr style={{width: '100%', border: '0.3px solid #f4cb35'}}></hr>
+          <hr style={{ width: '100%', border: '0.3px solid #f4cb35' }}></hr>
           <div className="chatonlineuser">
+
             {/*<h2>Active Users:</h2>*/}
-            <ul>
+
+            <ul style={{ border: 'solid 1px' }} >
               {activeUsers.map((user) => (
-              <li key={user.userId} onClick={() => startChat(user)}>             
-                <div className="ChatPostInfo">
-                  <img
-                  src={
-                  user.profilePicture
-                  ? serverPublic + user.profilePicture
-                  : serverPublic + "defaultProfile.png"
-                  }
-                  alt="ProfileImage"
-                  />
-                  
-                  <div className="online-dot"></div>
-                  <div className="ChatPostInfoUser">
-                    <span className="user">{user.firstname} {user.lastname}</span>
+                <li key={user.userId} onClick={() => startChat(user)}>
+                  <div className="ChatPostInfo">
+                    <img
+                      src={
+                        user.profilePicture
+                          ? serverPublic + user.profilePicture
+                          : serverPublic + "defaultProfile.png"
+                      }
+                      alt="ProfileImage"
+                    />
+
+                    <div className="online-dot"></div>
+                    <div className="ChatPostInfoUser">
+                      <span className="user">{user.firstname} {user.lastname}</span>
+                    </div>
                   </div>
-                </div>
-              </li>
+                </li>
               ))}
             </ul>
           </div>
-            
-          <div className="Chat-list">
+
+          <div className="Chat-list" style={{ border: 'solid 1px' }} >
             {chats.map((chat) => (
               <div
                 onClick={() => {
@@ -130,7 +136,7 @@ const Chat = () => {
               >
                 <Conversation
                   data={chat}
-                  currentUser={user._id}
+                  currentUser={user.id}
                   online={checkOnlineStatus(chat)}
                 />
               </div>
@@ -142,12 +148,12 @@ const Chat = () => {
       {/* Right Side */}
 
       <div className="Right-side-chat">
-        <div style={{ width: "20rem", alignSelf: "flex-end" }}>
+        <div style={{ width: "20rem", alignSelf: "flex-end", marginRight: '25px' }}>
           <NavIcons />
         </div>
         <ChatBox
           chat={currentChat}
-          currentUser={user._id}
+          currentUser={user.id}
           setSendMessage={setSendMessage}
           receivedMessage={receivedMessage}
         />
@@ -156,4 +162,17 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default Chat
+
+
+
+
+
+
+
+
+
+
+
+
+
