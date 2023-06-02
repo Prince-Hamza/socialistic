@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import "./FollowersCard.css";
 import FollowersModal from "../FollowersModal/FollowersModal";
 import { getAllUser } from "../../api/UserRequests";
 import User from "../User/User";
 import { useNavigate } from "react-router-dom";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
+import "./FollowersCard.css";
 
 // Importez votre image par défaut
 //import defaultProfileImage from "../../path/to/defaultProfileImage.jpg";
@@ -43,6 +43,7 @@ const FollowersCard = ({ location }) => {
 
   return (
     <div className="FollowersCard">
+
       <h3>Suggestions</h3>
 
       {persons.map((person) => (

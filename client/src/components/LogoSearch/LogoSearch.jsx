@@ -1,85 +1,41 @@
-/*import React, { useState, useEffect } from "react";
-import Logo from "../../img/logo_istic.jpg";
-import "./LogoSearch.css";
-import { UilSearch } from "@iconscout/react-unicons";
-//import LogoSearchResults from "../LogoSearchResults/LogoSearchResults";
-//import { getAllUser } from "../../api/UserRequests";
-import { Link } from "react-router-dom";
-
-
-const LogoSearch = () => {
-  const [search, setSearch] = useState("");
-  //const [searchResults, setSearchResults] = useState([]);
-
-  //useEffect(() => {
-    // Votre fonction de recherche ici
-    /*const results =  fetch(`http://localhost:5000/search?q=${search}`)
-                     .then(response => response.json())
-                     .then(data => data.results);
-
-    //setSearchResults(results);
-  }, [search]);*/
-
-/*return (
-  <div className="LogoSearch">
-    <div className="Logo-header">
-      <Link to="../home">
-      <img src={Logo} alt="" />
-      </Link>
-      <span>Social lstic</span>        
-    </div>
-    <div className="Search-global">
-      <div className="Search">
-        <input
-          type="text"
-          name="search"
-          value={search}
-          id="search"
-          placeholder="Istic Search ..."
-          onChange={(e) =>
-            setSearch(e.target.value.toLowerCase().replace(/ /g, ""))
-          }
-        />
-        <div className="s-icon">
-          <UilSearch />
-        </div>          
-      </div>
-    </div>
-  </div>
-);
-};
-
-
-export default LogoSearch;
-*/
-
-import React, { useState, useEffect } from "react";
-import Logo from "../../img/logo_istic.jpg";
-import "./LogoSearch.css";
-import { UilSearch } from "@iconscout/react-unicons";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react"
+import Logo from "../../img/logo_istic.jpg"
+import "./LogoSearch.css"
+import { UilSearch } from "@iconscout/react-unicons"
+import { Link, useNavigate } from "react-router-dom"
+import axios from 'axios'
+import { AppContext } from "../../Context"
 
 const LogoSearch = () => {
-  const [search, setSearch] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const { appInfo, setAppInfo } = useContext(AppContext)
+  const [search, setSearch] = useState("")
+  const [searchResults, setSearchResults] = useState([])
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    const performSearch = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/search?q=${search}`);
-        const data = await response.json();
-        setSearchResults(data.results);
-      } catch (error) {
-        console.error("Error performing search:", error);
-      }
-    };
-
-    if (search.trim() !== "") {
-      performSearch();
-    } else {
-      setSearchResults([]);
+  const searchUserByName = () => {
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `http://localhost:5000/user/${search}/search?`,
+      headers: {}
     }
-  }, [search]);
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data))
+        setSearchResults(response.data.users)
+      })
+      .catch((error) => {
+        alert(error);
+      })
+  }
+
+
+  const profilePage = (user) => {
+    appInfo.selectedPartner = user
+    setAppInfo({ ...appInfo })
+    navigate(`/profile/${user.id}`)
+  }
 
   return (
     <div className="LogoSearch">
@@ -102,12 +58,13 @@ const LogoSearch = () => {
             value={search}
             id="search"
             placeholder="Istic Search ..."
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); if (search.length >= 2) searchUserByName() }}
+            onKeyUp={(e) => { if (e.key === 'Enter') searchUserByName() }}
           />
 
-          
+
           <div className="s-icon">
-            <UilSearch />
+            <UilSearch onClick={searchUserByName} />
           </div>
 
         </div>
@@ -115,11 +72,18 @@ const LogoSearch = () => {
 
 
       {/* Render the search results */}
-      {/* <ul>
-        {searchResults.map((result) => (
-          <li key={result.id}>{result.title}</li>
-        ))}
-      </ul> */}
+
+      {search.length > 0 &&
+        <ul className="searchResultsWrap" >
+          {searchResults.map((user) => {
+            return (
+              <li className="searchResultsItem" key={user.id} onClick={() => { profilePage(user) }} >{user.username}</li>
+            )
+          })}
+        </ul>
+      }
+
+
     </div>
   );
 };

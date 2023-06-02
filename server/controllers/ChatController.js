@@ -78,7 +78,9 @@ const getKeyAndConversations = async (me, partner) => {
 const postKeyAndConversation = async (me, partner, chatRoomKey) => {
   console.log(`post key and convo `)
   try {
-    await ChatHistoryModel.create({ id: me.id, partnerId: partner.id, name: partner.name, photo: partner.photo, chatRoomKey: chatRoomKey })
+    const resp = await ChatHistoryModel.create({ id: me.id, partnerId: partner.id, name: partner.name, photo: partner.photo, chatRoomKey: chatRoomKey })
+    // console.log(`created chat : ${resp}`)
+    return resp
   } catch (ex) {
     console.log(`post key : error : ${ex}`)
   }
@@ -90,6 +92,7 @@ export const onInteractionForChat = async (req, res) => {
   if (!req.body.me) return res.status(400).send({ error: 'your own data is missing' })
   if (!req.body.partner) return res.status(400).send({ error: `your chat partner's data is missing` })
 
+  var conversations = {}
   var chatRoomKey = getRandomArbitrary(1, 1000000000)
   let me = req.body.me
   let partner = req.body.partner
@@ -102,13 +105,18 @@ export const onInteractionForChat = async (req, res) => {
 
 
   // if no : genKey & POST default conversation
-  if (isConversationExisting === null) postKeyAndConversation(me, partner, chatRoomKey)
+  if (isConversationExisting === null) {
+    conversations = await postKeyAndConversation(me, partner, chatRoomKey)
+    console.log(`created chat r : ${conversations}`)
+  } else {
+    // GET all conversations of ME
+    conversations = await getKeyAndConversations(me, partner)
+    console.log(`got conversations : ${conversations} `)
+  }
 
 
-  // GET all conversations of ME
-  var conversations = await getKeyAndConversations(me, partner)
-  console.log(`conversations : ${conversations} `)
 
+  console.log(`conversations final : ${conversations}`)
 
   return res.status(201).send({ success: true, conversations: conversations })
 

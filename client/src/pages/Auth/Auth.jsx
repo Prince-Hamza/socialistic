@@ -9,6 +9,7 @@ import { ToastContainer, toast, useToast } from 'react-toastify'
 import axios from 'axios'
 import { domain } from "../../constants/constants"
 import 'react-toastify/dist/ReactToastify.css'
+import { AppContext } from "../../Context"
 
 
 const Auth = () => {
@@ -24,12 +25,11 @@ const Auth = () => {
 
   const navigate = useNavigate()
 
+
+  const { appInfo, setAppInfo } = useContext(AppContext)
   const [isSignUp, setIsSignUp] = useState(true);
-
   const [loading, setLoading] = useState(false);
-
   const [data, setData] = useState(initialState);
-
   const [confirmPass, setConfirmPass] = useState(true);
 
   // const dispatch = useDispatch()
@@ -114,12 +114,37 @@ const Auth = () => {
   }
 
 
+  const getUserInfoFromMongoDb = (user) => {
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `${domain}/user/${user.uid}`,
+      headers: {}
+    }
+
+    // alert(`get : ${config.url}`)
+
+    axios.request(config)
+      .then((response) => {
+        // alert(JSON.stringify(response.data))
+        if (response.data.user) {
+          appInfo.userInfo = response.data.user
+          setAppInfo({ ...appInfo })
+        }
+      })
+      .catch((error) => {
+        alert(`user auth error : ${error}`)
+      })
+  }
+
   const emailLogin = async () => {
     try {
       const result = await signInWithEmailAndPassword(auth, data.email, data.password)
       console.log(`result : ${result.user} `)
       toast.success('Login Successful', { position: "top-center" })
-      navigate('/home')
+      getUserInfoFromMongoDb(result.user)
+      // navigate('/home')
     } catch (ex) {
       console.log(`error : ${ex.toString().split('Firebase:')[1]}`)
       toast.warn(ex.toString().split('Firebase:')[1], { position: "top-center" })

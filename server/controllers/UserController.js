@@ -7,19 +7,28 @@ export const getUser = async (req, res) => {
 
   const id = req.params.id;
 
+  console.log(`user id : ${id}`);
   try {
-    const user = await UserModel.findById(id);
-    if (user) {
-      const { password, ...otherDetails } = user._doc;
+    const cursor = await UserModel.find()
+    const count = await UserModel.countDocuments()
 
-      res.status(200).json(otherDetails);
-    } else {
-      res.status(404).json("No such User");
+    console.log(`count : ${count}, type:${typeof (count)}`)
+
+    var list = []
+    if (count >= 1) {
+      cursor.forEach((item) => {
+        if (item.id.toLowerCase().includes(id.toLowerCase())) list.push(item)
+      })
     }
-  } catch (error) {
-    res.status(500).json(error);
+
+    return res.status(200).send({ user: list[0] })
+
+  } catch (ex) {
+    console.log(`get key : error : ${ex}`)
+    return res.status(404).send({ error: `No users matching ${name} have been found` })
   }
-};
+
+}
 
 
 
@@ -162,33 +171,29 @@ export const unfollowUser = async (req, res) => {
 
 export const queryUser = async (req, res) => {
 
-  console.log(`query user `);
+  console.log(`query user`)
 
   const name = req.params.name
 
+  try {
+    const cursor = await UserModel.find()
+    const count = await UserModel.countDocuments()
 
-  return res.send({ success: name })
+    console.log(`count : ${count}, type:${typeof (count)}`)
 
+    var list = []
+    if (count >= 1) {
+      cursor.forEach((item) => {
+        if (item.username.toLowerCase().includes(name.toLowerCase())) list.push(item)
+      })
+    }
 
-  // try {
-  //   const cursor = await UserModel.find()
-  //   const count = await UserModel.countDocuments()
+    return res.status(200).send({ users: list })
 
-  //   console.log(`count : ${count}, type:${typeof (count)}`)
+  } catch (ex) {
+    console.log(`get key : error : ${ex}`)
+    return res.status(404).send({ error: `No users matching ${name} have been found` })
+  }
 
-  //   var list = []
-  //   if (count >= 1) {
-  //     cursor.forEach((item) => {
-  //       if (item.username.includes(name)) list.push(item)
-  //     })
-  //   }
-
-  //   return list
-  // } catch (ex) {
-  //   console.log(`get key : error : ${ex}`)
-  //   return { error: ex }
-  // }
-
-
-};
+}
 

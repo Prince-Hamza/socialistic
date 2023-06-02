@@ -1,50 +1,51 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useEffect } from "react";
 import { getUser } from "../../api/UserRequests";
-
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import { AppContext } from "../../Context";
 
 const Conversation = ({ data, currentUser, online }) => {
 
-  const [userData, setUserData] = useState(null)
+  const { appInfo, setAppInfo } = useContext(AppContext)
 
-  useEffect(()=> {
 
-    const userId = data.members.find((id)=>id!==currentUser)
-    const getUserData = async ()=> {
-      try
-      {
-          const {data} =await getUser(userId)
-         setUserData(data)
-      }
-      catch(error)
-      {
-        console.log(error)
-      }
-    }
+  const selectConversation = () => {
+    // alert(`selected : ${JSON.stringify(data)}`)
+    appInfo.selectedChatRoom.key = data.chatRoomKey
+    appInfo.selectedChatRoom._id = data.chatRoomKey
+    appInfo.selectedChatRoom.partner = { id: data.partnerId, name: data.name, photo: data.photo }
+    setAppInfo({ ...appInfo })
+  }
 
-    getUserData();
-  }, [currentUser, data.members])
-  
-  return (
-    <>
-      <div className="follower conversation">
-        <div>
-          {online && <div className="online-dot"></div>}
-          <img
-            src={userData?.profilePicture? process.env.REACT_APP_PUBLIC_FOLDER + userData.profilePicture : process.env.REACT_APP_PUBLIC_FOLDER + "defaultProfile.png"}
-            alt="Profile"
-            className="followerImage"
-            style={{ width: "50px", height: "50px" }}
-          />
-          <div className="name" style={{fontSize: '0.8rem'}}>
-            <span>{userData?.firstname} {userData?.lastname}</span>
-            <span style={{color: online?"#51e200":""}}>{online? "Online" : "Offline"}</span>
+
+  // alert(`data : ${JSON.stringify(data)}`)
+
+  if (data && appInfo.userInfo && appInfo.chatHistory) {
+    return (
+      <>
+        <div className="follower conversation" onClick={selectConversation} >
+          <div>
+            {online && <div className="online-dot"></div>}
+            <img
+              src={data.photo}
+              alt={data.photo}
+              className="followerImage"
+              style={{ width: "50px", height: "50px" }}
+            />
+            <div className="name" style={{ fontSize: '0.8rem' }}>
+              <span>{data.name}</span>
+              <span style={{ color: online ? "#51e200" : "" }}>{online ? "Online" : "Offline"}</span>
+            </div>
           </div>
         </div>
-      </div>
-      <hr style={{ width: "85%", border: "0.1px solid #ececec" }} />
-    </>
-  );
-};
+        <hr style={{ width: "85%", border: "0.1px solid #ececec" }} />
+      </>
+    )
+  } else {
+    return null
+  }
+
+}
 
 export default Conversation;

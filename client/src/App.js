@@ -10,12 +10,49 @@ import Profile from './pages/Profile/Profile'
 import Chat from './pages/Chat/Chat'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
-
+import { domain } from './constants/constants'
+import axios from 'axios'
 
 function App() {
-    const [appData, setAppData] = useState({ userInfo: {}, groups: [], selectedGroup: {}, sideBarExpanded: true })
+
+    const [appData, setAppData] = useState({ userInfo: {}, chatHistory: [], selectedChatRoom: {} })
+    const [loading, setLoading] = useState(true)
+
     if (!firebase.apps.length) firebase.initializeApp(config)
-    var user = firebase.auth().currentUser
+    // var user = firebase.auth().currentUser
+
+
+    // const init = async () => {
+
+    //     let config = {
+    //         method: 'get',
+    //         maxBodyLength: Infinity,
+    //         url: `${domain}/user/${user.uid}`,
+    //         headers: {}
+    //     }
+
+    //     axios.request(config)
+    //         .then((response) => {
+    //             console.log(JSON.stringify(response.data))
+    //             if (response.data.user) {
+    //                 appData.userInfo = response.data.user
+    //                 setAppData({ ...appData })
+    //                 setLoading(false)
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+    // }
+
+
+    // const effect = () => {
+    //     if (user) init()
+    //     if (!user) setLoading(false)
+    // }
+
+    // useEffect(effect, [])
+
 
     return (
         <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
@@ -24,7 +61,7 @@ function App() {
 
                     <Route
                         path="/"
-                        element={user ? <Home /> : <Auth />}
+                        element={appData.userInfo.id ? <Home /> : <Auth />}
                     />
 
                     <Route
@@ -48,6 +85,9 @@ function App() {
 
                 </Routes>
             </BrowserRouter>
+
+            {/* {loading && <p style={{ color: 'white', font: '26px times new roman', textAlign: 'center' }} > Page you requested cannot be found  </p>} */}
+
         </AppContext.Provider>
     )
 }
