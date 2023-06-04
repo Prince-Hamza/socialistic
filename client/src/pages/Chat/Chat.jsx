@@ -74,11 +74,12 @@ const Chat = () => {
 
 
           <div className="Chat-list" >
-            {appInfo.chatHistory.map((chat) => (
+            {appInfo.chatHistory.length > 0 && appInfo.chatHistory.map((chat) => (
               <div
                 onClick={() => {
                   setCurrentChat(chat);
                 }}
+                key={Math.random()}
               >
                 <Conversation
                   data={chat}

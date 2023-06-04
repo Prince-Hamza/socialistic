@@ -9,7 +9,7 @@ const chatHistorySchema = new mongoose.Schema(
         },
         chatRoomKey: {
             type: String,
-            unique: true,
+            unique: false,
             required: true
         },
         partnerId: {

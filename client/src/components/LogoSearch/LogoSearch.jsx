@@ -5,6 +5,7 @@ import { UilSearch } from "@iconscout/react-unicons"
 import { Link, useNavigate } from "react-router-dom"
 import axios from 'axios'
 import { AppContext } from "../../Context"
+import SearchResults from "../SearchResults/SearchResults"
 
 const LogoSearch = () => {
   const { appInfo, setAppInfo } = useContext(AppContext)
@@ -72,20 +73,12 @@ const LogoSearch = () => {
 
 
       {/* Render the search results */}
-
-      {search.length > 0 &&
-        <ul className="searchResultsWrap" >
-          {searchResults.map((user) => {
-            return (
-              <li className="searchResultsItem" key={user.id} onClick={() => { profilePage(user) }} >{user.username}</li>
-            )
-          })}
-        </ul>
-      }
+      
+      {search.length >= 3 && <SearchResults results={searchResults} />}
 
 
     </div>
-  );
-};
+  )
+}
 
 export default LogoSearch;

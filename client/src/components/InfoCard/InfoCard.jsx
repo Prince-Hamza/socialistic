@@ -35,12 +35,13 @@ const InfoCard = () => {
     appInfo.chatHistory = result.conversations
     setAppInfo({ ...appInfo })
 
-    alert(`conversations :: ${JSON.stringify(result.conversations)}`)
+    // alert(`conversations :: ${JSON.stringify(result.conversations)}`)
 
     //navigate(`/chat/${me.uid}/${partner.id}`)
     navigate('/chat')
 
   }
+  
 
 
   useEffect(() => {

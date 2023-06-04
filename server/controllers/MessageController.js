@@ -23,6 +23,10 @@ export const addMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
   const { chatRoomKey } = req.params;
+  console.log(`key : ${chatRoomKey}`)
+
+  if (!chatRoomKey) return res.status(400).send({ error: 'chatRoomKey is missing' })
+
   try {
     const result = await MessageModel.find({ chatRoomKey });
     res.status(200).json(result);

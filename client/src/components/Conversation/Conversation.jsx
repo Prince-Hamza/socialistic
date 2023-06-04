@@ -4,17 +4,33 @@ import { getUser } from "../../api/UserRequests";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
+import { addMessage, getMessages } from "../../api/MessageRequests"
 
-const Conversation = ({ data, currentUser, online }) => {
+const Conversation = ({ data, currentUser }) => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
+const online = appInfo.online
 
 
-  const selectConversation = () => {
-    // alert(`selected : ${JSON.stringify(data)}`)
+  const fetchMessages = async (id) => {
+    alert(`chat key : ${id}`)
+    try {
+      const { data } = await getMessages(id)
+      appInfo.messages = data
+      alert(`conversations :: ${data}`)
+      setAppInfo({ ...appInfo })
+    } catch (error) {
+      alert(error);
+    }
+    //    setLoadedHistory(true)
+  }
+
+
+  const selectConversation = async () => {
     appInfo.selectedChatRoom.key = data.chatRoomKey
     appInfo.selectedChatRoom._id = data.chatRoomKey
     appInfo.selectedChatRoom.partner = { id: data.partnerId, name: data.name, photo: data.photo }
+    await fetchMessages(data.chatRoomKey)
     setAppInfo({ ...appInfo })
   }
 
@@ -26,7 +42,7 @@ const Conversation = ({ data, currentUser, online }) => {
       <>
         <div className="follower conversation" onClick={selectConversation} >
           <div>
-            {online && <div className="online-dot"></div>}
+            {/* {online && <div className="online-dot"></div>} */}
             <img
               src={data.photo}
               alt={data.photo}

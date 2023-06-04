@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react"
 import { useRef } from "react"
 import { addMessage, getMessages } from "../../api/MessageRequests"
-import { getUser } from "../../api/UserRequests"
 import { format } from "timeago.js"
 import InputEmoji from 'react-input-emoji'
-import firebase from 'firebase/compat/app'
-import 'firebase/compat/auth'
 import "./ChatBox.css"
 import { AppContext } from "../../Context"
-
+import Messages from "../Messages/Messages"
+import _ from 'lodash'
+import { io } from "socket.io-client"
+const ENDPOINT = `http://127.0.0.1:5000/`
+const socket = io(ENDPOINT);
 
 const ChatBox = ({ setSendMessage, receivedMessage }) => {
 
@@ -16,9 +17,25 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   const [userData, setUserData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("")
-
+  const [loadedHistory, setLoadedHistory] = useState(false)
+  const [listenToMongo, setListenToMongo] = useState(false)
+  const [listening, setListening] = useState(false)
   const chat = appInfo.selectedChatRoom
   const currentUser = appInfo.userInfo
+
+
+  const fetchMessages = async () => {
+    try {
+      const { data } = await getMessages(chat._id)
+      setMessages(data)
+    } catch (error) {
+      console.log(error);
+    }
+    setLoadedHistory(true)
+  }
+
+  //if (appInfo.selectedChatRoom && appInfo.selectedChatRoom.key && !loadedHistory) fetchMessages()
+
 
   const handleChange = (newMessage) => {
     setNewMessage(newMessage)
@@ -26,29 +43,50 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
 
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const { data } = await getMessages(chat._id)
-        alert(`messages : ${JSON.stringify(data)}`)
-        setMessages(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    //  if (chat !== null) fetchMessages();
-  }, [chat]);
-
-
-  // Always scroll to last Message
-  useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages])
 
 
 
+
+
+  // onMessage | EventListener
+
+  const socketListener = () => {
+    // alert(`socket listener : ${listening}`)
+    socket.on('message', (data) => {
+      if (data && Object.keys(data).length) {
+        //alert(`message event :: ${JSON.stringify(data.fullDocument)}`)
+        let list = appInfo.messages
+        let nm = data.fullDocument
+        list.push(nm)
+        list = _.uniqBy(list, 'text')
+        // alert(`length prexisting  : ${list.length}`)
+        appInfo.messages = list
+        setAppInfo({ ...appInfo })
+      }
+    })
+
+    socket.on("disconnect", () => { console.log(socket.id) })
+
+  }
+
+  useEffect(() => {
+    if (!listening) socketListener()
+  }, [])
+
+
+
+
   // Send Message
   const handleSend = async () => {
+
+
+    if (!listenToMongo) {
+      //alert('emit listen')
+      socket.emit('listen', { chatRoomKey: appInfo.selectedChatRoom.key })
+      setListenToMongo(true)
+    }
 
     const message = {
       chatRoomKey: appInfo.selectedChatRoom.key,
@@ -61,49 +99,21 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
     //alert(`${JSON.stringify(message)}`)
 
     try {
-      const { data } = await addMessage(message);
-      setMessages([...messages, data]);
+      await addMessage(message);
+      // setMessages([...messages]);
       setNewMessage("")
     }
-    catch
-    {
+    catch {
       console.log("error")
     }
-
-
   }
-
-  // Receive Message from parent component
-  /*useEffect(()=> {
-    console.log("Message Arrived: ", receivedMessage)
-    if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
-      setMessages([...messages, receivedMessage]);
-    }
-  
-  },[chat, receivedMessage])*/
-
-  useEffect(() => {
-    console.log("Message Arrived: ", receivedMessage);
-    if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
-      const updatedMessages = [...messages, receivedMessage];
-      setMessages(updatedMessages);
-      localStorage.setItem("chatMessages", JSON.stringify(updatedMessages));
-    }
-  }, [chat, receivedMessage]);
-
-  useEffect(() => {
-    const storedMessages = localStorage.getItem("chatMessages");
-    if (storedMessages) {
-      setMessages(JSON.parse(storedMessages));
-    }
-  }, []);
-
-
 
 
 
   const scroll = useRef();
   const imageRef = useRef();
+
+
 
   return (
     <>
@@ -137,22 +147,23 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
               />
             </div>
             {/* chat-body */}
-            <div className="chat-body" >
-              {messages.map((message) => (
-                <>
-                  <div ref={scroll}
-                    className={
-                      message.senderId === currentUser
-                        ? "message own"
-                        : "message"
-                    }
-                  >
-                    <span>{message.text}</span>{" "}
-                    <span>{format(message.createdAt)}</span>
+            {/* <div className="chat-body" >
+              {messages.map((message) => {
+                return (
+                  <div key={Math.random()} style={{ display: 'flex', justifyContent: message.myId === appInfo.userInfo.id ? 'flex-start' : 'flex-end' }} >
+                    <div ref={scroll}
+                      className={message.myId === appInfo.userInfo.id ? "message own" : "message"}
+                    >
+                      <span>{message.text}</span>{" "}
+                      <span>{format(message.createdAt)}</span>
+                    </div>
                   </div>
-                </>
-              ))}
-            </div>
+                )
+              })}
+            </div> */}
+
+            <Messages scroll={scroll} />
+
             {/* chat-sender */}
             <div className="chat-sender">
               <div onClick={() => imageRef.current.click()}>+</div>

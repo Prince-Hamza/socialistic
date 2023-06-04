@@ -52,6 +52,54 @@ function getRandomArbitrary(min, max) {
 }
 
 
+
+const createChatRoomIfInexistent = async (me, partner, chatRoomKey) => {
+
+  let final = 0
+  const result1 = await ChatHistoryModel.findOne({ id: me.id, partnerId: partner.id })
+  const result2 = await ChatHistoryModel.findOne({ id: partner.id, partnerId: me.id })
+
+  if (result1 === null && result2 === null) {
+    // create chat room & inform both
+
+    console.log(`post key and convo `)
+
+    try {
+      const resp = await ChatHistoryModel.create({
+        id: me.id,
+        partnerId: partner.id,
+        name: partner.name,
+        photo: partner.photo,
+        chatRoomKey: chatRoomKey
+      })
+
+      console.log(`created 1 : result : ${JSON.stringify(resp)}`);
+
+      const resp2 = await ChatHistoryModel.create({
+        id: partner.id,
+        partnerId: me.id,
+        name: me.name,
+        photo: me.photo,
+        chatRoomKey: chatRoomKey
+      })
+
+      console.log(`created 2 : result : ${JSON.stringify(resp2)}`);
+
+      return resp
+    } catch (ex) {
+      console.log(`post key : error : ${ex}`)
+      return { error: ex }
+    }
+
+  } else {
+    final = result1 === null ? result2 : result1
+  }
+
+  return final
+}
+
+
+
 const checkUsersHaveChatHistory = async (me, partner) => {
   const result = await ChatHistoryModel.findOne({ id: me.id, partnerId: partner.id })
   return result
@@ -60,7 +108,7 @@ const checkUsersHaveChatHistory = async (me, partner) => {
 
 const getKeyAndConversations = async (me, partner) => {
   try {
-    const cursor = await ChatHistoryModel.find({ id: me.id, partnerId: partner.id })
+    const cursor = await ChatHistoryModel.find({ id: me.id })
     const count = await ChatHistoryModel.countDocuments()
     console.log(`count : ${count}, type:${typeof (count)}`)
 
@@ -89,6 +137,9 @@ const postKeyAndConversation = async (me, partner, chatRoomKey) => {
 export const onInteractionForChat = async (req, res) => {
 
 
+
+
+
   if (!req.body.me) return res.status(400).send({ error: 'your own data is missing' })
   if (!req.body.partner) return res.status(400).send({ error: `your chat partner's data is missing` })
 
@@ -97,22 +148,26 @@ export const onInteractionForChat = async (req, res) => {
   let me = req.body.me
   let partner = req.body.partner
 
-  // check if a chatRoomKey exists
+  // crate chat room  if inexistent
 
-  var isConversationExisting = await checkUsersHaveChatHistory(me, partner)
+  var postedConversation = await createChatRoomIfInexistent(me, partner, chatRoomKey)
 
-  console.log(`conversation existing : ${isConversationExisting} `)
-
+  console.log(`conversation existing : ${postedConversation} `)
 
   // if no : genKey & POST default conversation
-  if (isConversationExisting === null) {
-    conversations = await postKeyAndConversation(me, partner, chatRoomKey)
-    console.log(`created chat r : ${conversations}`)
-  } else {
-    // GET all conversations of ME
-    conversations = await getKeyAndConversations(me, partner)
-    console.log(`got conversations : ${conversations} `)
-  }
+  // if (isConversationExisting === null) {
+  //   conversations = await postKeyAndConversation(me, partner, chatRoomKey)
+  //   console.log(`created chat r : ${conversations}`)
+  // }
+
+  //else {
+  // GET all conversations of ME
+
+  conversations = await getKeyAndConversations(me, partner)
+  // conversations = [...conversations, postedConversation]
+  console.log(`got conversations : ${conversations} `)
+
+  //}
 
 
 

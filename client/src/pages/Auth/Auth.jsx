@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import "./Auth.css"
 import Logo from "../../img/logo_istic.png"
 import { useNavigate } from "react-router-dom"
@@ -10,7 +10,8 @@ import axios from 'axios'
 import { domain } from "../../constants/constants"
 import 'react-toastify/dist/ReactToastify.css'
 import { AppContext } from "../../Context"
-
+import { webAuth } from "../../firebase/firebaseAuth"
+const fireAuth = new webAuth()
 
 const Auth = () => {
 
@@ -25,7 +26,6 @@ const Auth = () => {
 
   const navigate = useNavigate()
 
-
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [isSignUp, setIsSignUp] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -33,6 +33,9 @@ const Auth = () => {
   const [confirmPass, setConfirmPass] = useState(true);
 
   // const dispatch = useDispatch()
+
+
+
 
   // Reset Form
   const resetForm = () => {
@@ -143,6 +146,7 @@ const Auth = () => {
       const result = await signInWithEmailAndPassword(auth, data.email, data.password)
       console.log(`result : ${result.user} `)
       toast.success('Login Successful', { position: "top-center" })
+      await fireAuth.setLoginSession(data.email, data.password)
       getUserInfoFromMongoDb(result.user)
       // navigate('/home')
     } catch (ex) {

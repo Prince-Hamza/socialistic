@@ -10,48 +10,61 @@ import Profile from './pages/Profile/Profile'
 import Chat from './pages/Chat/Chat'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
-import { domain } from './constants/constants'
+import { webAuth } from './firebase/firebaseAuth'
 import axios from 'axios'
+import { domain } from './constants/constants'
+const fireAuth = new webAuth()
 
 function App() {
 
-    const [appData, setAppData] = useState({ userInfo: {}, chatHistory: [], selectedChatRoom: {} })
+    const [appData, setAppData] = useState({ userInfo: {}, chatHistory: [], selectedChatRoom: {}, messages: [], online: true })
     const [loading, setLoading] = useState(true)
 
     if (!firebase.apps.length) firebase.initializeApp(config)
     // var user = firebase.auth().currentUser
 
 
-    // const init = async () => {
 
-    //     let config = {
-    //         method: 'get',
-    //         maxBodyLength: Infinity,
-    //         url: `${domain}/user/${user.uid}`,
-    //         headers: {}
-    //     }
+    const getUserInfoFromMongoDb = (user) => {
 
-    //     axios.request(config)
-    //         .then((response) => {
-    //             console.log(JSON.stringify(response.data))
-    //             if (response.data.user) {
-    //                 appData.userInfo = response.data.user
-    //                 setAppData({ ...appData })
-    //                 setLoading(false)
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.log(error)
-    //         })
-    // }
+        let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `${domain}/user/${user.uid}`,
+            headers: {}
+        }
+
+        // alert(`get : ${config.url}`)
+
+        axios.request(config)
+            .then((response) => {
+                // alert(JSON.stringify(response.data))
+                if (response.data.user) {
+                    appData.userInfo = response.data.user
+                    setAppData({ ...appData })
+                    // alert(`app data : userInfo : ${JSON.stringify(appData)}`)
+                }
+            })
+            .catch((error) => {
+                alert(`user auth error : ${error}`)
+            })
+    }
 
 
-    // const effect = () => {
-    //     if (user) init()
-    //     if (!user) setLoading(false)
-    // }
+    const init = async () => {
+        // get login session 
+        const user = await fireAuth.getLoginSession()
+        // alert(`user from login session : ${JSON.stringify(user)}`)
+        if (user.uid) getUserInfoFromMongoDb(user)
+    }
 
-    // useEffect(effect, [])
+
+    const effect = () => {
+        if (Object.keys(appData.userInfo).length <= 0) init()
+        // if (!user) setLoading(false)
+    }
+
+    useEffect(effect, [])
 
 
     return (

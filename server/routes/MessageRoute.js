@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.post('/', addMessage);
 
-router.get('/:chatId', getMessages);
+router.get('/:chatRoomKey', getMessages);
 
 export default router

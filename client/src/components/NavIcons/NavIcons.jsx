@@ -89,7 +89,7 @@ function DropdownItem(props) {
   return (
     <li className='dropdownItem'>
       <img src={props.img} alt=""></img>
-      <a> {props.text} </a>
+      <div> {props.text} </div>
     </li>
   );
 }
