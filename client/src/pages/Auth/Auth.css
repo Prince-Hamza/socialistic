@@ -1,17 +1,19 @@
 .Auth {
-  display: flex;
+  padding-top: 10%;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  height: 200vh;
   gap: 4rem;
   position: relative;
+  background-color: whitesmoke;
 }
 
 .Auth > div {
-  display: flex;
+  
   align-items: center;
   justify-content: center;
   font-weight: 800;
+  
 }
 
 
@@ -57,7 +59,7 @@
 
 
 .authForm{
-    background-color: var(--cardColor);
+    background-color: rgba(255, 255, 255, 0.64);
     border-radius: 1rem;
     padding: 1rem;
 }

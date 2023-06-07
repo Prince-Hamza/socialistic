@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react";
-import "./FollowersCard.css";
+import React, { useContext, useEffect, useState } from "react";
 import FollowersModal from "../FollowersModal/FollowersModal";
 import { getAllUser } from "../../api/UserRequests";
 import User from "../User/User";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import "./FollowersCard.css";
+import { AppContext } from "../../Context";
 
 // Importez votre image par défaut
 //import defaultProfileImage from "../../path/to/defaultProfileImage.jpg";
 
 const FollowersCard = ({ location }) => {
-  const [modalOpened, setModalOpened] = useState(false);
-  const [persons, setPersons] = useState([]);
-  const [displayCount, setDisplayCount] = useState(8);
-  const { user } = useSelector((state) => state.authReducer.authData);
+
+  const { appInfo, setAppInfo } = useContext(AppContext)
+  const [modalOpened, setModalOpened] = useState(false)
+  const [persons, setPersons] = useState([])
+  const [displayCount, setDisplayCount] = useState(8)
+  var user = firebase.auth().currentUser
+  user.following = []
 
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
 
@@ -26,14 +31,14 @@ const FollowersCard = ({ location }) => {
   useEffect(() => {
     const fetchPersons = async () => {
       const { data } = await getAllUser(displayCount, [
-        ...user.following,
-        user._id,
+        //...user.following,
+        user.id,
       ]);
-      const filteredPersons = data.filter((person) => person._id !== user._id);
+      const filteredPersons = data.filter((person) => person.id !== appInfo.userInfo.id)
       setPersons(filteredPersons);
     };
     fetchPersons();
-  }, [user.following, user._id, displayCount]);
+  }, [user.following, appInfo.userInfo.id, displayCount]);
 
   const handleSeeMore = () => {
     setDisplayCount(persons.length);
@@ -41,6 +46,7 @@ const FollowersCard = ({ location }) => {
 
   return (
     <div className="FollowersCard">
+
       <h3>Suggestions</h3>
 
       {persons.map((person) => (
@@ -73,4 +79,4 @@ const FollowersCard = ({ location }) => {
   );
 };
 
-export default FollowersCard;
+export default FollowersCard

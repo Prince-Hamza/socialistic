@@ -81,19 +81,20 @@
   outline: none;
   background-color: var(--inputColor);
   border-radius: 8px;
-  padding: 20px;
+  
   flex:1;
+ 
 }
 
 .infoForm>div{
-  display: flex;
+ 
   gap: 1rem;
   height: 2rem;
-  width: 90%;
+  
 }
 
 .infoButton{
   width: 6rem;
   height: 2rem;
-  align-self: flex-end;
+  
 }

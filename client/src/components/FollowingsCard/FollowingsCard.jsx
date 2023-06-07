@@ -2,19 +2,20 @@ import React, { useEffect, useState } from "react";
 import "./FollowingsCard.css";
 import FollowingsModal from "../FollowingsModal/FollowingsModal";
 import User from "../User/User";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 const FollowingsCard = ({ location }) => {
   const [modalOpened, setModalOpened] = useState(false);
   const [followings, setFollowings] = useState([]);
-  const { user } = useSelector((state) => state.authReducer.authData);
+  var user = firebase.auth().currentUser
 
   const navigate = useNavigate();
 
   const handleProfileClick = (followingId) => {
     navigate(`/profile/${followingId}`);
-  };
+  }
 
   useEffect(() => {
     setFollowings(user.following);

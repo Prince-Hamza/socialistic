@@ -1,32 +1,29 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { followUser, unfollowUser } from "../../actions/UserAction";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import { AppContext } from "../../Context";
 
 const User = ({ person }) => {
+  const { appInfo, setAppInfo } = useContext(AppContext)
   const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
-  const { user } = useSelector((state) => state.authReducer.authData);
-  const dispatch = useDispatch()
-  
-  const [following, setFollowing] = useState(
-    person.followers.includes(user._id)
-  );
+  const user = firebase.auth().currentUser
+
+  const [following, setFollowing] = useState(person.followers.includes(appInfo.userInfo.id))
+
+
   const handleFollow = () => {
-    following
-      ? dispatch(unfollowUser(person._id, user))
-      : dispatch(followUser(person._id, user));
     setFollowing((prev) => !prev);
-  };
+  }
+
+
   return (
     <div className="follower">
-      <div>
+      <div >
         <img
-          src={
-            publicFolder + person.profilePicture
-              ? publicFolder + person.profilePicture
-              : publicFolder + "defaultProfile.png"
-          }
-          alt="profile"
-          className="followerImage" 
+          src={"https://e7.pngegg.com/pngimages/18/809/png-clipart-user-computer-icons-person-icon-cdr-logo-thumbnail.png"}
+          className="followerImage"
         />
         <div className="name">
           <span>{person.firstname}</span>

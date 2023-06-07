@@ -6,7 +6,7 @@ import Share from "../../img/share.png";
 import Heart from "../../img/like.png";
 import NotLike from "../../img/notlike.png";
 import { likePost } from "../../api/PostsRequests";
-import { useSelector, useDispatch } from "react-redux";
+// import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 //import { DropdownItem } from 'nr1'
 import edit from '../../img/edit.png';
@@ -16,15 +16,19 @@ import { getUserById } from "../../api/UserRequests";
 import CommentShare from '../CommentShare/CommentShare.jsx';
 import Comment from "../Comment/Comment";
 import { createComment } from "../../api/CommentsRequests";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+
 
 
 const Post = ({ data }) => {
-  const { user } = useSelector((state) => state.authReducer.authData);
-  const [liked, setLiked] = useState(data.likes.includes(user._id));
+  var user = firebase.auth().currentUser  
+
+  const [liked, setLiked] = useState(data.likes.includes(user.id));
   const [likes, setLikes] = useState(data.likes.length);
-  const { auth, theme, socket } = useSelector(state => state);
+  // const { auth, theme, socket } = useSelector(state => state);
   const [showdrop, setshowdrop] = useState(false);
-  const dispatch = useDispatch();
+  
   const navigate = useNavigate();
 
   const [comments, setComments] = useState([]);
@@ -62,10 +66,10 @@ const Post = ({ data }) => {
       }
     };
 
-    if (user._id !== data.userId) {
+    if (user.id !== data.userId) {
       fetchUser();
     }
-  }, [data.userId, user._id]);
+  }, [data.userId, user.id]);
 
 
 
@@ -92,7 +96,7 @@ const Post = ({ data }) => {
 
 
   const handleLike = () => {
-    likePost(data._id, user._id);
+    likePost(data._id, user.id);
     setLiked((prev) => !prev);
     liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
   };
@@ -112,14 +116,13 @@ dispatch(/*deletePost*//*({data, auth, socket}))
 }*/
 
   const handleDelete = () => {
-    dispatch(deletePost(data.id, auth, socket));
     setshowdrop(false);
     navigate('/')
   };
 
   const handleUpdate = () => {
     const updatedPost = { ...data, edit: true, title: "Updated Title" };
-    dispatch(updatePost(data.id, updatedPost));
+    // dispatch(updatePost(data.id, updatedPost));
     setshowdrop(false);
   };
 
@@ -169,7 +172,7 @@ dispatch(/*deletePost*//*({data, auth, socket}))
     <div className="Post">
       <div className="Postheader">
         <div className="PostInfo">
-          {user._id === data?.userId ?
+          {user.id === data?.userId ?
             <img
               src={
                 user.profilePicture
@@ -188,7 +191,7 @@ dispatch(/*deletePost*//*({data, auth, socket}))
             />}
           <div className="PostInfoUser">
             <span className="user">
-              {user._id === data?.userId
+              {user.id === data?.userId
                 ? `${user.firstname} ${user.lastname}`
                 : postUser.firstname && postUser.lastname
                   ? `${postUser.firstname} ${postUser.lastname}`
@@ -251,10 +254,10 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         <Comment key={comment.id} data={comment} />
       ))}
 
-
+{/* 
       {isShare && <ShareModal url={`http://localhost:5000/post/${data._id}`} theme={theme} />}
 
-      {isShare && <ShareModal url={`http://localhost:5000/post/comment/${data._id}`} theme={theme} />}
+      {isShare && <ShareModal url={`http://localhost:5000/post/comment/${data._id}`} theme={theme} />} */}
 
     </div>
   );

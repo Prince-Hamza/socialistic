@@ -39,6 +39,7 @@ export const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   try {
+    
     const user = await UserModel.findOne({ username: username });
 
     if (user) {

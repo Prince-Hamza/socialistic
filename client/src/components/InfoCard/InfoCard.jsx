@@ -1,36 +1,60 @@
-import React, { useEffect, useState } from "react";
-import "./InfoCard.css";
-import { UilPen } from "@iconscout/react-unicons";
-import ProfileModal from "../ProfileModal/ProfileModal";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import * as UserApi from "../../api/UserRequests.js";
-import { logout } from "../../actions/AuthActions";
+import React, { useContext, useEffect, useState } from "react"
+import { UilPen } from "@iconscout/react-unicons"
+import ProfileModal from "../ProfileModal/ProfileModal"
+import { useNavigate, useParams } from "react-router-dom"
+import * as UserApi from "../../api/UserRequests.js"
+import { logout } from "../../actions/AuthActions"
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import "./InfoCard.css"
+import { AppContext } from "../../Context"
+import { toast } from "react-toastify"
+import { interact } from "../../backend/chat/chat"
 
 const InfoCard = () => {
-  const dispatch = useDispatch()
-  const params = useParams();
-  const [modalOpened, setModalOpened] = useState(false);
-  const profileUserId = params.id;
-  const [profileUser, setProfileUser] = useState({});
-  const { user } = useSelector((state) => state.authReducer.authData);
+
+  const params = useParams()
+
+  const { appInfo, setAppInfo } = useContext(AppContext)
+  const [modalOpened, setModalOpened] = useState(false)
+  const profileUserId = params.id
+  const [profileUser, setProfileUser] = useState({})
+  const user = firebase.auth().currentUser
+  const navigate = useNavigate()
 
 
-  const handleLogOut = ()=> {
-    dispatch(logout())
+  const sendMessage = async () => {
+
+    // me : user
+    let me = user.providerData[0]
+    me.uid = user.uid
+    // partner :  appInfo.selectedPartner
+    let partner = appInfo.selectedPartner
+
+    const result = await interact(me, partner)
+    appInfo.chatHistory = result.conversations
+    setAppInfo({ ...appInfo })
+
+    // alert(`conversations :: ${JSON.stringify(result.conversations)}`)
+
+    //navigate(`/chat/${me.uid}/${partner.id}`)
+    navigate('/chat')
+
   }
+  
 
 
   useEffect(() => {
     const fetchProfileUser = async () => {
-      if (profileUserId === user._id) {
-        setProfileUser(user);
-      } else {
-        console.log("fetching")
-        const profileUser = await UserApi.getUser(profileUserId);
-        setProfileUser(profileUser);
-        console.log(profileUser)
-      }
+      // if (profileUserId === user.id) {
+      //   setProfileUser(user);
+      // } else {
+      //   console.log("fetching")
+      //   const profileUser = await UserApi.getUser(profileUserId);
+      //   setProfileUser(profileUser);
+      //   console.log(profileUser)
+      // }
+      setProfileUser(user)
     }
     fetchProfileUser()
   }, [user, profileUserId]);
@@ -39,7 +63,7 @@ const InfoCard = () => {
     <div className="InfoCard">
       <div className="infoHead">
         <h4>Profile Info</h4>
-        {user._id === profileUserId ? (
+        {user.id === profileUserId ? (
           <div>
             <UilPen
               width="2rem"
@@ -49,7 +73,7 @@ const InfoCard = () => {
             <ProfileModal
               modalOpened={modalOpened}
               setModalOpened={setModalOpened}
-              data = {user}
+              data={user}
             />
           </div>
         ) : (
@@ -77,7 +101,7 @@ const InfoCard = () => {
         <span>{profileUser.worksAt}</span>
       </div>
 
-      <button className="button logout-button" onClick={handleLogOut}>Log Out</button>
+      <button className="button logout-button" onClick={sendMessage}> Message  </button>
     </div>
   );
 };

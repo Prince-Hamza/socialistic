@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import "./ProfileCard.css";
-//import { Link } from "react-router-dom";
-//import { useSelector } from "react-redux";
-//import FollowersModal from "../FollowersModal/FollowersModal";
 import FollowingModal from "../FollowingModal/FollowingModal";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 const ProfileCard = ({ location }) => {
   // ...
 
   const [followingModalOpened, setFollowingModalOpened] = useState(false);
+  var user = firebase.auth().currentUser  
 
   return (
     <div className="ProfileCard">

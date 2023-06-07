@@ -1,53 +1,67 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { getUser } from "../../api/UserRequests";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import { AppContext } from "../../Context";
+import { addMessage, getMessages } from "../../api/MessageRequests"
+
+const Conversation = ({ data, currentUser }) => {
+
+  const { appInfo, setAppInfo } = useContext(AppContext)
+const online = appInfo.online
 
 
-const Conversation = ({ data, currentUser, online }) => {
-
-  const [userData, setUserData] = useState(null)
-  const dispatch = useDispatch()
-
-  useEffect(()=> {
-
-    const userId = data.members.find((id)=>id!==currentUser)
-    const getUserData = async ()=> {
-      try
-      {
-          const {data} =await getUser(userId)
-         setUserData(data)
-         dispatch({type:"SAVE_USER", data:data})
-      }
-      catch(error)
-      {
-        console.log(error)
-      }
+  const fetchMessages = async (id) => {
+    alert(`chat key : ${id}`)
+    try {
+      const { data } = await getMessages(id)
+      appInfo.messages = data
+      alert(`conversations :: ${data}`)
+      setAppInfo({ ...appInfo })
+    } catch (error) {
+      alert(error);
     }
+    //    setLoadedHistory(true)
+  }
 
-    getUserData();
-  }, [currentUser, data.members, dispatch])
-  
-  return (
-    <>
-      <div className="follower conversation">
-        <div>
-          {online && <div className="online-dot"></div>}
-          <img
-            src={userData?.profilePicture? process.env.REACT_APP_PUBLIC_FOLDER + userData.profilePicture : process.env.REACT_APP_PUBLIC_FOLDER + "defaultProfile.png"}
-            alt="Profile"
-            className="followerImage"
-            style={{ width: "50px", height: "50px" }}
-          />
-          <div className="name" style={{fontSize: '0.8rem'}}>
-            <span>{userData?.firstname} {userData?.lastname}</span>
-            <span style={{color: online?"#51e200":""}}>{online? "Online" : "Offline"}</span>
+
+  const selectConversation = async () => {
+    appInfo.selectedChatRoom.key = data.chatRoomKey
+    appInfo.selectedChatRoom._id = data.chatRoomKey
+    appInfo.selectedChatRoom.partner = { id: data.partnerId, name: data.name, photo: data.photo }
+    await fetchMessages(data.chatRoomKey)
+    setAppInfo({ ...appInfo })
+  }
+
+
+  // alert(`data : ${JSON.stringify(data)}`)
+
+  if (data && appInfo.userInfo && appInfo.chatHistory) {
+    return (
+      <>
+        <div className="follower conversation" onClick={selectConversation} >
+          <div>
+            {/* {online && <div className="online-dot"></div>} */}
+            <img
+              src={data.photo}
+              alt={data.photo}
+              className="followerImage"
+              style={{ width: "50px", height: "50px" }}
+            />
+            <div className="name" style={{ fontSize: '0.8rem' }}>
+              <span>{data.name}</span>
+              <span style={{ color: online ? "#51e200" : "" }}>{online ? "Online" : "Offline"}</span>
+            </div>
           </div>
         </div>
-      </div>
-      <hr style={{ width: "85%", border: "0.1px solid #ececec" }} />
-    </>
-  );
-};
+        <hr style={{ width: "85%", border: "0.1px solid #ececec" }} />
+      </>
+    )
+  } else {
+    return null
+  }
+
+}
 
 export default Conversation;

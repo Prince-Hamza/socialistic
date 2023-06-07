@@ -5,17 +5,20 @@ import Com from "../../img/comment.png";
 import Share from "../../img/share.png";
 import Heart from "../../img/like.png";
 import NotLike from "../../img/notlike.png";
-import { useSelector, useDispatch } from "react-redux";
 import { likeComment, deleteComment, updateComment } from "../../api/CommentsRequests";
 import { getUserById } from "../../api/UserRequests";
 import ShareModal from "../ShareModal/ShareModal";
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
 
 
 const Comment = ({ data }) => {
-  const { user } = useSelector((state) => state.authReducer.authData);
-  const [liked, setLiked] = useState(data.likes.includes(user._id));
+
+  var user = firebase.auth().currentUser
+
+  const [liked, setLiked] = useState(data.likes.includes(user.id));
   const [likes, setLikes] = useState(data.likes.length);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [isShare, setIsShare] = useState(false);
   const [commentUser, setCommentUser] = useState({});
@@ -30,19 +33,19 @@ const Comment = ({ data }) => {
       }
     };
 
-    if (user._id !== data.userId) {
+    if (user.id !== data.userId) {
       fetchUser();
     }
-  }, [data.userId, user._id]);
+  }, [data.userId, user.id]);
 
   const handleLike = () => {
-    dispatch(likeComment(data._id));
+    // dispatch(likeComment(data._id));
     setLiked((prev) => !prev);
     liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
   };
 
   const handleDelete = () => {
-    dispatch(deleteComment(data._id));
+    // dispatch(deleteComment(data._id));
     // Ajoutez ici la logique de suppression du commentaire dans votre application
   };
 
@@ -58,7 +61,7 @@ const Comment = ({ data }) => {
     <div className="Comment">
       <div className="Commentheader">
         <div className="CommentInfo">
-          {user._id === data?.userId ? (
+          {user.id === data?.userId ? (
             <img
               src={user.profilePicture || "defaultProfile.png"}
               alt="ProfileImage"
@@ -71,11 +74,11 @@ const Comment = ({ data }) => {
           )}
           <div className="CommentInfoUser">
             <span className="user">
-              {user._id === data?.userId
+              {user.id === data?.userId
                 ? `${user.firstname} ${user.lastname}`
                 : commentUser.firstname && commentUser.lastname
-                ? `${commentUser.firstname} ${commentUser.lastname}`
-                : "Utilisateur inconnu"}
+                  ? `${commentUser.firstname} ${commentUser.lastname}`
+                  : "Utilisateur inconnu"}
             </span>
             <span className="timeago">
               {moment.utc(data.createdAt).fromNow()}
@@ -99,35 +102,34 @@ const Comment = ({ data }) => {
         <span>
           <b>{data.name}</b>
         </span>
-        
+
         <span>{data.desc}</span>
-        </div>
-  
-        <div className="commentReact">
-          <img
-            src={liked ? Heart : NotLike}
-            alt=""
-            style={{ cursor: "pointer" }}
-            onClick={handleLike}
-          />
-          <img src={Com} alt="" style={{ cursor: "pointer" }} />
-          <img
-            src={Share}
-            alt=""
-            onClick={() => setIsShare(!isShare)}
-            style={{ cursor: "pointer" }}
-          />
-        </div>
-  
-        <span style={{ color: "var(--gray)", fontSize: "12px", alignSelf: "flex-start" }}>
-          {likes} likes
-        </span>
-  
-        {isShare && <ShareModal url={`http://localhost:5000/comment/${data._id}`} />}
-  
       </div>
-    );
-  };
-  
-  export default Comment;
-  
+
+      <div className="commentReact">
+        <img
+          src={liked ? Heart : NotLike}
+          alt=""
+          style={{ cursor: "pointer" }}
+          onClick={handleLike}
+        />
+        <img src={Com} alt="" style={{ cursor: "pointer" }} />
+        <img
+          src={Share}
+          alt=""
+          onClick={() => setIsShare(!isShare)}
+          style={{ cursor: "pointer" }}
+        />
+      </div>
+
+      <span style={{ color: "var(--gray)", fontSize: "12px", alignSelf: "flex-start" }}>
+        {likes} likes
+      </span>
+
+      {isShare && <ShareModal url={`http://localhost:5000/comment/${data._id}`} />}
+
+    </div>
+  );
+};
+
+export default Comment;

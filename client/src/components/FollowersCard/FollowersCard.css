@@ -28,9 +28,11 @@
 
 
 .followerImage{
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
+    margin-left: 15px;
+    margin-bottom: 15px;
 }
 
 .name{
@@ -53,8 +55,6 @@
 }
 
 .UnfollowButton{
-    /*color: var(--orange);
-    border: 2px solid var(--orange);*/
     color: var(--green);
     border: 2px solid var(--green);
     cursor: pointer;

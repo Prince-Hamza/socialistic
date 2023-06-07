@@ -5,13 +5,14 @@ import mongoose from "mongoose";
 // creating a post
 
 export const createPost = async (req, res) => {
-  const newPost = new PostModel(req.body);
+
+  const newPost = new PostModel(req.body)
 
   try {
     await newPost.save();
-    res.status(200).json(newPost);
+    return res.status(200).json(newPost);
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json(error);
   }
 };
 
@@ -59,12 +60,13 @@ export const getPost = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const post = await PostModel.findById(id);
+    const post = await PostModel.findOne({ id: id });
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json(error);
   }
-};
+}
+
 
 // update post
 export const updatePost = async (req, res) => {
@@ -79,7 +81,7 @@ export const updatePost = async (req, res) => {
     } else {
       res.status(403).json("Authentication failed");
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // delete a post
@@ -125,7 +127,7 @@ export const getTimelinePosts = async (req, res) => {
     const currentUserPosts = await PostModel.find({ userId: userId });
 
     const followingPosts = await UserModel.aggregate([
-      { 
+      {
         $match: {
           _id: new mongoose.Types.ObjectId(userId),
         },

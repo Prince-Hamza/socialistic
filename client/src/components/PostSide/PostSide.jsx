@@ -9,9 +9,9 @@ const PostSide = () => {
     <div className="PostSide">
       <PostShare/>
       <Posts/>
-      <CommentSide />
+      {/* <CommentSide /> */}
     </div>
   );
 };
 
-export default PostSide;
+export default PostSide
