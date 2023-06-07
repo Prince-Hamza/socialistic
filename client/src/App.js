@@ -23,8 +23,6 @@ function App() {
     if (!firebase.apps.length) firebase.initializeApp(config)
     // var user = firebase.auth().currentUser
 
-
-
     const getUserInfoFromMongoDb = (user) => {
 
         let config = {

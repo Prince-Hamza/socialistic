@@ -1,26 +1,26 @@
-import React, { useState, useRef } from "react";
-import "./PostShare.css";
-import { UilScenery } from "@iconscout/react-unicons";
-import { UilPlayCircle } from "@iconscout/react-unicons";
-import { UilLocationPoint } from "@iconscout/react-unicons";
-import { UilSchedule } from "@iconscout/react-unicons";
-import { UilTimes } from "@iconscout/react-unicons";
-import { uploadImage, uploadVideo, uploadPost } from "../../actions/UploadAction";
+import React, { useState, useRef } from "react"
+import { UilScenery } from "@iconscout/react-unicons"
+import { UilPlayCircle } from "@iconscout/react-unicons"
+import { UilLocationPoint } from "@iconscout/react-unicons"
+import { UilSchedule } from "@iconscout/react-unicons"
+import { Col, Row } from 'react-bootstrap'
 import firebase from 'firebase/compat/app'
+import { UilTimes } from "@iconscout/react-unicons"
 import 'firebase/compat/auth'
+import "./PostShare.css"
+
 
 function PostShare(props) {
+
     var user = firebase.auth().currentUser
 
-    const [postInfo, setPostInfo] = useState([{ image: '' }, { video: '' }])
+    const [postInfo, setPostInfo] = useState([])
     const [loading, setLoading] = useState(false)
     const [image, setImage] = useState(null)
     const [video, setVideo] = useState(null)
     const [location, setLocation] = useState(null);
     const desc = useRef()
     const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER
-
-
 
     const getLocation = () => {
         navigator.geolocation.getCurrentPosition(
@@ -43,7 +43,7 @@ function PostShare(props) {
             let img = event.target.files[0]
             let list = postInfo
             list.push({ image: img })
-            setPostInfo(list)
+            setPostInfo([...list])
         }
     }
 
@@ -53,7 +53,7 @@ function PostShare(props) {
             let vid = event.target.files[0]
             let list = postInfo
             list.push({ video: vid })
-            setPostInfo(list)
+            setPostInfo([...list])
         }
     }
 
@@ -63,7 +63,7 @@ function PostShare(props) {
     const videoRef = useRef();
 
     return (
-        <div className="PostShare">
+        <Row className="PostShare">
 
             <img src={user.profilePicture ? serverPublic + user.profilePicture : serverPublic + "defaultProfile.png"} alt="Profile" />
 
@@ -79,6 +79,61 @@ function PostShare(props) {
                     ref={desc}
                 />
 
+
+
+                <Row style={{ width: '100%' }} >
+
+                    {/* {postInfo.length} */}
+
+
+                    {postInfo.map((item, index) => {
+                        return (
+                            <div>
+                                {index === 0 &&
+                                    <div>
+                                        {item.image &&
+                                            <div>
+                                                <div className="previewImage">
+                                                    <UilTimes onClick={() => setImage(null)} />
+                                                    <img src={URL.createObjectURL(item.image)} alt="preview" />
+                                                </div>
+                                            </div>
+                                        }
+
+                                        {item.video &&
+                                            <video controls>
+                                                <UilTimes onClick={() => setVideo(null)} />
+                                                <source src={URL.createObjectURL(item.video)} alt="preview" />
+                                            </video>
+                                        }
+
+                                    </div>
+                                }
+
+                                {index >= 1 &&
+                                    <Col lg={3}>
+                                        {item.image &&
+                                            <div style={{ width: '100px' }}>
+                                                <UilTimes onClick={() => setImage(null)} />
+                                                <img style={{ width: '100px', height: '100px' }} src={URL.createObjectURL(item.image)} alt="preview" />
+                                            </div>
+                                        }
+                                        {item.video &&
+                                            <video controls style={{ width: '100px', height: '100px' }}>
+                                                <UilTimes onClick={() => setVideo(null)} />
+                                                <source src={URL.createObjectURL(item.video)} alt="preview" />
+                                            </video>
+                                        }
+                                    </Col>
+                                }
+
+
+                            </div>
+                        )
+
+                    })}
+
+                </Row>
 
 
 
@@ -135,14 +190,9 @@ function PostShare(props) {
 
             </div>
 
-            {postInfo.map(() => {
-                return (
-                    <div>
-                        <h1> item </h1>
-                    </div>
-                )
-            })}
-        </div>
+
+
+        </Row>
     )
 }
 

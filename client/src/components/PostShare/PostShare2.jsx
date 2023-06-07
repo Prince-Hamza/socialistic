@@ -178,7 +178,7 @@ const PostShare = () => {
                   {item.video &&
                     <video controls>
                       <UilTimes onClick={() => setVideo(null)} />
-                      <source src={URL.createObjectURL(video)} type={video.type} alt="preview" />
+                      <source src={URL.createObjectURL(item.video)} type={video.type} alt="preview" />
                     </video>
                   }
                 </div>
@@ -191,13 +191,13 @@ const PostShare = () => {
                   {item.image &&
                     <div className="previewImage">
                       <UilTimes onClick={() => setImage(null)} />
-                      <img src={URL.createObjectURL(image)} alt="preview" />
+                      <img src={URL.createObjectURL(item.image)} alt="preview" />
                     </div>
                   }
                   {item.video &&
                     <video controls>
                       <UilTimes onClick={() => setVideo(null)} />
-                      <source src={URL.createObjectURL(video)} type={video.type} alt="preview" />
+                      <source src={URL.createObjectURL(item.video)}  alt="preview" />
                     </video>
                   }
                 </div>

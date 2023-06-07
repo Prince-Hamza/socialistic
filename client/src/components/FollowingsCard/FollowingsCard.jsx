@@ -15,7 +15,7 @@ const FollowingsCard = ({ location }) => {
 
   const handleProfileClick = (followingId) => {
     navigate(`/profile/${followingId}`);
-  };
+  }
 
   useEffect(() => {
     setFollowings(user.following);

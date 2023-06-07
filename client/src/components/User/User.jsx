@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { followUser, unfollowUser } from "../../actions/UserAction";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
+import { AppContext } from "../../Context";
 
 const User = ({ person }) => {
+  const { appInfo, setAppInfo } = useContext(AppContext)
   const publicFolder = process.env.REACT_APP_PUBLIC_FOLDER;
   const user = firebase.auth().currentUser
 
-  const [following, setFollowing] = useState(
-    person.followers.includes(user._id)
-  );
+  const [following, setFollowing] = useState(person.followers.includes(appInfo.userInfo.id))
+
+
   const handleFollow = () => {
     setFollowing((prev) => !prev);
   }

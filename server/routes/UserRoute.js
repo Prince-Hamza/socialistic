@@ -9,7 +9,7 @@ router.get('/:name/search', queryUser)
 router.get('/', getAllUsers)
 router.put('/:id', authMiddleWare, updateUser)
 router.delete('/:id', authMiddleWare, deleteUser)
-router.put('/:id/follow', authMiddleWare, followUser)
-router.put('/:id/unfollow', authMiddleWare, unfollowUser)
+router.post('/follow', followUser)
+router.post('/unfollow', unfollowUser)
 
 export default router

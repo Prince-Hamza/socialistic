@@ -11,11 +11,8 @@ const socket = io(ENDPOINT);
 const Home = () => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
-
-
   
   useEffect(() => {
-
     socket.on("connect", () => {
       console.log(`client connected to socket.io`)
     })
@@ -23,7 +20,6 @@ const Home = () => {
     socket.on("disconnect", () => {
       console.log(socket.id)
     })
-
   }, [])
 
 
