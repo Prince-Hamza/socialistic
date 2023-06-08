@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { getTimelinePosts } from "../../actions/PostsAction"
 import Post from "../Post/Post"
 import { useSelector, useDispatch } from "react-redux"
@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom"
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import axios from 'axios'
+import { AppContext } from "../../Context"
 
 const Posts = () => {
 
@@ -15,24 +16,27 @@ const Posts = () => {
 
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(false)
+  const [complete, setComplete] = useState(false)
 
-
+  const { appInfo, setAppInfo } = useContext(AppContext)
 
 
   const init = () => {
-
+    setLoading(true)
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/posts/timeline?id=goY8Tr57lze9qKyoWifcllps3EA3',
+      url: `http://localhost:5000/posts/timeline?id=${appInfo.userInfo.id}`,
       headers: {}
     };
 
     axios.request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data))
         let list = response.data.posts
+        // alert(`timeline posts :: ${JSON.stringify(list)}`)
         setPosts([...list])
+        setLoading(false)
+        setComplete(true)
       })
       .catch((error) => {
         console.log(error)
@@ -41,11 +45,11 @@ const Posts = () => {
   }
 
   const effect = () => {
-    init()
+    if (!complete && appInfo.userInfo.id) init()
   }
 
 
-  useEffect(effect, [])
+  //useEffect(effect, [])
 
 
   return (
@@ -54,9 +58,13 @@ const Posts = () => {
         "Fetching posts...."
       ) : (
         posts.map((post, id) => {
-          return <Post data={post} key={id} />;
+          // return <Post data={post} key={id} />;
+          return null
         })
       )}
+
+
+      {!posts.length && complete && <span style={{ marginLeft: '38%' }} > No posts to show </span>}
     </div>
   )
 }

@@ -109,9 +109,9 @@ setshowdrop(false)
 
 const handleDeletePost = () =>{
 dispatch(/*deletePost*//*({data, auth, socket}))
-          setshowdrop(false)
-          navigate('/')
-        }*/
+                                            setshowdrop(false)
+                                            navigate('/')
+                                          }*/
 
   const handleDelete = () => {
     setshowdrop(false);
@@ -150,33 +150,37 @@ dispatch(/*deletePost*//*({data, auth, socket}))
     event.target.currentTime = 0
   }
 
-  const media = data.images ? (
-    <div>
-      {data.images.map((image) => {
-        return (
-          <img
-            src={image}
-            alt={image}
-          />
-        )
-      })}
-    </div>
 
-  ) : data.video ? (
-
+  const media = (
     <div>
-      {data.videos.map((video) => {
-        return (
-          <video controls onEnded={handleVideoEnd}>
-            <source
-              src={data.videos[0]}
-              alt={data.user?.fullname}
-            />
-          </video>
-        )
-      })}
+      {data.images &&
+        <div>
+          {data.images.map((image) => {
+            return (
+              <img
+                style={{ width: '45%', height: '200px', margin: '1px', cursor: 'pointer' }}
+                onClick={() => { window.open(image, '_blank') }}
+                src={image}
+                alt={image}
+              />
+            )
+          })}
+        </div>
+      }
+
+      {data.videos &&
+        <div>
+          {data.videos.map((video) => {
+            return (
+              <video style={{ width: '45%', height: '200px', margin: '1px', cursor: 'pointer' }} controls onEnded={handleVideoEnd} src={video} >
+
+              </video>
+            )
+          })}
+        </div>
+      }
     </div>
-  ) : null
+  )
 
 
   return (
@@ -185,28 +189,16 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         <div className="PostInfo">
           {user.id === data?.userId ?
             <img
-              src={
-                user.profilePicture
-                  ? serverPublic + user.profilePicture
-                  : serverPublic + "defaultProfile.png"
-              }
+              src={data.profilePicture}
               alt="ProfileImage"
             /> :
             <img
-              src={
-                postUser.profilePicture
-                  ? serverPublic + postUser.profilePicture
-                  : serverPublic + "defaultProfile.png"
-              }
+              src={data.profilePicture}
               alt="ProfileImage"
             />}
           <div className="PostInfoUser">
             <span className="user">
-              {user.id === data?.userId
-                ? `${user.firstname} ${user.lastname}`
-                : postUser.firstname && postUser.lastname
-                  ? `${postUser.firstname} ${postUser.lastname}`
-                  : 'Utilisateur inconnu'}
+              {data.username}
             </span>
 
 
@@ -217,9 +209,8 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         </div>
         <div className="postcardheaderdown">
 
-          <div className='menu-trigger' onClick={() => { setOpen(!open) }}>
+          {window.location.href.includes('profile') && <div className='menu-trigger' onClick={() => { setOpen(!open) }}>
             <p onClick={() => setshowdrop(!showdrop)}>ooo</p>
-
             <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`} style={{ marginRight: '-12px' }} >
               <ul>
                 <DropdownItem img={edit} text={"Edit"} onClick={() => handleUpdate(data)} />
@@ -227,14 +218,16 @@ dispatch(/*deletePost*//*({data, auth, socket}))
                 <DropdownItem img={edit} text={"Download"} onClick={handleCopyLink} />
               </ul>
             </div>
-          </div>
+          </div>}
+
+
         </div>
       </div>
       <div className="detail" style={{ alignSelf: "flex-start" }}>
-        <span>
-          <b>{data.name} </b>
-        </span>
-        <span>{data.desc}</span>
+        {/* <span>
+          <b>{data.username} </b>
+        </span> */}
+        <span>{data.text}</span>
       </div>
       {media}
       <div className="postReact">
@@ -283,4 +276,4 @@ function DropdownItem(props) {
   );
 }
 
-export default Post;
+export default Post

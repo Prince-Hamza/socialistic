@@ -3,7 +3,7 @@ import { UilScenery } from "@iconscout/react-unicons"
 import { UilPlayCircle } from "@iconscout/react-unicons"
 import { UilLocationPoint } from "@iconscout/react-unicons"
 import { UilSchedule } from "@iconscout/react-unicons"
-import { Col, Row } from 'react-bootstrap'
+import { Col, Row, Toast } from 'react-bootstrap'
 import { UilTimes } from "@iconscout/react-unicons"
 import { AppContext } from "../../Context"
 import AddAssets from "../AddAssets/AddAssets"
@@ -11,6 +11,7 @@ import axios from 'axios'
 import { domain } from '../../constants/constants'
 import { Storage } from '../../backend/storage/uploadFile'
 import firebase from 'firebase/compat/app'
+import { toast } from 'react-toastify'
 import 'firebase/compat/auth'
 import "./PostShare.css"
 const storage = new Storage()
@@ -22,15 +23,15 @@ function PostShare(props) {
     const { appInfo, setAppInfo } = useContext(AppContext)
 
     const [loading, setLoading] = useState(false)
-    const [image, setImage] = useState(null)
-    const [video, setVideo] = useState(null)
-    const [location, setLocation] = useState(null)
-    const desc = useRef()
+    const [text, setText] = useState()
+    const [location, setLocation] = useState()
     const today = new Date()
 
     const [postInfo, setPostInfo] = useState({
         userId: appInfo.userInfo.id,
-        text: '',
+        username: appInfo.userInfo.username,
+        profilePicture: appInfo.userInfo.profilePicture,
+        text: text,
         images: [],
         videos: [],
         locations: [],
@@ -109,13 +110,10 @@ function PostShare(props) {
 
 
     const handleUpload = async () => {
-
+        setLoading(true)
         const postId = getRandomArbitrary(1, 1000000000)
         await uploadImagesToFirebase(postId)
 
-        alert(`postInfo : ${JSON.stringify(postInfo)}`)
-
-        
         let data = JSON.stringify(postInfo)
 
         let config = {
@@ -131,7 +129,9 @@ function PostShare(props) {
         axios.request(config)
             .then((response) => {
                 console.log(JSON.stringify(response.data))
-                alert(JSON.stringify(response.data))
+                setLoading(false)
+                toast.success('Post uploaded successfully')
+                // alert(JSON.stringify(response.data))
             })
             .catch((error) => {
                 console.log(error)
@@ -146,16 +146,17 @@ function PostShare(props) {
     return (
         <Row className="PostShare">
 
-            <img src={appInfo.userInfo.profilePicture} alt="Profile" />
+            <img style={{ width: '40px', height: '40px' }} src={appInfo.userInfo.profilePicture} alt="Profile" />
 
 
-            <div>
+            <div style={{ width: '90%' }} >
 
                 <input
+                    // style={{ border: 'solid 1px' }}
                     type="text"
                     placeholder="What's happening ?"
+                    onChange={() => { }}
                     required
-                    ref={desc}
                 />
 
                 <AddAssets postInfo={postInfo} setPostInfo={setPostInfo} />

@@ -3,7 +3,9 @@ import mongoose from "mongoose"
 const postSchema = mongoose.Schema(
   {
     userId: { type: String, required: true },
-    text: { type: String},
+    username: { type: String, required: true },
+    profilePicture: { type: String, required: true },
+    text: { type: String },
     likes: [],
     createdAt: {
       type: Date,
@@ -13,7 +15,7 @@ const postSchema = mongoose.Schema(
     videos: [],
     locations: [],
     comments: [],
-    dates:[]
+    dates: []
   },
   {
     timestamps: true
