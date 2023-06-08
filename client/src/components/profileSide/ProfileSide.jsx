@@ -3,12 +3,13 @@ import FollowersCard from '../FollowersCard/FollowersCard'
 import LogoSearch from '../LogoSearch/LogoSearch'
 import ProfileCard from '../ProfileCard/ProfileCard'
 import './ProfileSide.css'
+import ProfileCardUser from "../ProfileCardUser/ProfileCardUser";
 
 const ProfileSide = () => {
   return (
     <div className="ProfileSide">
         <LogoSearch/>
-        <ProfileCard location = 'homepage'/>
+        <ProfileCardUser location = 'homepage'/>
         {/* <FollowersCard/> */}
     </div>
     )

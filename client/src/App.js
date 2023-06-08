@@ -90,6 +90,11 @@ function App() {
                     />
 
                     <Route
+                        path="/profile/:id"
+                        element={<Profile />}
+                    />
+
+                    <Route
                         path="/chat"
                         element={<Chat />}
                     />

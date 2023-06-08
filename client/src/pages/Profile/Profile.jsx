@@ -4,6 +4,7 @@ import ProfileCard from "../../components/ProfileCard/ProfileCard"
 import ProfileLeft from "../../components/ProfileLeft/ProfileLeft"
 import RightSide from "../../components/RightSide/RightSide"
 import "./Profile.css"
+import ProfileCardUser from "../../components/ProfileCardUser/ProfileCardUser"
 
 
 const Profile = () => {
@@ -11,10 +12,10 @@ const Profile = () => {
     <div className="Profile">
       <ProfileLeft />
       <div className="Profile-center">
-        <ProfileCard location = 'profilePage'/>
-        <PostSide/>
+        {window.location.href.includes('user') ? <ProfileCardUser /> : <ProfileCard location='profilePage' />}
+        <PostSide />
       </div>
-      <RightSide/>
+      <RightSide />
     </div>
   );
 };
