@@ -41,12 +41,13 @@ const LogoSearch = () => {
   return (
     <div className="LogoSearch">
       <span style={{ marginBottom: '0px' }} />
+      {/* 
       <div className="Logo-header">
-        <Link to="../home">
+         <Link to="../home">
           <img src={Logo} alt="" />
         </Link>
         <span>Social lstic</span>
-      </div>
+      </div> */ }
 
       <span style={{ marginBottom: '0px' }} />
 

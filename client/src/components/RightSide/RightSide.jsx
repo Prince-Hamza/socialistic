@@ -11,7 +11,7 @@ const RightSide = () => {
   return (
     <div className="RightSide">
 
-      <NavIcons />
+     {/* <NavIcons /> */}
       <TrendCard />
 
       <button className="button r-button" onClick={() => setModalOpened(true)}>

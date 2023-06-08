@@ -19,6 +19,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 15px;
 }
 
 .follower>div{
@@ -67,6 +68,7 @@
     color: orange;
     align-self: center;
     cursor: pointer;
+    
 }
 
 .Followermodal {

@@ -44,10 +44,10 @@ const NavIcons = ({ location }) => {
         </div>
 
 
-        <div style={Styles.menuBar} >
+        {/*<div style={Styles.menuBar} >
           <h3> Social Istic </h3>
 
-        </div>
+          </div> */}
 
         {/* <div className={`dropdown-menu ${'active'}`} >
           <h3>Social Istic<br /><span></span></h3>

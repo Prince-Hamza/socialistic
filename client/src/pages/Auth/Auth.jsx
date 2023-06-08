@@ -186,10 +186,7 @@ const Auth = () => {
   return (
     <Container fluid>
     <div className="Auth">
-    
-
-   
-    {/* left side */}
+     {/* left side */}
     <Row>
     <Col  lg={3}>
       <Image src={Logo} alt="" fluid/>
@@ -283,8 +280,8 @@ const Auth = () => {
         >
           *Confirm password is not same
         </span>
-        <div className="flex-column flex-sm-column flex-xs-column flex-md-row flex-lg-row">
-          <span
+        <Row className="flex-sm-row  flex-column">
+          <Col
             style={{
               fontSize: "12px",
               cursor: "pointer",
@@ -300,7 +297,8 @@ const Auth = () => {
             {isSignUp
               ? "Already have an account Login"
               : "Don't have an account Sign up"}
-          </span>
+          </Col>
+          <Col>
           <button
             className="button infoButton "
             type="Submit"
@@ -309,7 +307,8 @@ const Auth = () => {
           >
             {loading ? "Loading..." : isSignUp ? "SignUp" : "Login"}
           </button>
-        </div>
+          </Col>
+        </Row>
       </Form>
     </Col>
     <ToastContainer />

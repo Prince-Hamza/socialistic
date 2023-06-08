@@ -5,6 +5,8 @@ import RightSide from "../components/RightSide/RightSide"
 import "./Home.css"
 import { AppContext } from "../Context"
 import { io } from "socket.io-client"
+import { Row,Col,Container } from "react-bootstrap"
+import CustomNavbar from "../components/Navbar/Navbar"
 const ENDPOINT = `http://127.0.0.1:5000/`
 const socket = io(ENDPOINT);
 
@@ -24,11 +26,14 @@ const Home = () => {
 
 
   return (
-    <div className="Home">
-      <ProfileSide />
-      <PostSide />
-      <RightSide />
-    </div>
+    <Container fluid>  
+      <CustomNavbar/>
+      <Row className="Home flex-sm-col flex-md-row flex-lg-row  flex-column">
+        <Col><ProfileSide /></Col>
+        <Col><PostSide /></Col> 
+        <Col><RightSide /></Col> 
+      </Row>
+    </Container>
   )
 }
 
