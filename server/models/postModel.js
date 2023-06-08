@@ -12,7 +12,8 @@ const postSchema = mongoose.Schema(
     images: [],
     videos: [],
     locations: [],
-    comments: []
+    comments: [],
+    dates:[]
   },
   {
     timestamps: true

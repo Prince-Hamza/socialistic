@@ -6,9 +6,7 @@ import Share from "../../img/share.png";
 import Heart from "../../img/like.png";
 import NotLike from "../../img/notlike.png";
 import { likePost } from "../../api/PostsRequests";
-// import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-//import { DropdownItem } from 'nr1'
 import edit from '../../img/edit.png';
 import ShareModal from "../ShareModal/ShareModal";
 import { deletePost, updatePost } from "../../api/PostsRequests";
@@ -22,13 +20,13 @@ import 'firebase/compat/auth'
 
 
 const Post = ({ data }) => {
-  var user = firebase.auth().currentUser  
+  var user = firebase.auth().currentUser
 
   const [liked, setLiked] = useState(data.likes.includes(user.id));
   const [likes, setLikes] = useState(data.likes.length);
   // const { auth, theme, socket } = useSelector(state => state);
   const [showdrop, setshowdrop] = useState(false);
-  
+
   const navigate = useNavigate();
 
   const [comments, setComments] = useState([]);
@@ -60,15 +58,15 @@ const Post = ({ data }) => {
     const fetchUser = async () => {
       try {
         const response = await getUserById(data.userId);
+        console.log(`post user : ${response.data}`);
         setPostUser(response.data);
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (user.id !== data.userId) {
-      fetchUser();
-    }
+    fetchUser()
+
   }, [data.userId, user.id]);
 
 
@@ -111,9 +109,9 @@ setshowdrop(false)
 
 const handleDeletePost = () =>{
 dispatch(/*deletePost*//*({data, auth, socket}))
-  setshowdrop(false)
-  navigate('/')
-}*/
+          setshowdrop(false)
+          navigate('/')
+        }*/
 
   const handleDelete = () => {
     setshowdrop(false);
@@ -136,36 +134,49 @@ dispatch(/*deletePost*//*({data, auth, socket}))
   const [open, setOpen] = useState(false);
   let menuRef = useRef();
 
-  useEffect(() => {
-    let handler = (e) => {
-      if (!menuRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => {
-      document.removeEventListener("mousedown", handler);
-    }
-  });
-
+  // useEffect(() => {
+  //   let handler = (e) => {
+  //     if (!menuRef.current.contains(e.target)) {
+  //       setOpen(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handler);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handler);
+  //   }
+  // });
 
   const handleVideoEnd = (event) => {
-    event.target.currentTime = 0; // réinitialiser la position de lecture à zéro
-  };
+    event.target.currentTime = 0
+  }
 
-  const media = data.image ? (
-    <img
-      src={process.env.REACT_APP_PUBLIC_FOLDER + data.image}
-      alt={data.user?.fullname}
-    />
+  const media = data.images ? (
+    <div>
+      {data.images.map((image) => {
+        return (
+          <img
+            src={image}
+            alt={image}
+          />
+        )
+      })}
+    </div>
+
   ) : data.video ? (
-    <video controls onEnded={handleVideoEnd}>
-      <source
-        src={process.env.REACT_APP_PUBLIC_FOLDER + data.video}
-        alt={data.user?.fullname}
-      />
-    </video>
-  ) : null;
+
+    <div>
+      {data.videos.map((video) => {
+        return (
+          <video controls onEnded={handleVideoEnd}>
+            <source
+              src={data.videos[0]}
+              alt={data.user?.fullname}
+            />
+          </video>
+        )
+      })}
+    </div>
+  ) : null
 
 
   return (
@@ -254,7 +265,7 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         <Comment key={comment.id} data={comment} />
       ))}
 
-{/* 
+      {/* 
       {isShare && <ShareModal url={`http://localhost:5000/post/${data._id}`} theme={theme} />}
 
       {isShare && <ShareModal url={`http://localhost:5000/post/comment/${data._id}`} theme={theme} />} */}

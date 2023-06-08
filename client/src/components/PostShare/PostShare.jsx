@@ -1,26 +1,44 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useContext } from "react"
 import { UilScenery } from "@iconscout/react-unicons"
 import { UilPlayCircle } from "@iconscout/react-unicons"
 import { UilLocationPoint } from "@iconscout/react-unicons"
 import { UilSchedule } from "@iconscout/react-unicons"
 import { Col, Row } from 'react-bootstrap'
-import firebase from 'firebase/compat/app'
 import { UilTimes } from "@iconscout/react-unicons"
+import { AppContext } from "../../Context"
+import AddAssets from "../AddAssets/AddAssets"
+import axios from 'axios'
+import { domain } from '../../constants/constants'
+import { Storage } from '../../backend/storage/uploadFile'
+import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import "./PostShare.css"
-
+const storage = new Storage()
 
 function PostShare(props) {
 
     var user = firebase.auth().currentUser
 
-    const [postInfo, setPostInfo] = useState([])
+    const { appInfo, setAppInfo } = useContext(AppContext)
+
     const [loading, setLoading] = useState(false)
     const [image, setImage] = useState(null)
     const [video, setVideo] = useState(null)
-    const [location, setLocation] = useState(null);
+    const [location, setLocation] = useState(null)
     const desc = useRef()
-    const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER
+    const today = new Date()
+
+    const [postInfo, setPostInfo] = useState({
+        userId: appInfo.userInfo.id,
+        text: '',
+        images: [],
+        videos: [],
+        locations: [],
+        dates: [],
+
+        likes: [],
+        comments: []
+    })
 
     const getLocation = () => {
         navigator.geolocation.getCurrentPosition(
@@ -34,16 +52,12 @@ function PostShare(props) {
         )
     }
 
-
-
-
     // handle Image Change
     const onImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             let img = event.target.files[0]
-            let list = postInfo
-            list.push({ image: img })
-            setPostInfo([...list])
+            postInfo.images.push(img)
+            setPostInfo({ ...postInfo })
         }
     }
 
@@ -51,13 +65,80 @@ function PostShare(props) {
     const onVideoChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             let vid = event.target.files[0]
-            let list = postInfo
-            list.push({ video: vid })
-            setPostInfo([...list])
+            postInfo.videos.push(vid)
+            setPostInfo({ ...postInfo })
         }
     }
 
 
+
+
+    const uploadImagesToFirebase = async (postId) => {
+
+        const imagePromises = postInfo.images.map(async (image, index) => {
+            const result = await storage.uploadImage(`posts/${postId}/images/image_${index}`, 'image/jpeg', image)
+            return result.downloadLink
+        })
+
+
+        const videoPromises = postInfo.videos.map(async (video, index) => {
+            const result = await storage.uploadImage(`posts/${postId}/videos/video_${index}`, 'video/mp4', video)
+            return result.downloadLink
+        })
+
+        const picLinks = await Promise.all(imagePromises)
+
+
+        const videoLinks = await Promise.all(videoPromises)
+
+        postInfo.images = picLinks
+        postInfo.videos = videoLinks
+
+        setPostInfo(postInfo)
+
+        // const result = await storage.uploadImage('/mytestpic', 'image/jpeg', postInfo.images[0])
+        // alert(`uploaded successfully ${result.downloadLink}`)
+
+    }
+
+
+
+    function getRandomArbitrary(min, max) {
+        return Math.trunc(Math.random() * (max - min) + min)
+    }
+
+
+    const handleUpload = async () => {
+
+        const postId = getRandomArbitrary(1, 1000000000)
+        await uploadImagesToFirebase(postId)
+
+        alert(`postInfo : ${JSON.stringify(postInfo)}`)
+
+        
+        let data = JSON.stringify(postInfo)
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: `http://localhost:5000/posts/create`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        }
+
+        axios.request(config)
+            .then((response) => {
+                console.log(JSON.stringify(response.data))
+                alert(JSON.stringify(response.data))
+            })
+            .catch((error) => {
+                console.log(error)
+                alert(error)
+            })
+
+    }
 
     const imageRef = useRef();
     const videoRef = useRef();
@@ -65,77 +146,19 @@ function PostShare(props) {
     return (
         <Row className="PostShare">
 
-            <img src={user.profilePicture ? serverPublic + user.profilePicture : serverPublic + "defaultProfile.png"} alt="Profile" />
+            <img src={appInfo.userInfo.profilePicture} alt="Profile" />
 
 
             <div>
 
-
-
                 <input
                     type="text"
-                    placeholder="What's happen ?"
+                    placeholder="What's happening ?"
                     required
                     ref={desc}
                 />
 
-
-
-                <Row style={{ width: '100%' }} >
-
-                    {/* {postInfo.length} */}
-
-
-                    {postInfo.map((item, index) => {
-                        return (
-                            <div>
-                                {index === 0 &&
-                                    <div>
-                                        {item.image &&
-                                            <div>
-                                                <div className="previewImage">
-                                                    <UilTimes onClick={() => setImage(null)} />
-                                                    <img src={URL.createObjectURL(item.image)} alt="preview" />
-                                                </div>
-                                            </div>
-                                        }
-
-                                        {item.video &&
-                                            <video controls>
-                                                <UilTimes onClick={() => setVideo(null)} />
-                                                <source src={URL.createObjectURL(item.video)} alt="preview" />
-                                            </video>
-                                        }
-
-                                    </div>
-                                }
-
-                                {index >= 1 &&
-                                    <Col lg={3}>
-                                        {item.image &&
-                                            <div style={{ width: '100px' }}>
-                                                <UilTimes onClick={() => setImage(null)} />
-                                                <img style={{ width: '100px', height: '100px' }} src={URL.createObjectURL(item.image)} alt="preview" />
-                                            </div>
-                                        }
-                                        {item.video &&
-                                            <video controls style={{ width: '100px', height: '100px' }}>
-                                                <UilTimes onClick={() => setVideo(null)} />
-                                                <source src={URL.createObjectURL(item.video)} alt="preview" />
-                                            </video>
-                                        }
-                                    </Col>
-                                }
-
-
-                            </div>
-                        )
-
-                    })}
-
-                </Row>
-
-
+                <AddAssets postInfo={postInfo} setPostInfo={setPostInfo} />
 
                 <div className="postOptions">
                     <div
@@ -171,7 +194,7 @@ function PostShare(props) {
 
                     <button
                         className="button ps-button"
-                        // onClick={handleUpload}
+                        onClick={handleUpload}
                         disabled={loading}
                     >
                         {loading ? "uploading" : "Share"}
@@ -197,3 +220,4 @@ function PostShare(props) {
 }
 
 export default PostShare
+

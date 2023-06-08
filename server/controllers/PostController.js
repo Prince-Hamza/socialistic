@@ -1,58 +1,20 @@
-import PostModel from "../models/postModel.js";
-import UserModel from "../models/userModel.js";
-import mongoose from "mongoose";
+import PostModel from "../models/postModel.js"
+import UserModel from "../models/userModel.js"
+import mongoose from "mongoose"
 
 // creating a post
 
 export const createPost = async (req, res) => {
-
-  const newPost = new PostModel(req.body)
-
   try {
-    await newPost.save();
-    return res.status(200).json(newPost);
+    console.log(`body : ${JSON.stringify(req.body)}`)
+    const newPost = new PostModel(req.body)
+    await newPost.save()
+    return res.status(200).json(newPost)
   } catch (error) {
-    return res.status(500).json(error);
+    console.log(`create post error:: ${error}`)
+    return res.status(500).json(error)
   }
-};
-
-
-//import PostModel from "../models/postModel.js";
-
-// Méthode pour créer un nouveau post avec image et vidéo
-/*const createPost = async (req, res) => {
-  const { userId, desc, image, video } = req.body;
-
-  // Convertir les données binaires en instances Buffer
-  const imageData = Buffer.from(image, "base64");
-  const videoData = Buffer.from(video, "base64");
-
-  // Créer un nouvel objet post avec les données
-  const post = new PostModel({
-    userId,
-    desc,
-    image: {
-      data: imageData,
-      contentType: "image/jpeg", // Remplacez par le type de contenu approprié pour votre image
-    },
-    video: {
-      data: videoData,
-      contentType: "video/mp4", // Remplacez par le type de contenu approprié pour votre vidéo
-    },
-  });
-
-  try {
-    // Enregistrer le post dans la base de données
-    const savedPost = await post.save();
-    res.status(201).json(savedPost);
-  } catch (error) {
-    res.status(500).json({ error: "Une erreur s'est produite lors de la création du post." });
-  }
-};
-
-export { createPost };*/
-
-
+}
 
 // get a post
 
@@ -158,133 +120,44 @@ export const getTimelinePosts = async (req, res) => {
   } catch (error) {
     res.status(500).json(error);
   }
-};
-
-//import postModel from "../models/postModel";
-
-// Créer une nouvelle publication avec une image et une vidéo
-/*export const createPost = async (req, res) => {
-  try {
-    const { userId, desc, image, video } = req.body;
-
-    // Convertir l'image et la vidéo en données binaires
-    const imageData = Buffer.from(image, "base64");
-    const videoData = Buffer.from(video, "base64");
-
-    const newPost = new PostModel({
-      userId,
-      desc,
-      image: { data: imageData, contentType: "image/jpeg" }, // Définir le type de contenu approprié ici
-      video: { data: videoData, contentType: "video/mp4" }, // Définir le type de contenu approprié ici
-    });
-
-    const savedPost = await newPost.save();
-
-    res.status(201).json(savedPost);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la création de la publication" });
-  }
-}*/
-
-// Récupérer toutes les publications
-/*async function getAllPosts(req, res) {
-  try {
-    const posts = await PostModel.find();
-    res.json(posts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la récupération des publications" });
-  }
 }
 
-// Récupérer une publication par son ID
-async function getPostById(req, res) {
+
+
+
+export const timeline = async (req, res) => {
+
+
+  const id = req.query.id
+
+  console.log(`timeline of :: ${id}`)
+
   try {
-    const postId = req.params.id;
-    const post = await PostModel.findById(postId);
-    if (!post) {
-      return res.status(404).json({ error: "Publication introuvable" });
-    }
-    res.json(post);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la récupération de la publication" });
+    // get people am following 
+    const me = await UserModel.findOne({ id: id })
+    console.log(`me :: ${JSON.stringify(me)}`)
+    const followed = me.following
+
+    console.log(`get posts of :: ${followed}`)
+
+    // get their posts
+
+    const promises = followed.map(async (followedId) => {
+      console.log(`get posts of :: ${followedId}`)
+      const posts = await PostModel.find({ userId: followedId })
+      console.log(`posts of : ${followedId} :: ${posts}`)
+      return posts
+    })
+
+    const p = await Promise.all(promises)
+    return res.status(200).send({ success: true, posts: p.length ? p[0] : [] })
+
+  } catch (ex) {
+    return res.status(400).send({ error: ex.toString() })
   }
+
 }
 
-// Modifier une publication par son ID
-async function updatePost(req, res) {
-  try {
-    const postId = req.params.id;
-    const { desc } = req.body;
-    const updatedPost = await PostModel.findByIdAndUpdate(
-      postId,
-      { desc },
-      { new: true }
-    );
-    if (!updatedPost) {
-      return res.status(404).json({ error: "Publication introuvable" });
-    }
-    res.json(updatedPost);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la mise à jour de la publication" });
-  }
+export const test = async (req, res) => {
+  return res.send({ tes: 'success' })
 }
-
-// Supprimer une publication par son ID
-async function deletePost(req, res) {
-  try {
-    const postId = req.params.id;
-    const deletedPost = await PostModel.findByIdAndDelete(postId);
-    if (!deletedPost) {
-      return res.status(404).json({ error: "Publication introuvable" });
-    }
-    res.json({ message: "Publication supprimée avec succès" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la suppression de la publication" });
-  }
-}
-
-// Mettre à jour une publication avec une image et une vidéo
-async function updatePostWithMedia(req, res) {
-  try {
-    const postId = req.params.id;
-    const { desc, image, video } = req.body;
-
-    // Convertir l'image et la vidéo en données binaires
-    const imageData = Buffer.from(image, "base64");
-    const videoData = Buffer.from(video, "base64");
-
-    const updatedPost = await PostModel.findByIdAndUpdate(
-      postId,
-      {
-        desc,
-        image: { data: imageData, contentType: "image/jpeg" }, // Définir le type de contenu approprié ici
-        video: { data: videoData, contentType: "video/mp4" }, // Définir le type de contenu approprié ici
-      },
-      { new: true }
-    );
-
-    if (!updatedPost) {
-      return res.status(404).json({ error: "Publication introuvable" });
-    }
-    res.json(updatedPost);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur lors de la mise à jour de la publication" });
-  }
-}
-
-export {
-  createPost,
-  getAllPosts,
-  getPostById,
-  updatePost,
-  deletePost,
-  updatePostWithMedia,
-};*/
-
-
