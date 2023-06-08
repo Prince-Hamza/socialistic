@@ -8,21 +8,31 @@ import ListItemText from '@mui/material/ListItemText'
 import Divider from '@mui/material/Divider'
 import { Image } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
+import { AppContext } from '../../Context'
 
 export default function SearchResults({ results }) {
 
+    const { appInfo, setAppInfo } = React.useContext(AppContext)
     const navigate = useNavigate()
+
+
+    const showProfilePage = (user) => {
+        // alert(`user : ${JSON.stringify(user)}`)
+        appInfo.profileUser = user
+        setAppInfo({ ...appInfo })
+        navigate(`/profile/${user.id}`)
+    }
+
     return (
         <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
             <nav aria-label="main mailbox folders">
-
                 <List>
                     {results.map((user) => {
                         return (
-                            <ListItem style={{ backgroundColor: 'white' }} disablePadding onClick={() => { navigate(`/profile/${user.id}`) }} >
+                            <ListItem style={{ backgroundColor: 'white' }} disablePadding onClick={() => { showProfilePage(user) }} >
                                 <ListItemButton>
                                     <ListItemIcon>
-                                        <Image style={{ width: '30px', height: '30px' }} src={user.ProfilePicture ? user.ProfilePicture : 'https://th.bing.com/th/id/R.8ecd3de4a4b57de791895330cf820509?rik=apELQREbj%2fT0oQ&riu=http%3a%2f%2fabdelzaher.cs.illinois.edu%2fimages%2fhead.png&ehk=woU2D0JqIZ5lRV4gZ9UAc69lYaKjywGalBytFcZMmyA%3d&risl=&pid=ImgRaw&r=0'} />
+                                        <Image style={{ width: '30px', height: '30px' }} src={user.profilePicture} />
                                     </ListItemIcon>
                                     <ListItemText primary={user.username} />
                                 </ListItemButton>
