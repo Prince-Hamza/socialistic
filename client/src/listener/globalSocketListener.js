@@ -30,7 +30,7 @@ function GlobalSocketListener({ children }) {
             }
 
             if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
-                alert(`live call request`)
+                alert(`live call request : ${data.fullDocument.liveStreamingKey}`)
                 toast(data.fullDocument.liveStreamingKey)
                 // recieveCall(data.liveStreamingKey)
             }

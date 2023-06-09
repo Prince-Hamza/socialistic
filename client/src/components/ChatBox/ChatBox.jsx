@@ -49,47 +49,48 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
 
   // onMessage | EventListener
 
-  const socketListener = () => {
-    // alert(`socket listener : ${listening}`)
-    socket.on('message', (data) => {
-      if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey) {
-        //alert(`message event :: ${JSON.stringify(data.fullDocument)}`)
-        let list = appInfo.messages
-        let nm = data.fullDocument
-        list.push(nm)
-        list = _.uniqBy(list, 'text')
-        // alert(`length prexisting  : ${list.length}`)
-        appInfo.messages = list
-        setAppInfo({ ...appInfo })
-      }
+  // const socketListener = () => {
+  //   // alert(`socket listener : ${listening}`)
+  //   socket.on('message', (data) => {
+  //     if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey) {
+  //       //alert(`message event :: ${JSON.stringify(data.fullDocument)}`)
+  //       let list = appInfo.messages
+  //       let nm = data.fullDocument
+  //       list.push(nm)
+  //       list = _.uniqBy(list, 'text')
+  //       // alert(`length prexisting  : ${list.length}`)
+  //       appInfo.messages = list
+  //       setAppInfo({ ...appInfo })
+  //     }
 
-      if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
-        alert(`chatbox: live key : ${data.fullDocument.liveStreamingKey}`)
-        // recieveCall(data.liveStreamingKey)
-      }
+  //     if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
+  //       alert(`chatbox: live key : ${data.fullDocument.liveStreamingKey}`)
+  //       // recieveCall(data.liveStreamingKey)
+  //     }
 
-    })
-
-
-
-
-    alert(`mongo ? ${listenToMongo}  roomKey : ${appInfo.selectedChatRoom.key}`)
-    if (!listenToMongo && appInfo.selectedChatRoom.key) {
-      alert('emit listen')
-      socket.emit('listen', { chatRoomKey: appInfo.selectedChatRoom.key })
-      setListenToMongo(true)
-    }
+  //   })
 
 
 
 
-    socket.on("disconnect", () => { console.log(socket.id) })
+  //   alert(`mongo ? ${listenToMongo}  roomKey : ${appInfo.selectedChatRoom.key}`)
+  //   if (!listenToMongo && appInfo.selectedChatRoom.key) {
+  //     alert('emit listen')
+  //     socket.emit('listen', { chatRoomKey: appInfo.selectedChatRoom.key })
+  //     setListenToMongo(true)
+  //   }
 
-  }
 
-  useEffect(() => {
-    if (!listening) socketListener()
-  }, [])
+
+
+  //   socket.on("disconnect", () => { console.log(socket.id) })
+
+  // }
+
+  // useEffect(() => {
+  //   alert(`listening : ${listening}`)
+  //   if (!listening) socketListener()
+  // }, [])
 
 
 
