@@ -26,34 +26,37 @@ const InfoCard = () => {
   const sendMessage = async () => {
 
     // me : user
-    let me = user.providerData[0]
-    me.uid = user.uid
+    let me = {
+      id: appInfo.userInfo.id,
+      name: appInfo.userInfo.username,
+      photo: appInfo.userInfo.profilePicture
+    }
+
     // partner :  appInfo.selectedPartner
-    let partner = appInfo.selectedPartner
+    let partner = {
+      id: appInfo.selectedPartner.id,
+      name: appInfo.selectedPartner.username,
+      photo: appInfo.selectedPartner.profilePicture
+    }
 
     const result = await interact(me, partner)
     appInfo.chatHistory = result.conversations
-    setAppInfo({ ...appInfo })
 
+    alert(`convo : ${JSON.stringify(result.conversations)}`)
+
+    setAppInfo({ ...appInfo })
     // alert(`conversations :: ${JSON.stringify(result.conversations)}`)
 
-    //navigate(`/chat/${me.uid}/${partner.id}`)
+    // navigate(`/chat/${me.uid}/${partner.id}`)
     navigate('/chat')
 
   }
-  
+
 
 
   useEffect(() => {
     const fetchProfileUser = async () => {
-      // if (profileUserId === user.id) {
-      //   setProfileUser(user);
-      // } else {
-      //   console.log("fetching")
-      //   const profileUser = await UserApi.getUser(profileUserId);
-      //   setProfileUser(profileUser);
-      //   console.log(profileUser)
-      // }
+
       setProfileUser(user)
     }
     fetchProfileUser()

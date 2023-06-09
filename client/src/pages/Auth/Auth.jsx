@@ -8,7 +8,6 @@ import { doc, setDoc } from "firebase/firestore"
 import { ToastContainer, toast, useToast } from 'react-toastify'
 import axios from 'axios'
 import { domain } from "../../constants/constants"
-import 'react-toastify/dist/ReactToastify.css'
 import { AppContext } from "../../Context"
 import { webAuth } from "../../firebase/firebaseAuth"
 import { Button, Container,Image,Row,Col,Form } from 'react-bootstrap';

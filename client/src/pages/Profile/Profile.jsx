@@ -12,6 +12,12 @@ import CustomNavbar from "../../components/Navbar/Navbar"
 const Profile = () => {
   return (
     <div className="Profile">
+      <ProfileLeft />
+      <div className="Profile-center">
+        {window.location.href.includes('user') ? <ProfileCardUser /> : <ProfileCard location='profilePage' />}
+        <PostSide />
+      </div>
+      <RightSide />
       <CustomNavbar/>
       <Container fluid >
         <Row>
