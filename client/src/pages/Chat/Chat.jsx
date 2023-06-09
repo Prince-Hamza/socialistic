@@ -5,8 +5,6 @@ import LogoSearch from "../../components/LogoSearch/LogoSearch";
 import NavIcons from "../../components/NavIcons/NavIcons";
 import "./Chat.css";
 import { useEffect } from "react";
-// import { userChats } from "../../api/ChatRequests";
-// import { io } from "socket.io-client";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
@@ -29,8 +27,6 @@ const Chat = () => {
   const checkOnlineStatus = (chat) => {
     return false
   }
-
-
 
   return (
     <div className="Chat">

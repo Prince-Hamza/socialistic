@@ -5,6 +5,7 @@ import RightSide from "../components/RightSide/RightSide"
 import "./Home.css"
 import { AppContext } from "../Context"
 import { io } from "socket.io-client"
+import GlobalSocketListener from "../listener/globalSocketListener"
 const ENDPOINT = `http://127.0.0.1:5000/`
 const socket = io(ENDPOINT);
 
@@ -28,6 +29,7 @@ const Home = () => {
       <ProfileSide />
       <PostSide />
       <RightSide />
+      <GlobalSocketListener />
     </div>
   )
 }

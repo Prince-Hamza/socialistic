@@ -12,22 +12,21 @@ function Messages() {
     const [listening, setListening] = useState(false)
 
     const socketListener = () => {
-        setListening(true)
+        appInfo.listening = true
+        setAppInfo({...appInfo})
         // alert(`socket listener : ${listening}`)
         socket.on('message', (data) => {
             if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey) {
-                //alert(`message event :: ${JSON.stringify(data.fullDocument)}`)
                 let list = appInfo.messages
                 let nm = data.fullDocument
                 list.push(nm)
                 list = _.uniqBy(list, 'text')
-                // alert(`length prexisting  : ${list.length}`)
                 appInfo.messages = list
                 setAppInfo({ ...appInfo })
             }
 
             if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
-                alert(`chatbox: live key : ${data.fullDocument.liveStreamingKey}`)
+                // alert(`chatbox: live key : ${data.fullDocument.liveStreamingKey}`)
                 // recieveCall(data.liveStreamingKey)
             }
 
@@ -35,11 +34,12 @@ function Messages() {
 
 
 
-        alert(`mongo ? ${listenToMongo}  roomKey : ${appInfo.selectedChatRoom.key}`)
-        if (!listenToMongo && appInfo.selectedChatRoom.key) {
+        // alert(`mongo ? ${listenToMongo}  roomKey : ${appInfo.selectedChatRoom.key}`)
+        if (!appInfo.listenToMongo && appInfo.selectedChatRoom.key) {
             alert('emit listen')
             socket.emit('listen', { chatRoomKey: appInfo.selectedChatRoom.key })
-            setListenToMongo(true)
+            appInfo.listenToMongo = true
+            setAppInfo({...appInfo})
         }
 
         socket.on("disconnect", () => { console.log(socket.id) })
@@ -47,8 +47,8 @@ function Messages() {
     }
 
     useEffect(() => {
-        alert(`listening : ${listening}`)
-        if (!listening) socketListener()
+        // alert(`listening : ${listening}`)
+        if (!appInfo.listening) socketListener()
     }, [])
 
 

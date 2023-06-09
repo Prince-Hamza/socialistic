@@ -27,7 +27,7 @@ function Live() {
 
         try {
             const resp = await addMessage(message)
-             alert(`resp : ${JSON.stringify(resp.data)}`)
+            alert(`resp : ${JSON.stringify(resp.data)}`)
         }
         catch (ex) {
             alert(`error : ${ex}`)
@@ -41,7 +41,6 @@ function Live() {
             setTimeout(() => {
                 setAppInfo({ ...appInfo })
                 document.getElementById('webcamButton').click()
-
             }, 2000)
 
             setTimeout(() => {
@@ -49,16 +48,32 @@ function Live() {
                     var callBtn = document.getElementById('callButton')
                     callBtn.click()
                 }
-                //if (appInfo.callType === 'recieving') document.getElementById('answerButton').click()
-                //if (appInfo.callType === 'recieving') document.getElementById('callInput').value = appInfo.liveStreamingKey
             }, 5000)
         }
 
     }
 
+
+    const automateRecieveCall = () => {
+        setTimeout(() => {
+            setAppInfo({ ...appInfo })
+            document.getElementById('webcamButton').click()
+        }, 2000)
+
+        setTimeout(() => {
+            document.getElementById('callInput').value = appInfo.liveStreamingKey
+        }, 3000)
+
+        setTimeout(() => {
+            document.getElementById('answerButton').click()
+        }, 6000)
+
+    }
+
     const effect = () => {
         main(notify)
-        automateSendCall()
+        if (appInfo.callType === 'sending') automateSendCall()
+        if (appInfo.callType === 'recieving') automateRecieveCall()
     }
 
     useEffect(effect, [])
@@ -132,7 +147,7 @@ const Styles = ({
         border: 'none',
         color: 'white',
         cursor: 'pointer',
-        //  display: 'none'
+        display: 'none'
     },
     bigText: {
         font: "14px roboto"
