@@ -20,7 +20,7 @@ const fireAuth = new webAuth()
 
 function App() {
 
-    const [appData, setAppData] = useState({ userInfo: {}, profileUser: {}, chatHistory: [], selectedChatRoom: {}, messages: [], online: true, chat: true, call: false, callType: 'recieving', buttonsClicked: false })
+    const [appData, setAppData] = useState({ userInfo: {}, profileUser: {}, chatHistory: [], selectedChatRoom: {}, messages: [], online: true, chat: true, call: false, callType: 'recieving', buttonsClicked: false, listenToMongo: false, listening: false })
     const [loading, setLoading] = useState(true)
 
     if (!firebase.apps.length) firebase.initializeApp(config)
@@ -71,7 +71,6 @@ function App() {
     return (
         <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
             <ToastContainer />
-            <GlobalSocketListener>
                 <BrowserRouter>
                     <Routes>
 
@@ -106,7 +105,7 @@ function App() {
 
                     </Routes>
                 </BrowserRouter>
-            </GlobalSocketListener>
+          
         </AppContext.Provider>
     )
 }

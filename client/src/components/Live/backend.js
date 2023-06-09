@@ -143,6 +143,7 @@ export const main = (notify) => {
   // 3. Answer the call with the unique ID
   answerButton.onclick = async () => {
     alert(`answer : ${callInput.value}`)
+    
     const callId = callInput.value;
     const callDoc = firestore.collection('calls').doc(callId);
     const answerCandidates = callDoc.collection('answerCandidates');
