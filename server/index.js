@@ -83,11 +83,17 @@ async function monitorListingsUsingEventEmitter(client, timeInMs = 60000, pipeli
   })
 
 
-  console.log(`waiting for changes in mongodb`);
+  console.log(`listings : waiting for changes in mongodb`);
 
   // Wait the given amount of time and then close the change stream
   await closeChangeStream(timeInMs, changeStream);
 }
+
+
+
+
+
+
 
 
 async function mongooseEvents() {
@@ -106,6 +112,55 @@ async function mongooseEvents() {
     ]
 
     await monitorListingsUsingEventEmitter(client, 60000 * 30, pipeline)
+
+  } finally {
+    await client.close();
+  }
+}
+
+
+
+
+async function monitorStreamKey(client, timeInMs = 60000, pipeline = []) {
+  const collection = client.db("test").collection("users")
+
+  // See https://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html#watch for the watch() docs
+  const changeStream = collection.watch(pipeline);
+
+  // ChangeStream inherits from the Node Built-in Class EventEmitter (https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_class_eventemitter).
+  // We can use EventEmitter's on() to add a listener function that will be called whenever a change occurs in the change stream.
+  // See https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_emitter_on_eventname_listener for the on() docs.
+  changeStream.on('change', (data) => {
+    console.log(`changes detected in streamKey: ${JSON.stringify(data)}`)
+    io.emit('liveCall', data)
+  })
+
+
+  console.log(`key : waiting for changes in mongodb`);
+
+  // Wait the given amount of time and then close the change stream
+  await closeChangeStream(timeInMs, changeStream);
+}
+
+
+
+async function streamKeyEvent() {
+
+  let uri = process.env.MONGODB_CONNECTION
+  let client = new MongoClient(uri);
+
+  try {
+    await client.connect()
+
+    const pipeline2 = [
+      {
+        '$match': {
+          'operationType': 'update'
+        }
+      }
+    ]
+
+    await monitorStreamKey(client, 60000 * 120, pipeline2)
 
   } finally {
     await client.close();
@@ -132,6 +187,21 @@ io.on('connection', (socket) => {
       await mongooseEvents()
     }
   })
+
+
+  // socket.on('listenCall', async (data) => {
+  //   if (data && Object.keys(data).length) {
+  //     console.log(`LISTEN_EVEN :: Activate a listener for : ${JSON.stringify(data)}`)
+  //     await streamKeyEvent()
+  //   }
+  // })
+
+
+  
+
+
+
+
 
 
 

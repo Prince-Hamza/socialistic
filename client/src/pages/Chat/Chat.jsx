@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
+import Live from "../../components/Live/Live";
 
 const Chat = () => {
 
@@ -25,38 +26,10 @@ const Chat = () => {
 
   const user = appInfo.userInfo
 
-  const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
-
-  // Get the chat in chat section
-  useEffect(() => {
-    const getChats = async () => {
-      // try {
-      //   const { data } = await userChats(user.id);
-      //   setChats(data);
-      // } catch (error) {
-      //   console.log(error);
-      // }
-    };
-    // alert(appInfo.chatHistory.length)
-    if (!appInfo.chatHistory.length) getChats()
-  }, []);
-
-
-
-
-  //Afficher les utilisateurs actifs dans le chatbox
   const checkOnlineStatus = (chat) => {
     return false
-  };
+  }
 
-
-
-  const startChat = (user) => {
-    setCurrentChat({
-      members: [user.userId, user.id],
-      conversation: [],
-    });
-  };
 
 
   return (
@@ -100,26 +73,21 @@ const Chat = () => {
         <div style={{ width: "20rem", alignSelf: "flex-end", marginRight: '25px' }}>
           <NavIcons />
         </div>
-        <ChatBox
-          setSendMessage={setSendMessage}
-          receivedMessage={receivedMessage}
-        />
+
+        {appInfo.chat &&
+          <ChatBox
+            setSendMessage={setSendMessage}
+            receivedMessage={receivedMessage}
+          />
+        }
+
+        {appInfo.call && <Live />}
+
       </div>
     </div>
   )
 }
 
 export default Chat
-
-
-
-
-
-
-
-
-
-
-
 
 

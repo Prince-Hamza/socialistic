@@ -13,11 +13,9 @@ const online = appInfo.online
 
 
   const fetchMessages = async (id) => {
-    alert(`chat key : ${id}`)
     try {
       const { data } = await getMessages(id)
       appInfo.messages = data
-      alert(`conversations :: ${data}`)
       setAppInfo({ ...appInfo })
     } catch (error) {
       alert(error);
@@ -35,7 +33,6 @@ const online = appInfo.online
   }
 
 
-  // alert(`data : ${JSON.stringify(data)}`)
 
   if (data && appInfo.userInfo && appInfo.chatHistory) {
     return (

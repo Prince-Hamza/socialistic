@@ -32,24 +32,23 @@ const InfoCard = () => {
       photo: appInfo.userInfo.profilePicture
     }
 
-
-
     // partner :  appInfo.selectedPartner
-    let partner = appInfo.selectedPartner
-    alert(`partner : ${JSON.stringify(partner)}`)
-    
-    return
+    let partner = {
+      id: appInfo.selectedPartner.id,
+      name: appInfo.selectedPartner.username,
+      photo: appInfo.selectedPartner.profilePicture
+    }
+
     const result = await interact(me, partner)
     appInfo.chatHistory = result.conversations
 
     alert(`convo : ${JSON.stringify(result.conversations)}`)
-    return
 
     setAppInfo({ ...appInfo })
     // alert(`conversations :: ${JSON.stringify(result.conversations)}`)
 
-    navigate(`/chat/${me.uid}/${partner.id}`)
-    //navigate('/chat')
+    // navigate(`/chat/${me.uid}/${partner.id}`)
+    navigate('/chat')
 
   }
 

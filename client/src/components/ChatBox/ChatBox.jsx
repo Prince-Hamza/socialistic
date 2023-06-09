@@ -8,6 +8,8 @@ import { AppContext } from "../../Context"
 import Messages from "../Messages/Messages"
 import _ from 'lodash'
 import { io } from "socket.io-client"
+import $ from 'jquery'
+import { main } from "../Live/backend"
 const ENDPOINT = `http://127.0.0.1:5000/`
 const socket = io(ENDPOINT);
 
@@ -42,11 +44,6 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   }
 
 
-  useEffect(() => {
-    scroll.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages])
-
-
 
 
 
@@ -55,7 +52,7 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   const socketListener = () => {
     // alert(`socket listener : ${listening}`)
     socket.on('message', (data) => {
-      if (data && Object.keys(data).length) {
+      if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey) {
         //alert(`message event :: ${JSON.stringify(data.fullDocument)}`)
         let list = appInfo.messages
         let nm = data.fullDocument
@@ -65,7 +62,26 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
         appInfo.messages = list
         setAppInfo({ ...appInfo })
       }
+
+      if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
+        alert(`chatbox: live key : ${data.fullDocument.liveStreamingKey}`)
+        // recieveCall(data.liveStreamingKey)
+      }
+
     })
+
+
+
+
+    alert(`mongo ? ${listenToMongo}  roomKey : ${appInfo.selectedChatRoom.key}`)
+    if (!listenToMongo && appInfo.selectedChatRoom.key) {
+      alert('emit listen')
+      socket.emit('listen', { chatRoomKey: appInfo.selectedChatRoom.key })
+      setListenToMongo(true)
+    }
+
+
+
 
     socket.on("disconnect", () => { console.log(socket.id) })
 
@@ -82,11 +98,7 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   const handleSend = async () => {
 
 
-    if (!listenToMongo) {
-      //alert('emit listen')
-      socket.emit('listen', { chatRoomKey: appInfo.selectedChatRoom.key })
-      setListenToMongo(true)
-    }
+
 
     const message = {
       chatRoomKey: appInfo.selectedChatRoom.key,
@@ -106,6 +118,15 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
     catch {
       console.log("error")
     }
+
+
+    var scroll = $('.chat-body');
+    scroll.animate({ scrollTop: '8000px' });
+
+  }
+
+  const handleOnEnter = () => {
+    handleSend()
   }
 
 
@@ -113,6 +134,20 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   const scroll = useRef();
   const imageRef = useRef();
 
+  const sendCall = () => {
+    appInfo.call = true
+    appInfo.chat = false
+    appInfo.callType = 'sending'
+    setAppInfo({ ...appInfo })
+  }
+
+  const recieveCall = (key) => {
+    appInfo.call = true
+    appInfo.chat = false
+    appInfo.callType = 'recieving'
+    appInfo.liveStreamingKey = key
+    setAppInfo({ ...appInfo })
+  }
 
 
   return (
@@ -123,8 +158,8 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
           <>
             {/* chat-header */}
             <div className="chat-header">
-              <div className="follower">
-                <div>
+              <div className="follower" >
+                <div  >
                   <img
                     src={appInfo.selectedChatRoom.partner.photo}
                     alt="Profile"
@@ -137,6 +172,10 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
                     </span>
                   </div>
                 </div>
+
+                <button onClick={sendCall} >   Send Call   </button>
+                <button onClick={recieveCall} >   Recieve Call   </button>
+
               </div>
               <hr
                 style={{
@@ -147,20 +186,7 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
               />
             </div>
             {/* chat-body */}
-            {/* <div className="chat-body" >
-              {messages.map((message) => {
-                return (
-                  <div key={Math.random()} style={{ display: 'flex', justifyContent: message.myId === appInfo.userInfo.id ? 'flex-start' : 'flex-end' }} >
-                    <div ref={scroll}
-                      className={message.myId === appInfo.userInfo.id ? "message own" : "message"}
-                    >
-                      <span>{message.text}</span>{" "}
-                      <span>{format(message.createdAt)}</span>
-                    </div>
-                  </div>
-                )
-              })}
-            </div> */}
+
 
             <Messages scroll={scroll} />
 
@@ -170,6 +196,7 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
               <InputEmoji
                 value={newMessage}
                 onChange={handleChange}
+                onEnter={handleOnEnter}
               />
               <div className="send-button button" onClick={handleSend}>Send</div>
               <input

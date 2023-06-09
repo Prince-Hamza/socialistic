@@ -209,3 +209,14 @@ export const update = async (req, res) => {
   }
 }
 
+
+export const sendStreamingKey = async (req, res) => {
+  const key = req.body.streamingKey
+  if (!key) return res.status(400).send({ error: 'missing key' })
+  if (!req.body.id) return res.status(400).send({ error: 'missing user id' })
+
+  const updated = await UserModel.find({ id: req.body.id }).update({ streamingKey: key })
+  return res.status(200).send({ success: true, streamingKey: req.body.streamingKey })
+
+}
+

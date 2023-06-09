@@ -106,7 +106,7 @@ const checkUsersHaveChatHistory = async (me, partner) => {
 }
 
 
-const getKeyAndConversations = async (me, partner) => {
+const getKeyAndConversations = async (me) => {
   try {
     const cursor = await ChatHistoryModel.find({ id: me.id })
     const count = await ChatHistoryModel.countDocuments()
@@ -136,10 +136,6 @@ const postKeyAndConversation = async (me, partner, chatRoomKey) => {
 
 export const onInteractionForChat = async (req, res) => {
 
-
-
-
-
   if (!req.body.me) return res.status(400).send({ error: 'your own data is missing' })
   if (!req.body.partner) return res.status(400).send({ error: `your chat partner's data is missing` })
 
@@ -163,13 +159,32 @@ export const onInteractionForChat = async (req, res) => {
   //else {
   // GET all conversations of ME
 
-  conversations = await getKeyAndConversations(me, partner)
+  conversations = await getKeyAndConversations(me)
   // conversations = [...conversations, postedConversation]
   console.log(`got conversations : ${conversations} `)
 
   //}
 
 
+
+  console.log(`conversations final : ${conversations}`)
+
+  return res.status(201).send({ success: true, conversations: conversations })
+
+}
+
+
+
+export const myChatHistory = async (req, res) => {
+
+  if (!req.body.me) return res.status(400).send({ error: 'your own data is missing' })
+
+  var conversations = {}
+  let me = req.body.me
+
+  conversations = await getKeyAndConversations(me)
+
+  console.log(`got conversations : ${conversations} `)
 
   console.log(`conversations final : ${conversations}`)
 

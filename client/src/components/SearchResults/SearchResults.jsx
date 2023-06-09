@@ -19,6 +19,7 @@ export default function SearchResults({ results }) {
     const showProfilePage = (user) => {
         // alert(`user : ${JSON.stringify(user)}`)
         appInfo.profileUser = user
+        appInfo.selectedPartner = user
         setAppInfo({ ...appInfo })
         navigate(`/profile/${user.id}`)
     }

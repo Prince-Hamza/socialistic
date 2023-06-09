@@ -13,11 +13,14 @@ import 'firebase/compat/auth'
 import { webAuth } from './firebase/firebaseAuth'
 import axios from 'axios'
 import { domain } from './constants/constants'
+import GlobalSocketListener from './listener/globalSocketListener'
+import { ToastContainer, toast, useToast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 const fireAuth = new webAuth()
 
 function App() {
 
-    const [appData, setAppData] = useState({ userInfo: {}, profileUser: {}, chatHistory: [], selectedChatRoom: {}, messages: [], online: true })
+    const [appData, setAppData] = useState({ userInfo: {}, profileUser: {}, chatHistory: [], selectedChatRoom: {}, messages: [], online: true, chat: true, call: false, callType: 'recieving', buttonsClicked: false })
     const [loading, setLoading] = useState(true)
 
     if (!firebase.apps.length) firebase.initializeApp(config)
@@ -67,43 +70,43 @@ function App() {
 
     return (
         <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
-            <BrowserRouter>
-                <Routes>
+            <ToastContainer />
+            <GlobalSocketListener>
+                <BrowserRouter>
+                    <Routes>
 
-                    <Route
-                        path="/"
-                        element={appData.userInfo.id ? <Home /> : <Auth />}
-                    />
+                        <Route
+                            path="/"
+                            element={appData.userInfo.id ? <Home /> : <Auth />}
+                        />
 
-                    <Route
-                        path="/home"
-                        element={<Home />}
-                    />
+                        <Route
+                            path="/home"
+                            element={<Home />}
+                        />
 
-                    <Route
-                        path="/auth"
-                        element={<Auth />}
-                    />
-                    <Route
-                        path="/profile/:id"
-                        element={<Profile />}
-                    />
+                        <Route
+                            path="/auth"
+                            element={<Auth />}
+                        />
+                        <Route
+                            path="/profile/:id"
+                            element={<Profile />}
+                        />
 
-                    <Route
-                        path="/profile/:id"
-                        element={<Profile />}
-                    />
+                        <Route
+                            path="/profile/:id"
+                            element={<Profile />}
+                        />
 
-                    <Route
-                        path="/chat"
-                        element={<Chat />}
-                    />
+                        <Route
+                            path="/chat"
+                            element={<Chat />}
+                        />
 
-                </Routes>
-            </BrowserRouter>
-
-            {/* {loading && <p style={{ color: 'white', font: '26px times new roman', textAlign: 'center' }} > Page you requested cannot be found  </p>} */}
-
+                    </Routes>
+                </BrowserRouter>
+            </GlobalSocketListener>
         </AppContext.Provider>
     )
 }

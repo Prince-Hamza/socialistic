@@ -8,6 +8,7 @@ import { AppContext } from "../../Context"
 import SearchResults from "../SearchResults/SearchResults"
 
 const LogoSearch = () => {
+  
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [search, setSearch] = useState("")
   const [searchResults, setSearchResults] = useState([])

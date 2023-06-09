@@ -1,8 +1,7 @@
 import MessageModel from "../models/messageModel.js";
 
 export const addMessage = async (req, res) => {
-
-  const { chatRoomKey, myId, partnerId, messageId, text, userPic } = req.body
+  const { chatRoomKey, myId, partnerId, messageId, text, userPic, liveStreamingKey } = req.body
 
   const message = new MessageModel({
     chatRoomKey,
@@ -10,7 +9,8 @@ export const addMessage = async (req, res) => {
     myId,
     partnerId,
     text,
-    userPic
+    userPic,
+    liveStreamingKey
   })
 
   try {
@@ -20,6 +20,9 @@ export const addMessage = async (req, res) => {
     res.status(500).json(error)
   }
 }
+
+
+
 
 export const getMessages = async (req, res) => {
   const { chatRoomKey } = req.params;
