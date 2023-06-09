@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const UserSchema = mongoose.Schema(
   {
@@ -27,7 +27,10 @@ const UserSchema = mongoose.Schema(
       type: String,
       default: 'https://th.bing.com/th/id/R.8ecd3de4a4b57de791895330cf820509?rik=apELQREbj%2fT0oQ&riu=http%3a%2f%2fabdelzaher.cs.illinois.edu%2fimages%2fhead.png&ehk=woU2D0JqIZ5lRV4gZ9UAc69lYaKjywGalBytFcZMmyA%3d&risl=&pid=ImgRaw&r=0'
     },
-    coverPicture: String,
+    coverPicture: {
+      type: String,
+      default: 'https://wallpaperaccess.com/full/246820.jpg'
+    },
     about: String,
     livesIn: String,
     worksAt: String,
@@ -39,5 +42,5 @@ const UserSchema = mongoose.Schema(
   { timestamps: true }
 )
 
-const UserModel = mongoose.model("Users", UserSchema);
+const UserModel = mongoose.model("Users", UserSchema)
 export default UserModel;

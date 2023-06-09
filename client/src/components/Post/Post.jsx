@@ -6,9 +6,7 @@ import Share from "../../img/share.png";
 import Heart from "../../img/like.png";
 import NotLike from "../../img/notlike.png";
 import { likePost } from "../../api/PostsRequests";
-// import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-//import { DropdownItem } from 'nr1'
 import edit from '../../img/edit.png';
 import ShareModal from "../ShareModal/ShareModal";
 import { deletePost, updatePost } from "../../api/PostsRequests";
@@ -22,13 +20,13 @@ import 'firebase/compat/auth'
 
 
 const Post = ({ data }) => {
-  var user = firebase.auth().currentUser  
+  var user = firebase.auth().currentUser
 
   const [liked, setLiked] = useState(data.likes.includes(user.id));
   const [likes, setLikes] = useState(data.likes.length);
   // const { auth, theme, socket } = useSelector(state => state);
   const [showdrop, setshowdrop] = useState(false);
-  
+
   const navigate = useNavigate();
 
   const [comments, setComments] = useState([]);
@@ -60,15 +58,15 @@ const Post = ({ data }) => {
     const fetchUser = async () => {
       try {
         const response = await getUserById(data.userId);
+        console.log(`post user : ${response.data}`);
         setPostUser(response.data);
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (user.id !== data.userId) {
-      fetchUser();
-    }
+    fetchUser()
+
   }, [data.userId, user.id]);
 
 
@@ -111,9 +109,9 @@ setshowdrop(false)
 
 const handleDeletePost = () =>{
 dispatch(/*deletePost*//*({data, auth, socket}))
-  setshowdrop(false)
-  navigate('/')
-}*/
+                                            setshowdrop(false)
+                                            navigate('/')
+                                          }*/
 
   const handleDelete = () => {
     setshowdrop(false);
@@ -136,36 +134,53 @@ dispatch(/*deletePost*//*({data, auth, socket}))
   const [open, setOpen] = useState(false);
   let menuRef = useRef();
 
-  useEffect(() => {
-    let handler = (e) => {
-      if (!menuRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => {
-      document.removeEventListener("mousedown", handler);
-    }
-  });
-
+  // useEffect(() => {
+  //   let handler = (e) => {
+  //     if (!menuRef.current.contains(e.target)) {
+  //       setOpen(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handler);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handler);
+  //   }
+  // });
 
   const handleVideoEnd = (event) => {
-    event.target.currentTime = 0; // réinitialiser la position de lecture à zéro
-  };
+    event.target.currentTime = 0
+  }
 
-  const media = data.image ? (
-    <img
-      src={process.env.REACT_APP_PUBLIC_FOLDER + data.image}
-      alt={data.user?.fullname}
-    />
-  ) : data.video ? (
-    <video controls onEnded={handleVideoEnd}>
-      <source
-        src={process.env.REACT_APP_PUBLIC_FOLDER + data.video}
-        alt={data.user?.fullname}
-      />
-    </video>
-  ) : null;
+
+  const media = (
+    <div>
+      {data.images &&
+        <div>
+          {data.images.map((image) => {
+            return (
+              <img
+                style={{ width: '45%', height: '200px', margin: '1px', cursor: 'pointer' }}
+                onClick={() => { window.open(image, '_blank') }}
+                src={image}
+                alt={image}
+              />
+            )
+          })}
+        </div>
+      }
+
+      {data.videos &&
+        <div>
+          {data.videos.map((video) => {
+            return (
+              <video style={{ width: '45%', height: '200px', margin: '1px', cursor: 'pointer' }} controls onEnded={handleVideoEnd} src={video} >
+
+              </video>
+            )
+          })}
+        </div>
+      }
+    </div>
+  )
 
 
   return (
@@ -174,28 +189,16 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         <div className="PostInfo">
           {user.id === data?.userId ?
             <img
-              src={
-                user.profilePicture
-                  ? serverPublic + user.profilePicture
-                  : serverPublic + "defaultProfile.png"
-              }
+              src={data.profilePicture}
               alt="ProfileImage"
             /> :
             <img
-              src={
-                postUser.profilePicture
-                  ? serverPublic + postUser.profilePicture
-                  : serverPublic + "defaultProfile.png"
-              }
+              src={data.profilePicture}
               alt="ProfileImage"
             />}
           <div className="PostInfoUser">
             <span className="user">
-              {user.id === data?.userId
-                ? `${user.firstname} ${user.lastname}`
-                : postUser.firstname && postUser.lastname
-                  ? `${postUser.firstname} ${postUser.lastname}`
-                  : 'Utilisateur inconnu'}
+              {data.username}
             </span>
 
 
@@ -206,9 +209,8 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         </div>
         <div className="postcardheaderdown">
 
-          <div className='menu-trigger' onClick={() => { setOpen(!open) }}>
+          {window.location.href.includes('profile') && <div className='menu-trigger' onClick={() => { setOpen(!open) }}>
             <p onClick={() => setshowdrop(!showdrop)}>ooo</p>
-
             <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`} style={{ marginRight: '-12px' }} >
               <ul>
                 <DropdownItem img={edit} text={"Edit"} onClick={() => handleUpdate(data)} />
@@ -216,14 +218,16 @@ dispatch(/*deletePost*//*({data, auth, socket}))
                 <DropdownItem img={edit} text={"Download"} onClick={handleCopyLink} />
               </ul>
             </div>
-          </div>
+          </div>}
+
+
         </div>
       </div>
       <div className="detail" style={{ alignSelf: "flex-start" }}>
-        <span>
-          <b>{data.name} </b>
-        </span>
-        <span>{data.desc}</span>
+        {/* <span>
+          <b>{data.username} </b>
+        </span> */}
+        <span>{data.text}</span>
       </div>
       {media}
       <div className="postReact">
@@ -254,7 +258,7 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         <Comment key={comment.id} data={comment} />
       ))}
 
-{/* 
+      {/* 
       {isShare && <ShareModal url={`http://localhost:5000/post/${data._id}`} theme={theme} />}
 
       {isShare && <ShareModal url={`http://localhost:5000/post/comment/${data._id}`} theme={theme} />} */}
@@ -272,4 +276,4 @@ function DropdownItem(props) {
   );
 }
 
-export default Post;
+export default Post

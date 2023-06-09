@@ -17,14 +17,16 @@ const FollowersCard = ({ location }) => {
   const [modalOpened, setModalOpened] = useState(false)
   const [persons, setPersons] = useState([])
   const [displayCount, setDisplayCount] = useState(8)
+ 
   var user = firebase.auth().currentUser
   user.following = []
-
+  
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
 
   const navigate = useNavigate();
 
   const handleProfileClick = (followerId) => {
+    
     navigate(`/profile/${followerId}`);
   };
 
