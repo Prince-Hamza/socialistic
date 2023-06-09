@@ -4,7 +4,7 @@ import ProfileCard from "../../components/ProfileCard/ProfileCard"
 import ProfileLeft from "../../components/ProfileLeft/ProfileLeft"
 import RightSide from "../../components/RightSide/RightSide"
 import { Row,Col,Container } from "react-bootstrap"
-
+import ProfileCardUser from "../../components/ProfileCardUser/ProfileCardUser"
 import "./Profile.css"
 import CustomNavbar from "../../components/Navbar/Navbar"
 
