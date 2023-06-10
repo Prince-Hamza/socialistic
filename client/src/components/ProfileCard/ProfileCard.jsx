@@ -20,7 +20,6 @@ const ProfileCard = ({ location }) => {
   const user = firebase.auth().currentUser
   const navigate = useNavigate()
   const posts = []
-
   //const [modalOpened, setModalOpened] = useState(false);
   const [followersModalOpened, setFollowersModalOpened] = useState(false);
   const [followingModalOpened, setFollowingModalOpened] = useState(false);
@@ -46,7 +45,7 @@ const ProfileCard = ({ location }) => {
       alert('successfully updated')
       toast('sucessfully uploaded')
       setIntroEdit(false)
-      appInfo.profileUser = { ...appInfo.profileUser, ...object }
+      appInfo.userInfo = { ...appInfo.userInfo, ...object }
       setAppInfo({ ...appInfo })
     } catch (ex) {
       alert(ex)
@@ -68,9 +67,9 @@ const ProfileCard = ({ location }) => {
     setUploadingCover(true)
     const file = e.target.files[0]
     if (file) {
-      const result = await storage.uploadImage(`users/${appInfo.profileUser.id}/cover`, 'image/jpeg', file)
+      const result = await storage.uploadImage(`users/${appInfo.userInfo.id}/cover`, 'image/jpeg', file)
       const link = result.downloadLink
-      await updateUserInfo({ id: appInfo.profileUser.id, coverPicture: link })
+      await updateUserInfo({ id: appInfo.userInfo.id, coverPicture: link })
       setUploadingCover(false)
     }
 
@@ -81,9 +80,9 @@ const ProfileCard = ({ location }) => {
     setUploadingProfilePic(true)
     const file = e.target.files[0]
     if (file) {
-      const result = await storage.uploadImage(`users/${appInfo.profileUser.id}/cover`, 'image/jpeg', file)
+      const result = await storage.uploadImage(`users/${appInfo.userInfo.id}/cover`, 'image/jpeg', file)
       const link = result.downloadLink
-      await updateUserInfo({ id: appInfo.profileUser.id, profilePicture: link })
+      await updateUserInfo({ id: appInfo.userInfo.id, profilePicture: link })
       setUploadingProfilePic(false)
     }
   }
@@ -93,8 +92,12 @@ const ProfileCard = ({ location }) => {
 
   const showProfilePage = (user) => {
     appInfo.profileUser = appInfo.userInfo
+    appInfo.postsForPage = 'profile'
     setAppInfo({ ...appInfo })
-    navigate(`/profile/${appInfo.userInfo.id}`)
+
+    setTimeout(() => {
+      navigate(`/profile/${appInfo.userInfo.id}?type=user`)
+    }, 1000)
   }
 
 
@@ -108,14 +111,14 @@ const ProfileCard = ({ location }) => {
       <div className="ProfileImages">
 
         <div style={{ position: 'relative' }} >
-          <img className="cover" src={appInfo.profileUser.coverPicture} alt="CoverImage" />
+          <img className="cover" src={appInfo.userInfo.coverPicture} alt="CoverImage" />
           {own && <button style={{ position: 'absolute', right: '15px', bottom: '15px' }} className="button ps-button" onClick={() => { onClickEditCover() }} >
             {uploadingCover ? 'uploading' : 'Edit Cover'}
           </button>}
         </div>
 
         <div className="ProfileImages" style={{ position: 'relative' }} >
-          <img className="profilePic" src={appInfo.profileUser.profilePicture.toString()} alt={appInfo.profileUser.profilePicture} />
+          <img className="profilePic" src={appInfo.userInfo.profilePicture.toString()} alt={appInfo.userInfo.profilePicture} />
           {own && <button style={{ position: 'absolute', right: '15px', bottom: '15px' }} className="button ps-button" onClick={() => { onClickEditProfile() }}>
             {uploadingCover ? 'uploading' : 'Edit Picture'}
           </button>}
@@ -125,12 +128,12 @@ const ProfileCard = ({ location }) => {
 
 
       <div className="ProfileName">
-        <span>{appInfo.profileUser.username}</span>
+        <span>{appInfo.userInfo.username}</span>
 
         <Row style={{ width: '50%' }} >
-          {!introEdit && <div style={{ width: own ? '70%' : '100%', textAlign: 'center' }} >{appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'}</div>}
+          {!introEdit && <div style={{ width: own ? '70%' : '100%', textAlign: 'center' }} >{appInfo.userInfo.about ? appInfo.userInfo.about : 'Write about yourself'}</div>}
           {introEdit &&
-            <input style={{ width: '70%' }} placeholder={appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.profileUser.id, about: e.target.value }) }} />
+            <input style={{ width: '70%' }} placeholder={appInfo.userInfo.about ? appInfo.userInfo.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.userInfo.id, about: e.target.value }) }} />
           }
           {own && <button style={{ width: '55px', height: '25px' }} className="button ps-button" onClick={() => { setIntroEdit(true); }}>
             Edit
@@ -143,7 +146,7 @@ const ProfileCard = ({ location }) => {
         <hr />
         <div>
           <div className="follow">
-            <span>{appInfo.profileUser.followers.length}</span>
+            <span>{appInfo.userInfo.followers.length}</span>
             <span onClick={() => setFollowersModalOpened(true)} style={{ cursor: 'pointer' }}>Followers</span>
 
             <FollowersModal
@@ -156,7 +159,7 @@ const ProfileCard = ({ location }) => {
           </div>
           <div className="vl"></div>
           <div className="follow">
-            <span>{appInfo.profileUser.following.length}</span>
+            <span>{appInfo.userInfo.following.length}</span>
             <span onClick={() => setFollowingModalOpened(true)} style={{ cursor: 'pointer' }}>Following</span>
 
 
@@ -170,7 +173,7 @@ const ProfileCard = ({ location }) => {
               <div className="vl"></div>
               <div className="follow">
                 <span>{
-                  posts.filter((post) => post.userId === user.id).length
+                  appInfo.myPostsCount
                 }</span>
                 <span>Posts</span>
               </div>{" "}

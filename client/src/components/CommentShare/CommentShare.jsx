@@ -1,9 +1,13 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useContext } from "react"
 import "./TimelineShare.css"
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
+import { AppContext } from "../../Context";
+import { toast } from "react-toastify";
+import axios from 'axios'
 
-const CommentShare = () => {
+const CommentShare = ({ postId, visible }) => {
+  const { appInfo, setAppInfo } = useContext(AppContext)
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false)
   const desc = useRef();
@@ -13,17 +17,39 @@ const CommentShare = () => {
 
   // handle comment upload
   const handleUpload = async (e) => {
-    e.preventDefault();
 
-    //comment data
-    const newComment = {
-      userId: user._id,
-      desc: desc.current.value,
-      ...location // ajout des coordonnées géographiques
-    };
 
-    resetShare();
-  };
+    let data = JSON.stringify({
+      "userId": appInfo.userInfo.id,
+      "postId": postId,
+      "username": appInfo.userInfo.id,
+      "profilePicture": appInfo.userInfo.id,
+      "comment": desc.current.value
+    })
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:5000/posts/comment',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    }
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data))
+        toast.success('commented sucessfully')
+        visible(false)
+      })
+      .catch((error) => {
+        console.log(error.toString())
+      })
+
+
+
+  }
 
 
   // Reset Comment Share

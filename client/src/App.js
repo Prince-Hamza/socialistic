@@ -21,7 +21,25 @@ const fireAuth = new webAuth()
 
 function App() {
 
-    const [appData, setAppData] = useState({ userInfo: {}, profileUser: {}, chatHistory: [], selectedChatRoom: {}, messages: [], online: true, chat: true, call: false, callType: 'recieving', buttonsClicked: false, listenToMongo: false, listening: false })
+    const [appData, setAppData] = useState({
+        userInfo: {},
+        profileUser: {},
+        chatHistory: [],
+        selectedChatRoom: {},
+        messages: [],
+        online: true,
+
+        postsForPage: 'home',
+        myPostsCount: 0,
+        postsByFollowedCount: 0,
+
+        chat: true,
+        call: false,
+        callType: 'recieving',
+        buttonsClicked: false,
+        listenToMongo: false,
+        listening: false
+    })
     const [loading, setLoading] = useState(true)
 
     if (!firebase.apps.length) firebase.initializeApp(config)
@@ -32,7 +50,7 @@ function App() {
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: `${domain}/user/${user.uid}`,
+            url: `http://localhost:5000/user/${user.uid}`,
             headers: {}
         }
 
@@ -40,7 +58,7 @@ function App() {
 
         axios.request(config)
             .then((response) => {
-                // alert(JSON.stringify(response.data))
+                //  alert(JSON.stringify(response.data))
                 if (response.data.user) {
                     appData.userInfo = response.data.user
                     setAppData({ ...appData })

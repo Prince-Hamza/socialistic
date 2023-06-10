@@ -14,7 +14,10 @@ const User = ({ person }) => {
 
 
   const handleFollow = () => {
-    setFollowing((prev) => !prev);
+    setFollowing((prev) => !prev)
+    if (!following) appInfo.userInfo.following.push(1)
+    if (following && appInfo.userInfo.following) appInfo.userInfo.following.splice(0, 1)
+    setAppInfo({ ...appInfo })
   }
 
 

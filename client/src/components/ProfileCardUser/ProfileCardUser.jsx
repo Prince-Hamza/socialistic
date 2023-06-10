@@ -13,6 +13,8 @@ const storage = new Storage()
 
 const ProfileCardUser = ({ location }) => {
 
+  alert('card user')
+  
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [uploadingCover, setUploadingCover] = useState(false)
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false)

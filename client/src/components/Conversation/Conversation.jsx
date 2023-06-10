@@ -9,12 +9,15 @@ import { addMessage, getMessages } from "../../api/MessageRequests"
 const Conversation = ({ data, currentUser }) => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
-const online = appInfo.online
+  const online = appInfo.online
 
 
   const fetchMessages = async (id) => {
     try {
-      const { data } = await getMessages(id)
+      var { data } = await getMessages(id)
+
+      data = data.filter((item) => { return item.text !== 'call Request' && item.text !== 'call request' })
+
       appInfo.messages = data
       // alert(`selected :: ${appInfo.selectedChatRoom.key}`)
       setAppInfo({ ...appInfo })

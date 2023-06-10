@@ -21,7 +21,7 @@ function Messages() {
             if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey) {
                 let list = appInfo.messages
                 let nm = data.fullDocument
-                list.push(nm)
+                if (nm.text !== 'call Request') list.push(nm)
                 list = _.uniqBy(list, 'text')
                 appInfo.messages = list
                 setAppInfo({ ...appInfo })

@@ -37,6 +37,10 @@ const Posts = () => {
         setPosts([...list])
         setLoading(false)
         setComplete(true)
+
+        appInfo.postsByFollowedCount = list.length // by users i follow
+        setAppInfo({ ...appInfo })
+
       })
       .catch((error) => {
         console.log(error)
@@ -58,6 +62,10 @@ const Posts = () => {
         setPosts([...list])
         setLoading(false)
         setComplete(true)
+
+        appInfo.myPostsCount = list.length
+        setAppInfo({ ...appInfo })
+
       })
       .catch((error) => {
         console.log(error)
@@ -69,8 +77,8 @@ const Posts = () => {
 
   const init = () => {
     setLoading(true)
-    if (window.location.href.includes(user)) getMyPosts()
-    if (!window.location.href.includes(user)) getPostsByFollowedUsers()
+    //   if (window.location.href.includes(user)) getMyPosts()
+    getPostsByFollowedUsers()
   }
 
   const effect = () => {
@@ -87,7 +95,7 @@ const Posts = () => {
         "Fetching posts...."
       ) : (
         posts.map((post, id) => {
-          return <Post data={post} key={id} />;
+          return <Post data={post} key={id} posts={posts} setPosts={setPosts} />;
           // return null
         })
       )}

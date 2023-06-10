@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import moment from "moment";
 import "./Post.css";
 import Com from "../../img/comment.png";
@@ -14,15 +14,19 @@ import { getUserById } from "../../api/UserRequests";
 import CommentShare from '../CommentShare/CommentShare.jsx';
 import Comment from "../Comment/Comment";
 import { createComment } from "../../api/CommentsRequests";
+import axios from 'axios'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
+import { AppContext } from "../../Context";
 
 
 
-const Post = ({ data }) => {
+const Post = ({ data, posts, setPosts }) => {
+  const { appInfo, setAppInfo } = useContext(AppContext)
+
   var user = firebase.auth().currentUser
 
-  const [liked, setLiked] = useState(data.likes.includes(user.id));
+  const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(data.likes.length);
   // const { auth, theme, socket } = useSelector(state => state);
   const [showdrop, setshowdrop] = useState(false);
@@ -36,21 +40,25 @@ const Post = ({ data }) => {
 
   const [postUser, setPostUser] = useState({});
 
+
+  // alert(`post data : ${data._id}`)
+
   const handleUpload = async () => {
-    try {
-      // Envoyer le commentaire au serveur
-      const response = await createComment(data._id, { content: comment });
-      const newComment = response.data;
+    alert('upload')
+    // try {
+    //   // Envoyer le commentaire au serveur
+    //   const response = await createComment(data._id, { content: comment });
+    //   const newComment = response.data;
 
-      // Mettre à jour l'état des commentaires
-      setComments((prevComments) => [...prevComments, newComment]);
+    //   // Mettre à jour l'état des commentaires
+    //   setComments((prevComments) => [...prevComments, newComment]);
 
-      // Réinitialiser le commentaire et masquer l'entrée de commentaire
-      setComment("");
-      setIsCommentInputVisible(false);
-    } catch (error) {
-      console.log(error);
-    }
+    //   // Réinitialiser le commentaire et masquer l'entrée de commentaire
+    //   setComment("");
+    //   setIsCommentInputVisible(false);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
 
@@ -94,9 +102,41 @@ const Post = ({ data }) => {
 
 
   const handleLike = () => {
-    likePost(data._id, user.id);
+
+    let postData = JSON.stringify({
+      "userId": appInfo.userInfo.id,
+      "postId": data._id
+    });
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:5000/posts/like',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: postData
+    };
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data))
+        posts.forEach((post) => {
+          if (post._id === data._id) {
+            if (!liked) post.likes.push(appInfo.userInfo.id)
+            if (liked) post.likes.splice(0, 1)
+          }
+        })
+        setPosts([...posts])
+
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+
     setLiked((prev) => !prev);
-    liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
+    liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1)
+
   };
 
 
@@ -109,9 +149,9 @@ setshowdrop(false)
 
 const handleDeletePost = () =>{
 dispatch(/*deletePost*//*({data, auth, socket}))
-                                            setshowdrop(false)
-                                            navigate('/')
-                                          }*/
+                                                            setshowdrop(false)
+                                                            navigate('/')
+                                                          }*/
 
   const handleDelete = () => {
     setshowdrop(false);
@@ -231,25 +271,27 @@ dispatch(/*deletePost*//*({data, auth, socket}))
       </div>
       {media}
       <div className="postReact">
+
         <img
           src={liked ? Heart : NotLike}
           alt=""
           style={{ cursor: "pointer" }}
           onClick={handleLike}
         />
+
         <img src={Com} alt="" style={{ cursor: 'pointer' }} onClick={handleToggleCommentInput} />
 
-        <img src={Share} alt="" onClick={() => setIsShare(!isShare)} style={{ cursor: 'pointer' }} />
+        {/* <img src={Share} alt="" onClick={() => setIsShare(!isShare)} style={{ cursor: 'pointer' }} /> */}
 
       </div>
+
       <span style={{ color: "var(--gray)", fontSize: "12px", alignSelf: "flex-start" }}>
-        {likes} likes
+        {data.likes.length} likes
       </span>
 
       {isCommentInputVisible && (
         <>
-          {<CommentShare comment={comment} onClick={handleUpload} />}
-
+          {<CommentShare postId={data._id} visible={setIsCommentInputVisible} />}
         </>
       )}
 
