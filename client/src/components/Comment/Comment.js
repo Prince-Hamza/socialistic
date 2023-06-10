@@ -13,43 +13,43 @@ import 'firebase/compat/auth'
 
 
 const Comment = ({ data }) => {
-  
+
   var user = firebase.auth().currentUser
- 
+
   //const [liked, setLiked] = useState(data.likes.includes(user.id));
- // const [likes, setLikes] = useState(data.likes.length);
+  // const [likes, setLikes] = useState(data.likes.length);
   // const dispatch = useDispatch();
 
   const [isShare, setIsShare] = useState(false);
   const [commentUser, setCommentUser] = useState({});
-  const [currentUser,setCurrentUser] = useState({});
-  const [loading ,setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState({});
+  const [loading, setLoading] = useState(true);
 
-   
 
-  const fetchCurrentUser =  async ()=>{
-    try{
-        const response = await getUserById(user.uid)
-        setCurrentUser(response.data)
-        console.log(response)
-        setLoading(false)
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await getUserById(user.uid)
+      setCurrentUser(response.data)
+      console.log(response)
+      setLoading(false)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
-  } 
+  }
 
-  useEffect(()=>{
+  useEffect(() => {
     setLoading(true)
     fetchCurrentUser();
-    
-  },[])
+
+  }, [])
   useEffect(() => {
     const fetchUser = async () => {
       try {
         setLoading(true)
         const response = await getUserById(data.userId);
-       
+
         setCommentUser(response.data)
         setLoading(false)
       } catch (error) {
@@ -58,19 +58,19 @@ const Comment = ({ data }) => {
     };
 
     if (user.uid !== data.userId) {
-        fetchUser();
+      fetchUser();
     }
-    
+
 
   }, [data.userId, user.id]);
 
-  
 
- /* const handleLike = () => {
-    // dispatch(likeComment(data._id));
-    setLiked((prev) => !prev);
-    liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
-  }; */
+
+  /* const handleLike = () => {
+     // dispatch(likeComment(data._id));
+     setLiked((prev) => !prev);
+     liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
+   }; */
 
   const handleDelete = () => {
     // dispatch(deleteComment(data._id));
@@ -84,87 +84,87 @@ const Comment = ({ data }) => {
   const handleCopyLink = () => {
     // Ajoutez ici la logique de copie du lien dans votre application
   };
-  
 
-  if(loading){
+
+  if (loading) {
     return (<><span>...loading</span></>)
   }
-  else{
+  else {
 
-  
-  return (
-    <div className="Comment">
-      <div className="Commentheader">
-        <div className="CommentInfo">
-          {user.uid === data?.userId ? (
-            <img
-              src={currentUser.user.profilePicture|| "defaultProfile.png"}
-              alt="ProfileImage"
-            />
-          ) : (
-            <img
-              src={user.profilePicture || "defaultProfile.png"}
-              alt="ProfileImage"
-            />
-          )}
-          <div className="CommentInfoUser">
-            <span className="user">
-              {user.uid === data?.userId
-                ? `${currentUser.user.username}`
-                : 
-                  `${commentUser.user.username}`
+
+    return (
+      <div className="Comment">
+        <div className="Commentheader">
+          <div className="CommentInfo">
+            {user.uid === data?.userId ? (
+              <img
+                src={currentUser.user.profilePicture || "defaultProfile.png"}
+                alt="ProfileImage"
+              />
+            ) : (
+              <img
+                src={user.profilePicture || "defaultProfile.png"}
+                alt="ProfileImage"
+              />
+            )}
+            <div className="CommentInfoUser">
+              <span className="user">
+                {user.uid === data?.userId
+                  ? `${'currentUser.user.username'}`
+                  :
+                  `${'commentUser.user.username'}`
                 }
-            </span>
-            <span className="timeago">
-              {moment.utc(data.createdAt).fromNow()}
-            </span>
+              </span>
+              <span className="timeago">
+                {moment.utc(data.createdAt).fromNow()}
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="commentcardheaderdown">
-          <div className="menu-trigger">
-            <p>ooo</p>
-            <div className="dropdown-menu">
-              <ul>
-                <li onClick={handleUpdate}>Update Comment</li>
-                <li onClick={handleDelete}>Delete Comment</li>
-                <li onClick={handleCopyLink}>Copy Link</li>
-              </ul>
+          <div className="commentcardheaderdown">
+            <div className="menu-trigger">
+              <p>ooo</p>
+              <div className="dropdown-menu">
+                <ul>
+                  <li onClick={handleUpdate}>Update Comment</li>
+                  <li onClick={handleDelete}>Delete Comment</li>
+                  <li onClick={handleCopyLink}>Copy Link</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div className="detail" style={{ alignSelf: "flex-start" }}>
-        <span>
-          <b>{data.comment}</b>
-        </span>
+        <div className="detail" style={{ alignSelf: "flex-start" }}>
+          <span>
+            <b>{data.comment}</b>
+          </span>
 
-        <span>{data.desc}</span>
-      </div>
+          <span>{data.desc}</span>
+        </div>
 
-      <div className="commentReact">
-       {/*  <img
+        <div className="commentReact">
+          {/*  <img
           src={liked ? Heart : NotLike}
           alt=""
           style={{ cursor: "pointer" }}
           onClick={handleLike}
               /> */}
-        <img src={Com} alt="" style={{ cursor: "pointer" }} />
-        <img
-          src={Share}
-          alt=""
-          onClick={() => setIsShare(!isShare)}
-          style={{ cursor: "pointer" }}
-        />
+          <img src={Com} alt="" style={{ cursor: "pointer" }} />
+          <img
+            src={Share}
+            alt=""
+            onClick={() => setIsShare(!isShare)}
+            style={{ cursor: "pointer" }}
+          />
+        </div>
+
+        <span style={{ color: "var(--gray)", fontSize: "12px", alignSelf: "flex-start" }}>
+          {/* {likes} likes  */}
+        </span>
+
+        {isShare && <ShareModal url={`http://localhost:5000/comment/${data._id}`} />}
+
       </div>
-
-      <span style={{ color: "var(--gray)", fontSize: "12px", alignSelf: "flex-start" }}>
-       {/* {likes} likes  */}
-      </span>
-
-      {isShare && <ShareModal url={`http://localhost:5000/comment/${data._id}`} />}
-
-    </div>
-  );
+    );
   }
 };
 

@@ -190,6 +190,23 @@ export const timeline = async (req, res) => {
 
 }
 
+export const getMyPosts = async (req, res) => {
+
+  const id = req.query.id
+
+  console.log(`timeline of :: ${id}`)
+
+  try {
+    console.log(`get posts of :: ${id}`)
+    const posts = await PostModel.find({ userId: id })
+    console.log(`posts of : ${id} :: ${posts}`)
+    return res.status(200).send({ success: true, posts: posts.length ? posts : [] })
+  } catch (ex) {
+    return res.status(400).send({ error: ex.toString() })
+  }
+
+}
+
 export const test = async (req, res) => {
   return res.send({ tes: 'success' })
 }
