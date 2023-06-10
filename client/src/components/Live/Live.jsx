@@ -7,12 +7,11 @@ import { AppContext } from '../../Context'
 function Live() {
 
     const { appInfo, setAppInfo } = useContext(AppContext)
-    const [clicked, setClicked] = useState(false)
 
 
     const notify = async (streamKey) => {
 
-        alert(`stream key notify : ${streamKey}`)
+        // alert(`stream key notify : ${streamKey}`)
 
         const message = {
             chatRoomKey: appInfo.selectedChatRoom.key,
@@ -27,7 +26,7 @@ function Live() {
 
         try {
             const resp = await addMessage(message)
-            alert(`resp : ${JSON.stringify(resp.data)}`)
+            // alert(`resp : ${JSON.stringify(resp.data)}`)
         }
         catch (ex) {
             alert(`error : ${ex}`)
@@ -106,20 +105,19 @@ function Live() {
             <button style={Styles.Button} id="callButton">Create Call (offer)</button>
 
 
-            <div style={{ font: "18px roboto" }}>
+            {/* <div style={{ font: "18px roboto" }}>
                 OR
             </div>
 
-            <h6>Join a Call</h6>
+            <h6>Join a Call</h6> */}
+
+
+
+            <input style={{ display: 'none' }} id="callInput" placeholder='livestream id' />
             <br />
             <br />
 
-
-            <input id="callInput" placeholder='livestream id' />
-            <br />
-            <br />
-
-            <button id="answerButton" >Answer</button>
+            <button style={Styles.Button} id="answerButton" >Answer</button>
 
             <br />
             <br />

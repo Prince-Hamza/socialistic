@@ -12,8 +12,9 @@ import 'firebase/compat/auth'
 import "./Navicons.css"
 import { AppContext } from "../../Context"
 import { webAuth } from '../../firebase/firebaseAuth'
-const fireAuth = new webAuth()
 
+
+const fireAuth = new webAuth()
 
 const NavIcons = ({ location }) => {
 
@@ -26,7 +27,7 @@ const NavIcons = ({ location }) => {
   const handleLogOut = async () => {
     console.log(`Logout :: email : ${appInfo.userInfo.email}, password : ${appInfo.userInfo.password}`)
     fireAuth.removeLoginSession(appInfo.userInfo.email, appInfo.userInfo.password)
-    window.location.reload()
+    window.location.replace('/')
   }
 
   return (

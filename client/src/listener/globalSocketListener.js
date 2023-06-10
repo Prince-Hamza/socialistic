@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import _ from 'lodash'
 import { AppContext } from '../Context'
 import { io } from "socket.io-client"
-import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { Row } from 'react-bootstrap'
 const ENDPOINT = `http://127.0.0.1:5000/`
@@ -34,19 +33,18 @@ function GlobalSocketListener({ children }) {
 
         socket.on('message', (data) => {
 
-
-            alert(`global message listener : ${JSON.stringify(data.fullDocument)}`)
+            // alert(`global message listener : ${JSON.stringify(data.fullDocument)}`)
 
             var user = data.fullDocument
             if (data && Object.keys(data).length && !user.liveStreamingKey) {
-                alert('notify')
-                setNotificationData({ prompt: `A user sent you a message`, ...user })
-                //     hideNotification()
-                updateAppState(user)
+                //alert('notify')
+                if (!window.location.href.includes('chat')) setNotificationData({ prompt: `A user sent you a message`, ...user })
+                // hideNotification()
+                // updateAppState(user)
             }
 
             if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
-                alert('notify')
+                // alert('notify')
                 setNotificationData({ prompt: `A user is calling you`, ...user })
                 // hideNotification()
                 updateAppState(user)
@@ -71,7 +69,7 @@ function GlobalSocketListener({ children }) {
     useEffect(effect, [])
 
 
-    if (notificationData) alert(notificationData.prompt)
+    // if (notificationData) alert(notificationData.prompt)
 
     return (
         <div>
@@ -79,7 +77,7 @@ function GlobalSocketListener({ children }) {
                 {notificationData &&
                     <div style={Styles.card} onClick={onNotificationClick}>
                         <Row>
-                            <p style={{ color: '#222', font: '16px poppins' }} >{notificationData.prompt} </p>
+                            <p style={{ color: '#222', font: '16px poppins' }} > {notificationData.prompt} </p>
                         </Row>
                     </div>
                 }

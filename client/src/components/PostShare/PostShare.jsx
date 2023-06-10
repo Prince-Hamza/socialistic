@@ -38,7 +38,6 @@ function PostShare(props) {
         videos: [],
         locations: [],
         dates: [],
-
         likes: [],
         comments: []
     })
@@ -80,8 +79,8 @@ function PostShare(props) {
     const onBlur = (e) =>{
         const selectedDate = e.target.value
         postInfo.dates.push(selectedDate);
-        
     }
+
     const ChangeDateIcon =() =>{
         setDateIcon(!DateIcon);
     }
@@ -107,10 +106,10 @@ function PostShare(props) {
 
         const videoLinks = await Promise.all(videoPromises)
 
-        postInfo.images = picLinks
-        postInfo.videos = videoLinks
+        // postInfo.images = picLinks
+        // postInfo.videos = videoLinks
 
-        setPostInfo(postInfo)
+        // setPostInfo(postInfo)
 
         // const result = await storage.uploadImage('/mytestpic', 'image/jpeg', postInfo.images[0])
         // alert(`uploaded successfully ${result.downloadLink}`)

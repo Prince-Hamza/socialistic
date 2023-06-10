@@ -7,9 +7,9 @@ import "./Chat.css";
 import { useEffect } from "react";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
-import { AppContext } from "../../Context";
-import Live from "../../components/Live/Live";
-
+import { AppContext } from "../../Context"
+import Live from "../../components/Live/Live"
+import axios from 'axios'
 const Chat = () => {
 
   const socket = useRef();
@@ -28,6 +28,53 @@ const Chat = () => {
     return false
   }
 
+
+
+
+  const getMyChatHistory = () => {
+
+    let data = JSON.stringify({
+      "me": {
+        "id": appInfo.userInfo.id,
+        "name": appInfo.userInfo.username,
+        "photo": appInfo.userInfo.profilePicture
+      }
+    })
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:5000/chat/myChatHistory?',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data))
+        appInfo.chatHistory = response.data.conversations
+        setAppInfo({ ...appInfo })
+
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
+
+  const init = () => {
+    if (appInfo.chatHistory.length <= 0) getMyChatHistory()
+  }
+
+  const effect = () => {
+    init()
+  }
+
+  useEffect(effect, [])
+
+
   return (
     <div className="Chat">
       {/* Left Side */}
@@ -39,8 +86,6 @@ const Chat = () => {
 
           <h2>Chats</h2>
           <hr style={{ width: '100%', border: '0.3px solid #f4cb35' }}></hr>
-
-
 
           <div className="Chat-list" >
             {appInfo.chatHistory.length > 0 && appInfo.chatHistory.map((chat) => (

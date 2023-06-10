@@ -92,6 +92,8 @@ const ProfileCardUser = ({ location }) => {
 
 
   const showProfilePage = (user) => {
+    appInfo.profileUser = appInfo.userInfo
+    setAppInfo({ ...appInfo })
     navigate(`/profile/${appInfo.userInfo.id}?type=user`)
   }
 

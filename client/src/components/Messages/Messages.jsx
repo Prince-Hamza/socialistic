@@ -3,6 +3,8 @@ import { AppContext } from '../../Context'
 import { format } from "timeago.js"
 import { io } from "socket.io-client"
 import _ from 'lodash'
+import $ from 'jquery'
+
 const ENDPOINT = `http://127.0.0.1:5000/`
 const socket = io(ENDPOINT);
 
@@ -13,7 +15,7 @@ function Messages() {
 
     const socketListener = () => {
         appInfo.listening = true
-        setAppInfo({...appInfo})
+        setAppInfo({ ...appInfo })
         // alert(`socket listener : ${listening}`)
         socket.on('message', (data) => {
             if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey) {
@@ -36,10 +38,10 @@ function Messages() {
 
         // alert(`mongo ? ${listenToMongo}  roomKey : ${appInfo.selectedChatRoom.key}`)
         if (!appInfo.listenToMongo && appInfo.selectedChatRoom.key) {
-            alert('emit listen')
+            // alert('emit listen')
             socket.emit('listen', { chatRoomKey: appInfo.selectedChatRoom.key })
             appInfo.listenToMongo = true
-            setAppInfo({...appInfo})
+            setAppInfo({ ...appInfo })
         }
 
         socket.on("disconnect", () => { console.log(socket.id) })
@@ -47,7 +49,9 @@ function Messages() {
     }
 
     useEffect(() => {
-        // alert(`listening : ${listening}`)
+        var scroll = $('.chat-body');
+        scroll.animate({ scrollTop: '8000px' })
+
         if (!appInfo.listening) socketListener()
     }, [])
 

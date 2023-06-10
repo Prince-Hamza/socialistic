@@ -19,6 +19,8 @@ function AddAssets({ postInfo, setPostInfo }) {
         setPostInfo({ ...postInfo })
     }
 
+
+
     return (
         <div style={Styles.flexView}>
 

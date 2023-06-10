@@ -16,7 +16,7 @@ const online = appInfo.online
     try {
       const { data } = await getMessages(id)
       appInfo.messages = data
-      alert(`selected :: ${appInfo.selectedChatRoom.key}`)
+      // alert(`selected :: ${appInfo.selectedChatRoom.key}`)
       setAppInfo({ ...appInfo })
     } catch (error) {
       alert(error);
@@ -29,7 +29,7 @@ const online = appInfo.online
     appInfo.selectedChatRoom.key = data.chatRoomKey
     appInfo.selectedChatRoom._id = data.chatRoomKey
     appInfo.selectedChatRoom.partner = { id: data.partnerId, name: data.name, photo: data.photo }
-    alert(appInfo.selectedChatRoom.key)
+    // alert(appInfo.selectedChatRoom.key)
     await fetchMessages(data.chatRoomKey)
     setAppInfo({ ...appInfo })
   }

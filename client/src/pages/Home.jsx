@@ -33,8 +33,8 @@ const Home = () => {
         <Col><ProfileSide /></Col>
         <Col><PostSide /></Col>
         <Col><RightSide /></Col>
-        <Col>  <GlobalSocketListener />  </Col>
       </Row>
+        <GlobalSocketListener /> 
     </Container>
   )
 }
