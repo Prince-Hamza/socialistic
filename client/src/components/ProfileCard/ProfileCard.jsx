@@ -103,9 +103,9 @@ const ProfileCard = ({ location }) => {
   const own = window.location.href.includes('user') ? true : false
 
 
-  useEffect(() => {
-    alert('Profile Card')
-  })
+  // useEffect(() => {
+  //   alert('Profile Card')
+  // })
 
 
   return (

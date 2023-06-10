@@ -49,9 +49,9 @@ function Messages() {
     }
 
     useEffect(() => {
+        // alert('scroolll down')
         var scroll = $('.chat-body');
         scroll.animate({ scrollTop: '8000px' })
-
         if (!appInfo.listening) socketListener()
     }, [])
 

@@ -29,7 +29,6 @@ const InfoCard = () => {
   const sendMessage = async () => {
 
 
-
     // me : user
     let me = {
       id: appInfo.userInfo.id,
@@ -53,7 +52,6 @@ const InfoCard = () => {
     console.log(`convo : ${JSON.stringify(result.conversations)}`)
     // alert(`convo : ${JSON.stringify(result.conversations)}`)
 
-    return
     setAppInfo({ ...appInfo })
     // alert(`conversations :: ${JSON.stringify(result.conversations)}`)
 
