@@ -14,6 +14,13 @@ import SchemeRoute from './routes/SchemeRoutes.js'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import { MongoClient } from 'mongodb'
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+console.log(`dir name :: ${__dirname}`)
+console.log(`full path :: ${path.join(__dirname, 'build')}`)
+
 
 const app = express();
 const httpServer = createServer(app)
@@ -26,8 +33,11 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 // to serve images inside public folder
-app.use(express.static('public'));
-app.use('/images', express.static('images'));
+// app.use(express.static('public'));
+// app.use('/images', express.static('images'));
+
+app.use('/', express.static(__dirname + '/build'))
+app.use('*', express.static(__dirname + '/build'))
 
 
 dotenv.config()
@@ -41,6 +51,24 @@ mongoose
     console.log(`Listening @ Port ${PORT} | Mongoose is successfully connected`)
   })
   .catch((error) => console.log(`${error} Mongodb did not connect`));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.use('/auth', AuthRoute);
