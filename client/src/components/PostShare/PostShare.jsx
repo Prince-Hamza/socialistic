@@ -12,7 +12,6 @@ import { domain } from '../../constants/constants'
 import { Storage } from '../../backend/storage/uploadFile'
 import firebase from 'firebase/compat/app'
 import { toast } from 'react-toastify'
-
 import 'firebase/compat/auth'
 import "./PostShare.css"
 const storage = new Storage()
@@ -22,12 +21,11 @@ function PostShare(props) {
     var user = firebase.auth().currentUser
 
     const { appInfo, setAppInfo } = useContext(AppContext)
-    
+
     const [loading, setLoading] = useState(false)
     const [text, setText] = useState()
-    //const [location, setLocation] = useState()
-    //const [date,setDate] = useState()
-    const [DateIcon, setDateIcon] = useState(false);
+    const [location, setLocation] = useState()
+    const today = new Date()
 
     const [postInfo, setPostInfo] = useState({
         userId: appInfo.userInfo.id,
@@ -46,12 +44,8 @@ function PostShare(props) {
     const getLocation = () => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                
                 const { latitude, longitude } = position.coords;
-               // setLocation({ latitude, longitude });
-                postInfo.locations.push({latitude,longitude})
-                
-                
+                setLocation({ latitude, longitude });
             },
             (error) => {
                 console.error(error);
@@ -75,15 +69,6 @@ function PostShare(props) {
             postInfo.videos.push(vid)
             setPostInfo({ ...postInfo })
         }
-    }
-    // handle Date Change
-    const onBlur = (e) =>{
-        const selectedDate = e.target.value
-        postInfo.dates.push(selectedDate);
-        
-    }
-    const ChangeDateIcon =() =>{
-        setDateIcon(!DateIcon);
     }
 
 
@@ -140,7 +125,7 @@ function PostShare(props) {
             },
             data: data
         }
-
+        
         axios.request(config)
             .then((response) => {
                 console.log(JSON.stringify(response.data))
@@ -157,7 +142,6 @@ function PostShare(props) {
 
     const imageRef = useRef();
     const videoRef = useRef();
-   
 
     return (
         <Row className="PostShare">
@@ -204,22 +188,11 @@ function PostShare(props) {
                         <UilLocationPoint />
                         Location
                     </div>
-                    <div className="option" style={{ color: "var(--shedule)" }}
-                        onClick={ChangeDateIcon}
-                    >
-                       
-                        {!DateIcon && <UilSchedule />}
-                        
+                    <div className="option" style={{ color: "var(--shedule)" }}>
+                        <UilSchedule />
                         Shedule
                     </div>
-                    <div>
-                    {DateIcon && 
-                        <input type="Date"  onBlur={onBlur}  
-                        style={{marginRight:4 ,border:'0',color: "var(--shedule)",marginTop:5,fontSize:'15px'}}
-                        
-                        /> 
-                    }
-                    </div>
+
                     <button
                         className="button ps-button"
                         onClick={handleUpload}
@@ -248,4 +221,3 @@ function PostShare(props) {
 }
 
 export default PostShare
-

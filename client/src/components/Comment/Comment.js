@@ -13,36 +13,64 @@ import 'firebase/compat/auth'
 
 
 const Comment = ({ data }) => {
-
+  
   var user = firebase.auth().currentUser
-
-  const [liked, setLiked] = useState(data.likes.includes(user.id));
-  const [likes, setLikes] = useState(data.likes.length);
+ 
+  //const [liked, setLiked] = useState(data.likes.includes(user.id));
+ // const [likes, setLikes] = useState(data.likes.length);
   // const dispatch = useDispatch();
 
   const [isShare, setIsShare] = useState(false);
   const [commentUser, setCommentUser] = useState({});
+  const [currentUser,setCurrentUser] = useState({});
+  const [loading ,setLoading] = useState(true);
 
+   
+
+  const fetchCurrentUser =  async ()=>{
+    try{
+        const response = await getUserById(user.uid)
+        setCurrentUser(response.data)
+        console.log(response)
+        setLoading(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  } 
+
+  useEffect(()=>{
+    setLoading(true)
+    fetchCurrentUser();
+    
+  },[])
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        setLoading(true)
         const response = await getUserById(data.userId);
-        setCommentUser(response.data);
+       
+        setCommentUser(response.data)
+        setLoading(false)
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (user.id !== data.userId) {
-      fetchUser();
+    if (user.uid !== data.userId) {
+        fetchUser();
     }
+    
+
   }, [data.userId, user.id]);
 
-  const handleLike = () => {
+  
+
+ /* const handleLike = () => {
     // dispatch(likeComment(data._id));
     setLiked((prev) => !prev);
     liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
-  };
+  }; */
 
   const handleDelete = () => {
     // dispatch(deleteComment(data._id));
@@ -56,29 +84,36 @@ const Comment = ({ data }) => {
   const handleCopyLink = () => {
     // Ajoutez ici la logique de copie du lien dans votre application
   };
+  
 
+  if(loading){
+    return (<><span>...loading</span></>)
+  }
+  else{
+
+  
   return (
     <div className="Comment">
       <div className="Commentheader">
         <div className="CommentInfo">
-          {user.id === data?.userId ? (
+          {user.uid === data?.userId ? (
             <img
-              src={user.profilePicture || "defaultProfile.png"}
+              src={currentUser.user.profilePicture|| "defaultProfile.png"}
               alt="ProfileImage"
             />
           ) : (
             <img
-              src={commentUser.profilePicture || "defaultProfile.png"}
+              src={user.profilePicture || "defaultProfile.png"}
               alt="ProfileImage"
             />
           )}
           <div className="CommentInfoUser">
             <span className="user">
-              {user.id === data?.userId
-                ? `${user.firstname} ${user.lastname}`
-                : commentUser.firstname && commentUser.lastname
-                  ? `${commentUser.firstname} ${commentUser.lastname}`
-                  : "Utilisateur inconnu"}
+              {user.uid === data?.userId
+                ? `${currentUser.user.username}`
+                : 
+                  `${commentUser.user.username}`
+                }
             </span>
             <span className="timeago">
               {moment.utc(data.createdAt).fromNow()}
@@ -100,19 +135,19 @@ const Comment = ({ data }) => {
       </div>
       <div className="detail" style={{ alignSelf: "flex-start" }}>
         <span>
-          <b>{data.name}</b>
+          <b>{data.comment}</b>
         </span>
 
         <span>{data.desc}</span>
       </div>
 
       <div className="commentReact">
-        <img
+       {/*  <img
           src={liked ? Heart : NotLike}
           alt=""
           style={{ cursor: "pointer" }}
           onClick={handleLike}
-        />
+              /> */}
         <img src={Com} alt="" style={{ cursor: "pointer" }} />
         <img
           src={Share}
@@ -123,13 +158,14 @@ const Comment = ({ data }) => {
       </div>
 
       <span style={{ color: "var(--gray)", fontSize: "12px", alignSelf: "flex-start" }}>
-        {likes} likes
+       {/* {likes} likes  */}
       </span>
 
       {isShare && <ShareModal url={`http://localhost:5000/comment/${data._id}`} />}
 
     </div>
   );
+  }
 };
 
 export default Comment;

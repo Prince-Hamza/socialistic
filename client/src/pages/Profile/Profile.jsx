@@ -4,7 +4,7 @@ import ProfileCard from "../../components/ProfileCard/ProfileCard"
 import ProfileLeft from "../../components/ProfileLeft/ProfileLeft"
 import RightSide from "../../components/RightSide/RightSide"
 import { Row,Col,Container } from "react-bootstrap"
-
+import ProfileCardUser from "../../components/ProfileCardUser/ProfileCardUser"
 import "./Profile.css"
 import CustomNavbar from "../../components/Navbar/Navbar"
 
@@ -12,16 +12,21 @@ import CustomNavbar from "../../components/Navbar/Navbar"
 const Profile = () => {
   return (
     <div className="Profile">
-      <ProfileLeft />
+
+
+
+      {/* <ProfileLeft />
       <div className="Profile-center">
         {window.location.href.includes('user') ? <ProfileCardUser /> : <ProfileCard location='profilePage' />}
         <PostSide />
       </div>
-      <RightSide />
+      <RightSide /> */}
+
+
       <CustomNavbar/>
       <Container fluid >
         <Row>
-          <Col><ProfileLeft /></Col>
+          <Col> <ProfileLeft /> </Col>
           <Col>  <div className="Profile-center">
             <ProfileCard location = 'profilePage'/>
             <PostSide/>

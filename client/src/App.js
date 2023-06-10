@@ -16,11 +16,30 @@ import { domain } from './constants/constants'
 import GlobalSocketListener from './listener/globalSocketListener'
 import { ToastContainer, toast, useToast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Loading from './components/Loading/Loading'
 const fireAuth = new webAuth()
 
 function App() {
 
-    const [appData, setAppData] = useState({ userInfo: {}, profileUser: {}, chatHistory: [], selectedChatRoom: {}, messages: [], online: true, chat: true, call: false, callType: 'recieving', buttonsClicked: false })
+    const [appData, setAppData] = useState({
+        userInfo: {},
+        profileUser: {},
+        chatHistory: [],
+        selectedChatRoom: {},
+        messages: [],
+        online: true,
+
+        postsForPage: 'home',
+        myPostsCount: 0,
+        postsByFollowedCount: 0,
+
+        chat: true,
+        call: false,
+        callType: 'recieving',
+        buttonsClicked: false,
+        listenToMongo: false,
+        listening: false
+    })
     const [loading, setLoading] = useState(true)
 
     if (!firebase.apps.length) firebase.initializeApp(config)
@@ -31,7 +50,7 @@ function App() {
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: `${domain}/user/${user.uid}`,
+            url: `http://localhost:5000/user/${user.uid}`,
             headers: {}
         }
 
@@ -39,10 +58,11 @@ function App() {
 
         axios.request(config)
             .then((response) => {
-                // alert(JSON.stringify(response.data))
+                //  alert(JSON.stringify(response.data))
                 if (response.data.user) {
                     appData.userInfo = response.data.user
                     setAppData({ ...appData })
+                    setLoading(false)
                     // alert(`app data : userInfo : ${JSON.stringify(appData)}`)
                 }
             })
@@ -57,12 +77,12 @@ function App() {
         const user = await fireAuth.getLoginSession()
         // alert(`user from login session : ${JSON.stringify(user)}`)
         if (user.uid) getUserInfoFromMongoDb(user)
+        if (!user.uid) setLoading(false)
     }
 
 
     const effect = () => {
-        if (Object.keys(appData.userInfo).length <= 0) init()
-        // if (!user) setLoading(false)
+        init()
     }
 
     useEffect(effect, [])
@@ -71,42 +91,37 @@ function App() {
     return (
         <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
             <ToastContainer />
-            <GlobalSocketListener>
-                <BrowserRouter>
-                    <Routes>
+            <BrowserRouter>
+                <Routes>
 
-                        <Route
-                            path="/"
-                            element={appData.userInfo.id ? <Home /> : <Auth />}
-                        />
+                    <Route
+                        path="/"
+                        element={loading ? <Loading /> : (appData.userInfo.id ? <Home /> : <Auth />)}
+                    />
 
-                        <Route
-                            path="/home"
-                            element={<Home />}
-                        />
+                    <Route
+                        path="/home"
+                        element={<Home />}
+                    />
 
-                        <Route
-                            path="/auth"
-                            element={<Auth />}
-                        />
-                        <Route
-                            path="/profile/:id"
-                            element={<Profile />}
-                        />
+                    <Route
+                        path="/auth"
+                        element={<Auth />}
+                    />
 
-                        <Route
-                            path="/profile/:id"
-                            element={<Profile />}
-                        />
+                    <Route
+                        path="/profile/:id"
+                        element={<Profile />}
+                    />
 
-                        <Route
-                            path="/chat"
-                            element={<Chat />}
-                        />
+                    <Route
+                        path="/chat"
+                        element={<Chat />}
+                    />
 
-                    </Routes>
-                </BrowserRouter>
-            </GlobalSocketListener>
+                </Routes>
+            </BrowserRouter>
+
         </AppContext.Provider>
     )
 }

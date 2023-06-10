@@ -7,12 +7,11 @@ import { AppContext } from '../../Context'
 function Live() {
 
     const { appInfo, setAppInfo } = useContext(AppContext)
-    const [clicked, setClicked] = useState(false)
 
 
     const notify = async (streamKey) => {
 
-        alert(`stream key notify : ${streamKey}`)
+        // alert(`stream key notify : ${streamKey}`)
 
         const message = {
             chatRoomKey: appInfo.selectedChatRoom.key,
@@ -27,7 +26,7 @@ function Live() {
 
         try {
             const resp = await addMessage(message)
-             alert(`resp : ${JSON.stringify(resp.data)}`)
+            // alert(`resp : ${JSON.stringify(resp.data)}`)
         }
         catch (ex) {
             alert(`error : ${ex}`)
@@ -41,7 +40,6 @@ function Live() {
             setTimeout(() => {
                 setAppInfo({ ...appInfo })
                 document.getElementById('webcamButton').click()
-
             }, 2000)
 
             setTimeout(() => {
@@ -49,16 +47,32 @@ function Live() {
                     var callBtn = document.getElementById('callButton')
                     callBtn.click()
                 }
-                //if (appInfo.callType === 'recieving') document.getElementById('answerButton').click()
-                //if (appInfo.callType === 'recieving') document.getElementById('callInput').value = appInfo.liveStreamingKey
             }, 5000)
         }
 
     }
 
+
+    const automateRecieveCall = () => {
+        setTimeout(() => {
+            setAppInfo({ ...appInfo })
+            document.getElementById('webcamButton').click()
+        }, 2000)
+
+        setTimeout(() => {
+            document.getElementById('callInput').value = appInfo.liveStreamingKey
+        }, 3000)
+
+        setTimeout(() => {
+            document.getElementById('answerButton').click()
+        }, 6000)
+
+    }
+
     const effect = () => {
         main(notify)
-        automateSendCall()
+        if (appInfo.callType === 'sending') automateSendCall()
+        if (appInfo.callType === 'recieving') automateRecieveCall()
     }
 
     useEffect(effect, [])
@@ -91,20 +105,19 @@ function Live() {
             <button style={Styles.Button} id="callButton">Create Call (offer)</button>
 
 
-            <div style={{ font: "18px roboto" }}>
+            {/* <div style={{ font: "18px roboto" }}>
                 OR
             </div>
 
-            <h6>Join a Call</h6>
+            <h6>Join a Call</h6> */}
+
+
+
+            <input style={{ display: 'none' }} id="callInput" placeholder='livestream id' />
             <br />
             <br />
 
-
-            <input id="callInput" placeholder='livestream id' />
-            <br />
-            <br />
-
-            <button id="answerButton" >Answer</button>
+            <button style={Styles.Button} id="answerButton" >Answer</button>
 
             <br />
             <br />
@@ -132,7 +145,7 @@ const Styles = ({
         border: 'none',
         color: 'white',
         cursor: 'pointer',
-        //  display: 'none'
+        display: 'none'
     },
     bigText: {
         font: "14px roboto"

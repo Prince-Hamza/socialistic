@@ -14,6 +14,12 @@ import SchemeRoute from './routes/SchemeRoutes.js'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import { MongoClient } from 'mongodb'
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+
 
 const app = express();
 const httpServer = createServer(app)
@@ -30,6 +36,7 @@ app.use(express.static('public'));
 app.use('/images', express.static('images'));
 
 
+
 dotenv.config()
 const PORT = process.env.PORT
 const CONNECTION = process.env.MONGODB_CONNECTION
@@ -41,6 +48,24 @@ mongoose
     console.log(`Listening @ Port ${PORT} | Mongoose is successfully connected`)
   })
   .catch((error) => console.log(`${error} Mongodb did not connect`));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.use('/auth', AuthRoute);

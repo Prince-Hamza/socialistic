@@ -7,14 +7,13 @@ import ProfileCardUser from "../ProfileCardUser/ProfileCardUser";
 import CustomNavbar from "../Navbar/Navbar";
 
 const ProfileSide = () => {
+
   return (
     <div className="ProfileSide">
-        
-        <LogoSearch/>
-        <ProfileCardUser location = 'homepage'/>
-        {/* <FollowersCard/> */}
+      <LogoSearch />
+      <ProfileCard />
     </div>
-    )
+  )
 }
 
 export default ProfileSide

@@ -1,5 +1,5 @@
 import * as PostsApi from "../api/PostsRequests";
-import Posts from "../components/Posts/Posts";
+import Posts from  '../components/PostsHomePage/PostsHomePage'
 
 export const getTimelinePosts = (id) => async (dispatch) => {
   dispatch({ type: "RETREIVING_START" });

@@ -66,21 +66,53 @@ export const deletePost = async (req, res) => {
 
 // like/dislike a post
 export const likePost = async (req, res) => {
-  const id = req.params.id;
-  const { userId } = req.body;
+
+  const userId = req.body.userId;
+  const postId = req.body.postId
+
   try {
-    const post = await PostModel.findById(id);
+    const post = await PostModel.findById(postId);
     if (post.likes.includes(userId)) {
       await post.updateOne({ $pull: { likes: userId } });
-      res.status(200).json("Post disliked");
+      return res.status(200).send({ success: true, message: "Post disliked" })
     } else {
       await post.updateOne({ $push: { likes: userId } });
-      res.status(200).json("Post liked");
+      return res.status(200).send({ success: true, message: "Post liked" })
     }
   } catch (error) {
-    res.status(500).json(error);
+    return res.status(500).json({ error: error.toString() });
   }
 };
+
+
+// const includesId = (commentsList) => {
+//   let found = true
+//   commentsList.forEach((item) => {
+//     if (item.userId === id) found = true
+//   })
+// }
+
+export const comment = async (req, res) => {
+
+  const userId = req.body.userId
+  const postId = req.body.postId
+  const username = req.body.username
+  const profilePicture = req.body.profilePicture
+  const comment = req.body.comment
+
+
+  try {
+    const post = await PostModel.findById(postId);
+    await post.updateOne({ $push: { comments: req.body } });
+    return res.status(200).send({ success: true, message: "commented" })
+  } catch (error) {
+    return res.status(500).json({ error: error.toString() });
+  }
+};
+
+
+
+
 
 // Get timeline posts
 export const getTimelinePosts = async (req, res) => {

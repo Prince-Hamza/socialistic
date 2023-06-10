@@ -8,8 +8,10 @@ import { AppContext } from "../../Context"
 import Messages from "../Messages/Messages"
 import _ from 'lodash'
 import { io } from "socket.io-client"
-import $ from 'jquery'
+import $, { error } from 'jquery'
 import { main } from "../Live/backend"
+import { Image } from "react-bootstrap"
+import greenPhone from '../../img/messenger/greenPhone.jpg'
 const ENDPOINT = `http://127.0.0.1:5000/`
 const socket = io(ENDPOINT);
 
@@ -26,79 +28,14 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   const currentUser = appInfo.userInfo
 
 
-  const fetchMessages = async () => {
-    try {
-      const { data } = await getMessages(chat._id)
-      setMessages(data)
-    } catch (error) {
-      console.log(error);
-    }
-    setLoadedHistory(true)
-  }
-
-  //if (appInfo.selectedChatRoom && appInfo.selectedChatRoom.key && !loadedHistory) fetchMessages()
-
-
   const handleChange = (newMessage) => {
     setNewMessage(newMessage)
   }
 
 
 
-
-
-  // onMessage | EventListener
-
-  const socketListener = () => {
-    // alert(`socket listener : ${listening}`)
-    socket.on('message', (data) => {
-      if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey) {
-        //alert(`message event :: ${JSON.stringify(data.fullDocument)}`)
-        let list = appInfo.messages
-        let nm = data.fullDocument
-        list.push(nm)
-        list = _.uniqBy(list, 'text')
-        // alert(`length prexisting  : ${list.length}`)
-        appInfo.messages = list
-        setAppInfo({ ...appInfo })
-      }
-
-      if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
-        alert(`chatbox: live key : ${data.fullDocument.liveStreamingKey}`)
-        // recieveCall(data.liveStreamingKey)
-      }
-
-    })
-
-
-
-
-    alert(`mongo ? ${listenToMongo}  roomKey : ${appInfo.selectedChatRoom.key}`)
-    if (!listenToMongo && appInfo.selectedChatRoom.key) {
-      alert('emit listen')
-      socket.emit('listen', { chatRoomKey: appInfo.selectedChatRoom.key })
-      setListenToMongo(true)
-    }
-
-
-
-
-    socket.on("disconnect", () => { console.log(socket.id) })
-
-  }
-
-  useEffect(() => {
-    if (!listening) socketListener()
-  }, [])
-
-
-
-
   // Send Message
   const handleSend = async () => {
-
-
-
 
     const message = {
       chatRoomKey: appInfo.selectedChatRoom.key,
@@ -108,15 +45,14 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
       text: newMessage,
     }
 
-    //alert(`${JSON.stringify(message)}`)
 
     try {
       await addMessage(message);
       // setMessages([...messages]);
       setNewMessage("")
     }
-    catch {
-      console.log("error")
+    catch (ex) {
+      console.log(`error : ${ex}`)
     }
 
 
@@ -150,6 +86,12 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   }
 
 
+  useEffect(() => {
+    var scroll = $('.chat-body');
+    scroll.animate({ scrollTop: '8000px' });
+  }, [])
+
+
   return (
     <>
 
@@ -173,8 +115,10 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
                   </div>
                 </div>
 
-                <button onClick={sendCall} >   Send Call   </button>
-                <button onClick={recieveCall} >   Recieve Call   </button>
+
+                <Image style={{ wiidth: '50px', height: '50px', cursor: 'pointer', marginBottom: '20px' }} onClick={sendCall} src={greenPhone} />
+                {/* <button onClick={sendCall} >   Send Call   </button> */}
+                <button style={{ display: 'none' }} onClick={recieveCall} >   Recieve Call   </button>
 
               </div>
               <hr
@@ -192,8 +136,11 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
 
             {/* chat-sender */}
             <div className="chat-sender">
-              <div onClick={() => imageRef.current.click()}>+</div>
+
+              {/* <div onClick={() => imageRef.current.click()}>+</div> */}
+
               <InputEmoji
+                style={{ marginBottom: '15px' }}
                 value={newMessage}
                 onChange={handleChange}
                 onEnter={handleOnEnter}

@@ -9,13 +9,17 @@ import { addMessage, getMessages } from "../../api/MessageRequests"
 const Conversation = ({ data, currentUser }) => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
-const online = appInfo.online
+  const online = appInfo.online
 
 
   const fetchMessages = async (id) => {
     try {
-      const { data } = await getMessages(id)
+      var { data } = await getMessages(id)
+
+      data = data.filter((item) => { return item.text !== 'call Request' && item.text !== 'call request' })
+
       appInfo.messages = data
+      // alert(`selected :: ${appInfo.selectedChatRoom.key}`)
       setAppInfo({ ...appInfo })
     } catch (error) {
       alert(error);
@@ -28,6 +32,7 @@ const online = appInfo.online
     appInfo.selectedChatRoom.key = data.chatRoomKey
     appInfo.selectedChatRoom._id = data.chatRoomKey
     appInfo.selectedChatRoom.partner = { id: data.partnerId, name: data.name, photo: data.photo }
+    // alert(appInfo.selectedChatRoom.key)
     await fetchMessages(data.chatRoomKey)
     setAppInfo({ ...appInfo })
   }
