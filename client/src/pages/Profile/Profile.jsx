@@ -28,7 +28,7 @@ const Profile = () => {
         <Row>
           <Col> <ProfileLeft /> </Col>
           <Col>  <div className="Profile-center">
-            <ProfileCard location = 'profilePage'/>
+          {window.location.href.includes('user') ? <ProfileCardUser /> : <ProfileCard location='profilePage' />}
             <PostSide/>
             </div>
           </Col>

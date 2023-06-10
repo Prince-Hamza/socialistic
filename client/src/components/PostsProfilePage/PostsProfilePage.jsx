@@ -21,40 +21,13 @@ const PostsProfilePage = () => {
   const { appInfo, setAppInfo } = useContext(AppContext)
 
 
-
-  const getPostsByFollowedUsers = () => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `http://localhost:5000/posts/timeline?id=${appInfo.userInfo.id}`,
-      headers: {}
-    };
-
-    axios.request(config)
-      .then((response) => {
-        let list = response.data.posts
-        // alert(`timeline posts :: ${JSON.stringify(list)}`)
-        setPosts([...list])
-        setLoading(false)
-        setComplete(true)
-
-        appInfo.postsByFollowedCount = list.length // by users i follow
-        setAppInfo({ ...appInfo })
-
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-
   const getMyPosts = () => {
 
-    // alert(`get my posts : ${appInfo.userInfo.id}`)
 
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `http://localhost:5000/posts/timeline?id=${appInfo.userInfo.id}`,
+      url: `http://localhost:5000/posts/myposts?id=${appInfo.profileUser.id}`,
       headers: {}
     };
 
@@ -80,13 +53,11 @@ const PostsProfilePage = () => {
 
   const init = () => {
     setLoading(true)
-    //if (window.location.href.includes(user)) 
     getMyPosts()
-  //  if (!window.location.href.includes(user)) getPostsByFollowedUsers()
   }
 
   const effect = () => {
-    if (!complete && appInfo.userInfo.id) init()
+    if (!complete && appInfo.profileUser.id) init()
   }
 
 
@@ -95,17 +66,14 @@ const PostsProfilePage = () => {
 
   return (
     <div className="Posts">
-      {loading ? (
-        "Fetching posts...."
-      ) : (
-        posts.map((post, id) => {
-          return <Post data={post} key={id} posts={posts} setPosts={setPosts} />;
-          // return null
-        })
-      )}
+      {loading ? ("Fetching posts....")
+        : (
+          posts.map((post, id) => {
+            return <Post data={post} key={id} posts={posts} setPosts={setPosts} />;
+          })
+        )}
 
-
-      {!posts.length && complete && <span style={{ marginLeft: '38%' }} > No posts to show </span>}
+      {!posts.length && complete && <span style={{ marginLeft: '38%' }} > You have not posted anything so far  </span>}
 
     </div>
   )

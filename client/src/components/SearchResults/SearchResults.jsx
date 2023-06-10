@@ -20,8 +20,14 @@ export default function SearchResults({ results }) {
         // alert(`user : ${JSON.stringify(user)}`)
         appInfo.profileUser = user
         appInfo.selectedPartner = user
+        appInfo.postsForPage = 'profile'
         setAppInfo({ ...appInfo })
-        navigate(`/profile/${user.id}`)
+
+
+        setTimeout(() => {
+            navigate(`/profile/${user.id}?type=user`)
+        }, 1000)
+
     }
 
     return (

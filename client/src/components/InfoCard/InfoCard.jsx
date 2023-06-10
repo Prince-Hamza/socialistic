@@ -28,6 +28,8 @@ const InfoCard = () => {
 
   const sendMessage = async () => {
 
+
+
     // me : user
     let me = {
       id: appInfo.userInfo.id,
@@ -42,11 +44,16 @@ const InfoCard = () => {
       photo: appInfo.selectedPartner.profilePicture
     }
 
+    // alert(`me : ${JSON.stringify(me)}`)
+    // alert(`partner : ${JSON.stringify(partner)}`)
+
     const result = await interact(me, partner)
     appInfo.chatHistory = result.conversations
 
+    console.log(`convo : ${JSON.stringify(result.conversations)}`)
     // alert(`convo : ${JSON.stringify(result.conversations)}`)
 
+    return
     setAppInfo({ ...appInfo })
     // alert(`conversations :: ${JSON.stringify(result.conversations)}`)
 
@@ -104,7 +111,7 @@ const InfoCard = () => {
         {/* <span>
           <b>Works at </b>
         </span> */}
-        <span>{profileUser.worksAt}</span>
+        {/* <span>{profileUser.worksAt}</span> */}
       </div>
 
       <button className="button logout-button" onClick={sendMessage}> Message  </button>

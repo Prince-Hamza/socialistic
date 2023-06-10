@@ -8,7 +8,7 @@ import CommentSide from "../CommentSide/CommentSide";
 import { AppContext } from "../../Context";
 
 const PostSide = () => {
-
+  
   const { appInfo, setAppInfo } = useContext(AppContext)
 
   return (

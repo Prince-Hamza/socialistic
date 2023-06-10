@@ -175,7 +175,7 @@ export const timeline = async (req, res) => {
     // get their posts
 
     const promises = followed.map(async (followedId) => {
-      console.log(`get posts of :: ${followedId}`)
+      console.log(`ge32t posts of :: ${followedId}`)
       const posts = await PostModel.find({ userId: followedId })
       console.log(`posts of : ${followedId} :: ${posts}`)
       return posts
@@ -184,6 +184,24 @@ export const timeline = async (req, res) => {
     const p = await Promise.all(promises)
     return res.status(200).send({ success: true, posts: p.length ? p[0] : [] })
 
+  } catch (ex) {
+    return res.status(400).send({ error: ex.toString() })
+  }
+
+}
+
+
+export const getMyPosts = async (req, res) => {
+
+  const id = req.query.id
+
+  console.log(`timeline of :: ${id}`)
+
+  try {
+    console.log(`get posts of :: ${id}`)
+    const posts = await PostModel.find({ userId: id })
+    console.log(`posts of : ${id} :: ${posts}`)
+    return res.status(200).send({ success: true, posts: posts.length ? posts : [] })
   } catch (ex) {
     return res.status(400).send({ error: ex.toString() })
   }

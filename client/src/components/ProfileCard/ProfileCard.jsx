@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FollowersModal from "../FollowersModal/FollowersModal";
 import firebase from 'firebase/compat/app'
@@ -12,7 +12,6 @@ import { toast } from "react-toastify"
 const storage = new Storage()
 
 const ProfileCard = ({ location }) => {
-
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [uploadingCover, setUploadingCover] = useState(false)
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false)
@@ -103,6 +102,10 @@ const ProfileCard = ({ location }) => {
 
   const own = window.location.href.includes('user') ? true : false
 
+
+  useEffect(() => {
+    alert('Profile Card')
+  })
 
 
   return (
