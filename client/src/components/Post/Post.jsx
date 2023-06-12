@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext, useMemo } from "react";
 import moment from "moment";
 import "./Post.css";
 import Com from "../../img/comment.png";
@@ -19,12 +19,15 @@ import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
 import { domain } from "../../constants/constants";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
 
 
 const Post = ({ data, posts, setPosts }) => {
-  const { appInfo, setAppInfo } = useContext(AppContext)
 
+  const { appInfo, setAppInfo } = useContext(AppContext)
+  const center = useMemo(() => ({ lat: 18.52043, lng: 73.856743 }), []);
+  const { isLoaded } = useLoadScript({ googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY })
   var user = firebase.auth().currentUser
 
   const [liked, setLiked] = useState(data.likes.includes(appInfo.userInfo.id))
@@ -72,7 +75,6 @@ const Post = ({ data, posts, setPosts }) => {
           }
         })
         setPosts([...posts])
-
       })
       .catch((error) => {
         console.log(error);
@@ -140,6 +142,28 @@ const Post = ({ data, posts, setPosts }) => {
           })}
         </div>
       }
+
+
+
+      {data.locations &&
+        <div>
+          {data.locations.map((location) => {
+            return (
+              <div style={{ width: '100%', height: 'auto' }} >
+                {isLoaded &&
+                  <GoogleMap
+                    mapContainerStyle={{ width: '100%', height: '500px' }}
+                    center={center}
+                    zoom={10}
+                  />
+                }
+              </div>
+            )
+          })}
+
+        </div>
+      }
+
     </div>
   )
 

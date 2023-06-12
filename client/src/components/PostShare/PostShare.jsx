@@ -22,12 +22,13 @@ function PostShare(props) {
     var user = firebase.auth().currentUser
 
     const { appInfo, setAppInfo } = useContext(AppContext)
-    
+
     const [loading, setLoading] = useState(false)
     const [text, setText] = useState()
     //const [location, setLocation] = useState()
     //const [date,setDate] = useState()
-    const [DateIcon, setDateIcon] = useState(false);
+    const [DateIcon, setDateIcon] = useState(false)
+    const [showAddAssets, setShowAddAssets] = useState(true)
 
     const [postInfo, setPostInfo] = useState({
         userId: appInfo.userInfo.id,
@@ -45,12 +46,9 @@ function PostShare(props) {
     const getLocation = () => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                
                 const { latitude, longitude } = position.coords;
-               // setLocation({ latitude, longitude });
-                postInfo.locations.push({latitude,longitude})
-                
-                
+                postInfo.locations.push({ latitude, longitude })
+                setPostInfo({ ...postInfo })
             },
             (error) => {
                 console.error(error);
@@ -67,6 +65,7 @@ function PostShare(props) {
         }
     }
 
+
     // handle Video Change
     const onVideoChange = (event) => {
         if (event.target.files && event.target.files[0]) {
@@ -75,13 +74,15 @@ function PostShare(props) {
             setPostInfo({ ...postInfo })
         }
     }
+
+
     // handle Date Change
-    const onBlur = (e) =>{
+    const onBlur = (e) => {
         const selectedDate = e.target.value
         postInfo.dates.push(selectedDate);
     }
 
-    const ChangeDateIcon =() =>{
+    const ChangeDateIcon = () => {
         setDateIcon(!DateIcon);
     }
 
@@ -102,17 +103,14 @@ function PostShare(props) {
         })
 
         const picLinks = await Promise.all(imagePromises)
-
-
         const videoLinks = await Promise.all(videoPromises)
 
-        // postInfo.images = picLinks
-        // postInfo.videos = videoLinks
+        postInfo.images = picLinks
+        postInfo.videos = videoLinks
 
-        // setPostInfo(postInfo)
+        setShowAddAssets(false)
+        setPostInfo(postInfo)
 
-        // const result = await storage.uploadImage('/mytestpic', 'image/jpeg', postInfo.images[0])
-        // alert(`uploaded successfully ${result.downloadLink}`)
 
     }
 
@@ -130,6 +128,8 @@ function PostShare(props) {
 
         let data = JSON.stringify(postInfo)
 
+
+
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
@@ -144,7 +144,7 @@ function PostShare(props) {
             .then((response) => {
                 console.log(JSON.stringify(response.data))
                 setLoading(false)
-                toast.success('Post uploaded successfully')
+                toast.success('Post uploaded successfully', { position: 'bottom-center' })
                 // alert(JSON.stringify(response.data))
             })
             .catch((error) => {
@@ -156,7 +156,7 @@ function PostShare(props) {
 
     const imageRef = useRef();
     const videoRef = useRef();
-   
+
 
     return (
         <Row className="PostShare">
@@ -167,14 +167,13 @@ function PostShare(props) {
             <div style={{ width: '90%' }} >
 
                 <input
-                    // style={{ border: 'solid 1px' }}
                     type="text"
                     placeholder="What's happening ?"
-                    onChange={() => { }}
+                    onChange={(e) => { setText(e.target.value) }}
                     required
                 />
 
-                <AddAssets postInfo={postInfo} setPostInfo={setPostInfo} />
+                {showAddAssets && <AddAssets postInfo={postInfo} setPostInfo={setPostInfo} />}
 
                 <div className="postOptions">
                     <div
@@ -206,18 +205,18 @@ function PostShare(props) {
                     <div className="option" style={{ color: "var(--shedule)" }}
                         onClick={ChangeDateIcon}
                     >
-                       
+
                         {!DateIcon && <UilSchedule />}
-                        
+
                         Shedule
                     </div>
                     <div>
-                    {DateIcon && 
-                        <input type="Date"  onBlur={onBlur}  
-                        style={{marginRight:4 ,border:'0',color: "var(--shedule)",marginTop:5,fontSize:'15px'}}
-                        
-                        /> 
-                    }
+                        {DateIcon &&
+                            <input type="Date" onBlur={onBlur}
+                                style={{ marginRight: 4, border: '0', color: "var(--shedule)", marginTop: 5, fontSize: '15px' }}
+
+                            />
+                        }
                     </div>
                     <button
                         className="button ps-button"

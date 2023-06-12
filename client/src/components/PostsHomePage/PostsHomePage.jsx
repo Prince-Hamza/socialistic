@@ -73,7 +73,9 @@ const Posts = () => {
       )}
 
 
-      {!posts.length && complete && <span style={{ marginLeft: '38%' }} > No posts to show </span>}
+      {!posts.length && complete &&
+        <p style={{ marginLeft: '30%',font:'italic 18px times new roman' }} > No posts from people you follow to show </p>
+      }
 
     </div>
   )
