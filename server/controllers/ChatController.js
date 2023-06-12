@@ -1,6 +1,8 @@
 import ChatModel from "../models/chatModel.js";
 import ChatHistoryModel from "../models/chatHistoryModel.js";
 import Messages from "../models/messages.js";
+import _ from 'lodash'
+
 
 export const createChat = async (req, res) => {
   const newChat = new ChatModel({
@@ -55,6 +57,9 @@ function getRandomArbitrary(min, max) {
 
 const createChatRoomIfInexistent = async (me, partner, chatRoomKey) => {
 
+
+  console.log(`crm :: myId ${me.id} , partnerId : ${partner.id}  `)
+
   let final = 0
   const result1 = await ChatHistoryModel.findOne({ id: me.id, partnerId: partner.id })
   const result2 = await ChatHistoryModel.findOne({ id: partner.id, partnerId: me.id })
@@ -62,7 +67,7 @@ const createChatRoomIfInexistent = async (me, partner, chatRoomKey) => {
   if (result1 === null && result2 === null) {
     // create chat room & inform both
 
-    console.log(`post key and convo `)
+    console.log(`create chat room & inform both`)
 
     try {
       const resp = await ChatHistoryModel.create({
@@ -85,16 +90,19 @@ const createChatRoomIfInexistent = async (me, partner, chatRoomKey) => {
 
       console.log(`created 2 : result : ${JSON.stringify(resp2)}`);
 
-      return resp
+      final = resp
+
     } catch (ex) {
       console.log(`post key : error : ${ex}`)
       return { error: ex }
     }
 
   } else {
+    console.log(`one of them is null`);
     final = result1 === null ? result2 : result1
   }
 
+  // console.log(` final : ${JSON.stringify(final)}`);
   return final
 }
 
@@ -123,16 +131,16 @@ const getKeyAndConversations = async (me) => {
 }
 
 
-const postKeyAndConversation = async (me, partner, chatRoomKey) => {
-  console.log(`post key and convo `)
-  try {
-    const resp = await ChatHistoryModel.create({ id: me.id, partnerId: partner.id, name: partner.name, photo: partner.photo, chatRoomKey: chatRoomKey })
-    // console.log(`created chat : ${resp}`)
-    return resp
-  } catch (ex) {
-    console.log(`post key : error : ${ex}`)
-  }
-}
+// const postKeyAndConversation = async (me, partner, chatRoomKey) => {
+//   console.log(`post key and convo `)
+//   try {
+//     const resp = await ChatHistoryModel.create({ id: me.id, partnerId: partner.id, name: partner.name, photo: partner.photo, chatRoomKey: chatRoomKey })
+//     // console.log(`created chat : ${resp}`)
+//     return resp
+//   } catch (ex) {
+//     console.log(`post key : error : ${ex}`)
+//   }
+// }
 
 export const onInteractionForChat = async (req, res) => {
 
@@ -147,29 +155,18 @@ export const onInteractionForChat = async (req, res) => {
   // crate chat room  if inexistent
 
   var postedConversation = await createChatRoomIfInexistent(me, partner, chatRoomKey)
-
-  console.log(`conversation existing : ${postedConversation} `)
-
-  // if no : genKey & POST default conversation
-  // if (isConversationExisting === null) {
-  //   conversations = await postKeyAndConversation(me, partner, chatRoomKey)
-  //   console.log(`created chat r : ${conversations}`)
-  // }
-
-  //else {
-  // GET all conversations of ME
+  console.log(`final: ${JSON.stringify(postedConversation)} `)
 
   conversations = await getKeyAndConversations(me)
-  // conversations = [...conversations, postedConversation]
-  console.log(`got conversations : ${conversations} `)
+  // console.log(`got conversations : ${conversations} `)
 
-  //}
+  let finalList = [...conversations, postedConversation]
+  console.log(`final List: ${JSON.stringify(postedConversation)} `)
+
+  finalList = _.uniqBy(finalList, 'partnerId')
 
 
-
-  console.log(`conversations final : ${conversations}`)
-
-  return res.status(201).send({ success: true, conversations: conversations })
+  return res.status(201).send({ success: true, conversations: finalList })
 
 }
 
@@ -185,8 +182,9 @@ export const myChatHistory = async (req, res) => {
   conversations = await getKeyAndConversations(me)
 
   console.log(`got conversations : ${conversations} `)
-
   console.log(`conversations final : ${conversations}`)
+
+
 
   return res.status(201).send({ success: true, conversations: conversations })
 

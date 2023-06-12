@@ -10,14 +10,15 @@ import { getUserById } from "../../api/UserRequests";
 import ShareModal from "../ShareModal/ShareModal";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
+import { domain } from "../../constants/constants";
 
 
 const Comment = ({ data }) => {
 
   var user = firebase.auth().currentUser
 
-  //const [liked, setLiked] = useState(data.likes.includes(user.id));
-  // const [likes, setLikes] = useState(data.likes.length);
+  const [liked, setLiked] = useState(data.likes ? data.likes.includes(user.id) : false)
+  const [likes, setLikes] = useState(data.likes ? data.likes.length : 0)
   // const dispatch = useDispatch();
 
   const [isShare, setIsShare] = useState(false);
@@ -57,10 +58,6 @@ const Comment = ({ data }) => {
       }
     };
 
-    if (user.uid !== data.userId) {
-      fetchUser();
-    }
-
 
   }, [data.userId, user.id]);
 
@@ -89,79 +86,71 @@ const Comment = ({ data }) => {
   if (loading) {
     return (<><span>...loading</span></>)
   }
-  else {
+  else{
 
+  
+  return (
+    <div className="Comment">
+      <div className="Commentheader">
+        <div className="CommentInfo">
+          {/* {user.id === data?.userId ? (
+            <img
+              src={data.profilePicture || "defaultProfile.png"}
+              alt="ProfileImage"
+            />
+          ) : (
+            <img
+              src={data.profilePicture || "defaultProfile.png"}
+              alt="ProfileImage"
+            />
+          )} */}
 
-    return (
-      <div className="Comment">
-        <div className="Commentheader">
-          <div className="CommentInfo">
-            {user.uid === data?.userId ? (
-              <img
-                src={currentUser.user.profilePicture || "defaultProfile.png"}
-                alt="ProfileImage"
-              />
-            ) : (
-              <img
-                src={user.profilePicture || "defaultProfile.png"}
-                alt="ProfileImage"
-              />
-            )}
-            <div className="CommentInfoUser">
-              <span className="user">
-                {user.uid === data?.userId
-                  ? `${'currentUser.user.username'}`
-                  :
-                  `${'commentUser.user.username'}`
-                }
-              </span>
-              <span className="timeago">
-                {moment.utc(data.createdAt).fromNow()}
-              </span>
-            </div>
-          </div>
-          <div className="commentcardheaderdown">
-            <div className="menu-trigger">
-              <p>ooo</p>
-              <div className="dropdown-menu">
-                <ul>
-                  <li onClick={handleUpdate}>Update Comment</li>
-                  <li onClick={handleDelete}>Delete Comment</li>
-                  <li onClick={handleCopyLink}>Copy Link</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="detail" style={{ alignSelf: "flex-start" }}>
-          <span>
-            <b>{data.comment}</b>
-          </span>
-
-          <span>{data.desc}</span>
-        </div>
-
-        <div className="commentReact">
-          {/*  <img
-          src={liked ? Heart : NotLike}
-          alt=""
-          style={{ cursor: "pointer" }}
-          onClick={handleLike}
-              /> */}
-          <img src={Com} alt="" style={{ cursor: "pointer" }} />
           <img
-            src={Share}
-            alt=""
-            onClick={() => setIsShare(!isShare)}
-            style={{ cursor: "pointer" }}
+            src={data.profilePicture || "defaultProfile.png"}
+            alt="ProfileImage"
           />
-        </div>
 
-        <span style={{ color: "var(--gray)", fontSize: "12px", alignSelf: "flex-start" }}>
-          {/* {likes} likes  */}
+
+          <div className="CommentInfoUser">
+            <span className="user">
+              {data.username}
+            </span>
+            {/* <span className="timeago">
+              {moment.utc(data.createdAt).fromNow()}
+            </span> */}
+          </div>
+        </div>
+        <div className="commentcardheaderdown">
+
+
+          {/* <div className="menu-trigger">
+            <p>ooo</p>
+            <div className="dropdown-menu">
+              <ul>
+                <li onClick={handleUpdate}>Update Comment</li>
+                <li onClick={handleDelete}>Delete Comment</li>
+                <li onClick={handleCopyLink}>Copy Link</li>
+              </ul>
+            </div>
+          </div> */}
+
+
+        </div>
+      </div>
+      <div className="detail" style={{ alignSelf: "flex-start" }}>
+        <span>
+          {/* <b>{data.username}</b> */}
         </span>
 
-        {isShare && <ShareModal url={`http://localhost:5000/comment/${data._id}`} />}
+        <span>{data.comment}</span>
+      </div>
+
+{/* 
+      <span style={{ color: "var(--gray)", fontSize: "12px", alignSelf: "flex-start" }}>
+        {likes} likes
+      </span> */}
+
+      {/* {isShare && <ShareModal url={`${domain}/comment/${data._id}`} />} */}
 
       </div>
     );

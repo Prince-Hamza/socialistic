@@ -9,6 +9,8 @@ router.post('/create',createPost)
 // router.delete('/:id/delete', deletePost)
 // router.put('/:id/like', likePost)
 router.get('/timeline', timeline)
+router.get('/myposts', getMyPosts)
+
 router.get('/test', test)
 router.get('/updateComments', test)
 router.get('/updateLikes', test)

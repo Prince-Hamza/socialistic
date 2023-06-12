@@ -39,9 +39,10 @@ export const getPostComments = (postId) => API.get(`/posts/${postId}/comments`);
 export const updatePost = (postId, userId) => API.put(`/posts/${postId}/update`, { userId });*/
 
 import axios from 'axios'
+import { domain } from '../constants/constants';
 
 
-const API = axios.create({ baseURL: 'http://localhost:5000' });
+const API = axios.create({ baseURL: domain });
 
 API.interceptors.request.use((req) => {
     if (localStorage.getItem('profile')) {

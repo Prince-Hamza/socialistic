@@ -18,6 +18,7 @@ import axios from 'axios'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
+import { domain } from "../../constants/constants";
 
 
 
@@ -25,80 +26,23 @@ const Post = ({ data, posts, setPosts }) => {
   const { appInfo, setAppInfo } = useContext(AppContext)
 
   var user = firebase.auth().currentUser
-  
-  const [liked, setLiked] = useState(false);
+
+  const [liked, setLiked] = useState(data.likes.includes(appInfo.userInfo.id))
   const [likes, setLikes] = useState(data.likes.length);
-  // const { auth, theme, socket } = useSelector(state => state);
   const [showdrop, setshowdrop] = useState(false);
-  
-  
- 
   const navigate = useNavigate();
-  const [comments, setComments] = useState(data.comments);
+
+  const [comments, setComments] = useState(data.comments ? data.comments : [])
+
   const [isShare, setIsShare] = useState(false);
-  const [isCommentInputVisible, setIsCommentInputVisible] = useState(false); // Nouvel état pour suivre la visibilité de l'entrée de commentaire
+  const [isCommentInputVisible, setIsCommentInputVisible] = useState(false)
 
-  const [postUser, setPostUser] = useState({});
-  
-  
-  // alert(`post data : ${data._id}`)
-
-  const handleUpload = async () => {
-    alert('upload')
-    // try {
-    //   // Envoyer le commentaire au serveur
-    //   const response = await createComment(data._id, { content: comment });
-    //   const newComment = response.data;
-
-    //   // Mettre à jour l'état des commentaires
-    //   setComments((prevComments) => [...prevComments, newComment]);
-
-    //   // Réinitialiser le commentaire et masquer l'entrée de commentaire
-    //   setComment("");
-    //   setIsCommentInputVisible(false);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
-
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await getUserById(data.userId);
-        console.log(`post user : ${response.data}`);
-        setPostUser(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchUser()
-
-  }, [data.userId, user.id]);
-
-
-
-  // Récupérer les informations de l'utilisateur réel à partir des données du post
-  //const postUser = data.user;
-
-  const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
-
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState("")
 
   const handleToggleCommentInput = () => {
     setIsCommentInputVisible((prev) => !prev);
     setComment(""); // Réinitialiser le commentaire lors du basculement de l'entrée de commentaire
-  };
-  //const handleCommentSubmit = () => {
-  /* const handleUpload = () => {
-     // Envoyer le commentaire au serveur ou effectuer le traitement local
-     console.log("Comment submitted:", post);
- 
-     // Réinitialiser le commentaire et masquer l'entrée de commentaire
-     setPost("");
-     setIsCommentInputVisible(false);
-   };*/
+  }
 
 
   const handleLike = () => {
@@ -106,17 +50,17 @@ const Post = ({ data, posts, setPosts }) => {
     let postData = JSON.stringify({
       "userId": appInfo.userInfo.id,
       "postId": data._id
-    });
+    })
 
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/posts/like',
+      url: `${domain}/posts/like`,
       headers: {
         'Content-Type': 'application/json'
       },
       data: postData
-    };
+    }
 
     axios.request(config)
       .then((response) => {
@@ -137,21 +81,8 @@ const Post = ({ data, posts, setPosts }) => {
     setLiked((prev) => !prev);
     liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1)
 
-  };
+  }
 
-
-
-  /*const handleEdit = (ed) =>{   
-    dispatch({/*type: ALERT_TYPES.STATUS ,*/ /*payload:{...data, edit:true}})
-setshowdrop(false)
-}
- 
-
-const handleDeletePost = () =>{
-dispatch(/*deletePost*//*({data, auth, socket}))
-                                                            setshowdrop(false)
-                                                            navigate('/')
-                                                          }*/
 
   const handleDelete = () => {
     setshowdrop(false);
@@ -174,17 +105,7 @@ dispatch(/*deletePost*//*({data, auth, socket}))
   const [open, setOpen] = useState(false);
   let menuRef = useRef();
 
-  // useEffect(() => {
-  //   let handler = (e) => {
-  //     if (!menuRef.current.contains(e.target)) {
-  //       setOpen(false);
-  //     }
-  //   };
-  //   document.addEventListener("mousedown", handler);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handler);
-  //   }
-  // });
+
 
   const handleVideoEnd = (event) => {
     event.target.currentTime = 0
@@ -264,9 +185,7 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         </div>
       </div>
       <div className="detail" style={{ alignSelf: "flex-start" }}>
-        {/* <span>
-          <b>{data.username} </b>
-        </span> */}
+
         <span>{data.text}</span>
       </div>
       {media}
@@ -300,14 +219,11 @@ dispatch(/*deletePost*//*({data, auth, socket}))
         <Comment key={item.id} data={item} />
       ))}
 
-      {/* 
-      {isShare && <ShareModal url={`http://localhost:5000/post/${data._id}`} theme={theme} />}
-
-      {isShare && <ShareModal url={`http://localhost:5000/post/comment/${data._id}`} theme={theme} />} */}
 
     </div>
-  );
-};
+  )
+}
+
 
 function DropdownItem(props) {
   return (

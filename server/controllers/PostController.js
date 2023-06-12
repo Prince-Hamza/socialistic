@@ -175,7 +175,7 @@ export const timeline = async (req, res) => {
     // get their posts
 
     const promises = followed.map(async (followedId) => {
-      console.log(`get posts of :: ${followedId}`)
+      console.log(`ge32t posts of :: ${followedId}`)
       const posts = await PostModel.find({ userId: followedId })
       console.log(`posts of : ${followedId} :: ${posts}`)
       return posts

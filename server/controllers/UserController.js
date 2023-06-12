@@ -107,6 +107,10 @@ export const followUser = async (req, res) => {
   const followId = req.body.follow
   const myId = req.body.myId
 
+
+  console.log(`myId : ${myId}`)
+  console.log(`follow id : ${followId}`)
+
   try {
     const followUser = await UserModel.findOne({ id: followId })
     const me = await UserModel.findOne({ id: myId })
@@ -119,11 +123,11 @@ export const followUser = async (req, res) => {
       await me.updateOne({ $push: { following: followId } });
       return res.status(200).send({ success: true, following: followUser })
     } else {
-      return res.status(403).send("you are already following this id");
+      return res.status(400).send({ error: "you are already following this id" });
     }
   } catch (error) {
     console.log(error)
-    res.status(500).json(error);
+    return res.status(400).send({ error: error });
   }
 }
 
