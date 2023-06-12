@@ -153,16 +153,26 @@ const Post = ({ data, posts, setPosts }) => {
                 {isLoaded &&
                   <GoogleMap
                     mapContainerStyle={{ width: '100%', height: '500px' }}
-                    center={center}
+                    center={{ lat: location.latitude, lng: location.longitude }}
                     zoom={10}
                   />
                 }
               </div>
             )
           })}
-
         </div>
       }
+
+
+      {data.dates &&
+        <div>
+          <div className="option" style={{ color: "var(--shedule)" }}>
+            <input type="Date"
+              style={{ marginRight: 4, border: '0', color: "var(--shedule)", marginLeft: 5, fontSize: '13px' }} />
+          </div>
+        </div>
+      }
+
 
     </div>
   )
@@ -239,8 +249,8 @@ const Post = ({ data, posts, setPosts }) => {
       )}
 
 
-      {comments.map((comment) => (
-        <Comment key={comment.id} data={comment} />
+      {comments.map((item) => (
+        <Comment key={item.id} data={item} />
       ))}
 
 

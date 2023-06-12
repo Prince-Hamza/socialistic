@@ -31,11 +31,11 @@ const Home = () => {
     <Container fluid>
       <CustomNavbar />
       <Row className="Home flex-sm-col flex-md-row flex-lg-row  flex-column">
-        <Col><ProfileSide /></Col>
-        <Col><PostSide /></Col>
-        <Col><RightSide /></Col>
+        <Col lg={3} ><ProfileSide /></Col>
+        <Col lg={7}  ><PostSide /></Col>
+        {/* <Col><RightSide /></Col> */}
       </Row>
-        <GlobalSocketListener /> 
+      <GlobalSocketListener />
     </Container>
   )
 }

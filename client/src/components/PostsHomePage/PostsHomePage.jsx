@@ -53,7 +53,16 @@ const Posts = () => {
     getPostsByFollowedUsers()
   }
 
+
+
+  /*const init = () => {
+    setLoading(true)
+    //   if (window.location.href.includes(user)) getMyPosts()
+    getPostsByFollowedUsers()
+  } */
+
   const effect = () => {
+    
     if (!complete && appInfo.userInfo.id) init()
   }
 
@@ -82,5 +91,3 @@ const Posts = () => {
 }
 
 export default Posts;
-
-

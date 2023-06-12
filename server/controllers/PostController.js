@@ -190,7 +190,6 @@ export const timeline = async (req, res) => {
 
 }
 
-
 export const getMyPosts = async (req, res) => {
 
   const id = req.query.id

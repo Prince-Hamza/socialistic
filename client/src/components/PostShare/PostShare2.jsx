@@ -215,5 +215,3 @@ const PostShare = () => {
 }
 
 export default PostShare
-
-

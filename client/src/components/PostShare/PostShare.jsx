@@ -35,6 +35,8 @@ function PostShare(props) {
         username: appInfo.userInfo.username,
         profilePicture: appInfo.userInfo.profilePicture,
         text: text,
+        imageLinks: [],
+        videoLinks: [],
         images: [],
         videos: [],
         locations: [],
@@ -60,6 +62,7 @@ function PostShare(props) {
     const onImageChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             let img = event.target.files[0]
+            postInfo.imageLinks.push(URL.createObjectURL(img))
             postInfo.images.push(img)
             setPostInfo({ ...postInfo })
         }
@@ -70,6 +73,7 @@ function PostShare(props) {
     const onVideoChange = (event) => {
         if (event.target.files && event.target.files[0]) {
             let vid = event.target.files[0]
+            postInfo.videoLinks.push(URL.createObjectURL(vid))
             postInfo.videos.push(vid)
             setPostInfo({ ...postInfo })
         }
@@ -83,11 +87,23 @@ function PostShare(props) {
     }
 
     const ChangeDateIcon = () => {
-        setDateIcon(!DateIcon);
+        setDateIcon(!DateIcon)
     }
 
 
-
+    const reset = () => {
+        setShowAddAssets(false)
+        setText('')
+        postInfo.imageLinks = []
+        postInfo.videoLinks = []
+        postInfo.videos = []
+        postInfo.images = []
+        postInfo.locations = []
+        postInfo.dates = []
+        postInfo.likes = []
+        postInfo.comments = []
+        setPostInfo(postInfo)
+    }
 
     const uploadImagesToFirebase = async (postId) => {
 
@@ -108,13 +124,8 @@ function PostShare(props) {
         postInfo.images = picLinks
         postInfo.videos = videoLinks
 
-        setShowAddAssets(false)
         setPostInfo(postInfo)
-
-
     }
-
-
 
     function getRandomArbitrary(min, max) {
         return Math.trunc(Math.random() * (max - min) + min)
@@ -144,8 +155,8 @@ function PostShare(props) {
             .then((response) => {
                 console.log(JSON.stringify(response.data))
                 setLoading(false)
+                reset()
                 toast.success('Post uploaded successfully', { position: 'bottom-center' })
-                // alert(JSON.stringify(response.data))
             })
             .catch((error) => {
                 console.log(error)
@@ -164,7 +175,7 @@ function PostShare(props) {
             <img style={{ width: '40px', height: '40px' }} src={appInfo.userInfo.profilePicture} alt="Profile" />
 
 
-            <div style={{ width: '90%' }} >
+            <div style={{ width: '100%' }} >
 
                 <input
                     type="text"
@@ -173,7 +184,15 @@ function PostShare(props) {
                     required
                 />
 
-                {showAddAssets && <AddAssets postInfo={postInfo} setPostInfo={setPostInfo} />}
+                <AddAssets postInfo={postInfo} setPostInfo={setPostInfo} />
+
+
+                <div className="option" style={{ color: "var(--shedule)" }}>
+                    {DateIcon &&
+                     <input type="Date" onBlur={onBlur} 
+                     style={{ marginRight: 4, border: '0', color: "var(--shedule)", marginLeft: 5, fontSize: '13px' }} />}
+                </div>
+
 
                 <div className="postOptions">
                     <div
@@ -203,20 +222,9 @@ function PostShare(props) {
                         Location
                     </div>
                     <div className="option" style={{ color: "var(--shedule)" }}
-                        onClick={ChangeDateIcon}
-                    >
-
-                        {!DateIcon && <UilSchedule />}
-
+                        onClick={ChangeDateIcon}>
+                        <UilSchedule />
                         Shedule
-                    </div>
-                    <div>
-                        {DateIcon &&
-                            <input type="Date" onBlur={onBlur}
-                                style={{ marginRight: 4, border: '0', color: "var(--shedule)", marginTop: 5, fontSize: '15px' }}
-
-                            />
-                        }
                     </div>
                     <button
                         className="button ps-button"
@@ -246,4 +254,6 @@ function PostShare(props) {
 }
 
 export default PostShare
+
+
 

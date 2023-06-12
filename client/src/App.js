@@ -50,7 +50,7 @@ function App() {
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: `${domain}/user/${user.uid}`,
+            url: `http://localhost:5000/user/${user.uid}`,
             headers: {}
         }
 

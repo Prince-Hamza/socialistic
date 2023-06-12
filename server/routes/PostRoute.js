@@ -16,6 +16,7 @@ router.get('/updateComments', test)
 router.get('/updateLikes', test)
 router.post('/like', likePost)
 router.post('/comment', comment)
+router.post('/myposts', getMyPosts)
 
 
 export default router

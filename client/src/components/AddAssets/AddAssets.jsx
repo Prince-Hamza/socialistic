@@ -21,27 +21,34 @@ function AddAssets({ postInfo, setPostInfo }) {
         setPostInfo({ ...postInfo })
     }
 
+    const onBlur = (e) => {
+        const selectedDate = e.target.value
+        postInfo.dates.push(selectedDate)
+    }
 
 
     return (
         <div style={Styles.flexView}>
 
-            {postInfo.images.map((image, index) => {
+            {postInfo.text &&
+                <p style={{ font: '14px times new roman' }} >  {postInfo.text}  </p>
+            }
+
+            {postInfo.imageLinks.map((imageLink, index) => {
                 return (
-                    <div style={Styles.asset} className="previewImage">
+                    <div key={Math.random()} style={Styles.asset} className="previewImage">
                         <UilTimes onClick={() => { removeAsset('images', index) }} />
-                        <img src={URL.createObjectURL(image)} alt="preview" />
+                        <img src={imageLink} alt="preview" />
                     </div>
                 )
             })}
 
-
-            {postInfo.videos.map((video, index) => {
+            {postInfo.videoLinks.map((videoLink, index) => {
                 return (
-                    <div style={{ width: '100px', height: '100px', ...Styles.asset }} className='previewImage' >
+                    <div key={Math.random()} style={{ width: '100px', height: '100px', ...Styles.asset }} className='previewImage' >
                         <UilTimes onClick={() => { removeAsset('videos', index) }} />
                         <video controls style={{ width: '100%', height: '100px' }} >
-                            <source src={URL.createObjectURL(video)} alt="preview" />
+                            <source src={videoLink} alt="preview" />
                         </video>
                     </div>
                 )
@@ -51,29 +58,20 @@ function AddAssets({ postInfo, setPostInfo }) {
 
             {postInfo.locations.map((location) => {
                 return (
-                    <div style={{ width: '100%', height: 'auto' }} >
+                    <div key={Math.random()} style={{ width: '100%', height: 'auto' }} >
                         {isLoaded &&
                             <GoogleMap
                                 mapContainerStyle={{ width: '100%', height: '500px' }}
-                                center={center}
+                                center={{ lat: location.latitude, lng: location.longitude }}
                                 zoom={10}
                             />
                         }
                     </div>
                 )
             })}
-            
 
 
-            {/* {isLoaded &&
-                <GoogleMap
-                    mapContainerStyle={{ width: '100%', height: '500px' }}
-                    center={center}
-                    zoom={10}
-                />
-            } */}
-
-
+    
         </div>
     )
 }

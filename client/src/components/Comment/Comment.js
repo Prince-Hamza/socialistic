@@ -23,12 +23,36 @@ const Comment = ({ data }) => {
 
   const [isShare, setIsShare] = useState(false);
   const [commentUser, setCommentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({});
+  const [loading, setLoading] = useState(true);
 
+
+
+  const fetchCurrentUser = async () => {
+    try {
+      const response = await getUserById(user.uid)
+      setCurrentUser(response.data)
+      console.log(response)
+      setLoading(false)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    setLoading(true)
+    fetchCurrentUser();
+
+  }, [])
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        setLoading(true)
         const response = await getUserById(data.userId);
-        setCommentUser(response.data);
+
+        setCommentUser(response.data)
+        setLoading(false)
       } catch (error) {
         console.log(error);
       }
@@ -37,11 +61,13 @@ const Comment = ({ data }) => {
 
   }, [data.userId, user.id]);
 
-  const handleLike = () => {
-    // dispatch(likeComment(data._id));
-    setLiked((prev) => !prev);
-    liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
-  };
+
+
+  /* const handleLike = () => {
+     // dispatch(likeComment(data._id));
+     setLiked((prev) => !prev);
+     liked ? setLikes((prev) => prev - 1) : setLikes((prev) => prev + 1);
+   }; */
 
   const handleDelete = () => {
     // dispatch(deleteComment(data._id));
@@ -56,6 +82,13 @@ const Comment = ({ data }) => {
     // Ajoutez ici la logique de copie du lien dans votre application
   };
 
+
+  if (loading) {
+    return (<><span>...loading</span></>)
+  }
+  else{
+
+  
   return (
     <div className="Comment">
       <div className="Commentheader">
@@ -119,8 +152,11 @@ const Comment = ({ data }) => {
 
       {/* {isShare && <ShareModal url={`${domain}/comment/${data._id}`} />} */}
 
-    </div>
-  );
+      </div>
+    );
+  }
 };
 
-export default Comment;
+export default Comment
+
+
