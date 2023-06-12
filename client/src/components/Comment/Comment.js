@@ -157,4 +157,6 @@ const Comment = ({ data }) => {
   }
 };
 
-export default Comment;
+export default Comment
+
+
