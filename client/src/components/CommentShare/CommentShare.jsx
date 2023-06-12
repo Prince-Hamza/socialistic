@@ -1,13 +1,14 @@
 import React, { useState, useRef, useContext } from "react"
-import "./TimelineShare.css"
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
 import { toast } from "react-toastify";
 import axios from 'axios'
 import { domain } from "../../constants/constants";
+import "./TimelineShare.css"
 
 const CommentShare = ({ postId, visible }) => {
+
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [location, setLocation] = useState(null);
   const [loading, setLoading] = useState(false)
@@ -23,8 +24,8 @@ const CommentShare = ({ postId, visible }) => {
     let data = JSON.stringify({
       "userId": appInfo.userInfo.id,
       "postId": postId,
-      "username": appInfo.userInfo.id,
-      "profilePicture": appInfo.userInfo.id,
+      "username": appInfo.userInfo.username,
+      "profilePicture": appInfo.userInfo.profilePicture,
       "comment": desc.current.value
     })
 
@@ -59,14 +60,12 @@ const CommentShare = ({ postId, visible }) => {
   };
 
 
+
   return (
-    <div className="PostShare">
+
+    <div className="PostShare" style={{ border: 'solid 1px' }} >
       <img
-        src={
-          user.profilePicture
-            ? serverPublic + user.profilePicture
-            : serverPublic + "defaultProfile.png"
-        }
+        src={appInfo.userInfo.profilePicture}
         alt="Profile"
       />
       <div className="commentOptions">
@@ -82,7 +81,7 @@ const CommentShare = ({ postId, visible }) => {
           onClick={handleUpload}
           disabled={loading}
         >
-          {loading ? "uploading" : "Share"}
+          {loading ? "uploading" : "Comment"}
         </button>
 
       </div>
