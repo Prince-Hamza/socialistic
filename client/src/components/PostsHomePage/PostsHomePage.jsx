@@ -48,37 +48,8 @@ const Posts = () => {
       })
   }
 
-  const getMyPosts = () => {
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `${domain}/posts/timeline?id=${appInfo.userInfo.id}`,
-      headers: {}
-    };
-
-    axios.request(config)
-      .then((response) => {
-        let list = response.data.posts
-        // alert(`timeline posts :: ${JSON.stringify(list)}`)
-        setPosts([...list])
-        setLoading(false)
-        setComplete(true)
-
-        appInfo.myPostsCount = list.length
-        setAppInfo({ ...appInfo })
-
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-
-  }
-
-
-
   const init = () => {
     setLoading(true)
-    //   if (window.location.href.includes(user)) getMyPosts()
     getPostsByFollowedUsers()
   }
 
