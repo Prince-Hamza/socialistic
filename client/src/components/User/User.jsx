@@ -30,7 +30,7 @@ const User = ({ person }) => {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/user/follow',
+      url: `${domain}/user/follow`,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -63,7 +63,7 @@ const User = ({ person }) => {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/user/unfollow',
+      url: `${domain}/user/unfollow`,
       headers: {
         'Content-Type': 'application/json'
       },

@@ -1,5 +1,5 @@
 
 
-export const domain = `http://localhost:5000`
+export const domain = window.location.href.includes('localhost') ?  'http://localhost:5000' : 'https://'
 
 
