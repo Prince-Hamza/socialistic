@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FollowersModal from "../FollowersModal/FollowersModal";
 import firebase from 'firebase/compat/app'
@@ -9,10 +9,12 @@ import { Storage } from "../../backend/storage/uploadFile";
 import axios from 'axios'
 import "./ProfileCard.css";
 import { toast } from "react-toastify"
+import { domain } from "../../constants/constants";
+import {AiOutlineEdit } from "react-icons/ai";
+
 const storage = new Storage()
 
 const ProfileCard = ({ location }) => {
-
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [uploadingCover, setUploadingCover] = useState(false)
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false)
@@ -32,7 +34,7 @@ const ProfileCard = ({ location }) => {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/user/update',
+      url: `${domain}/user/update`,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -104,22 +106,29 @@ const ProfileCard = ({ location }) => {
   const own = window.location.href.includes('user') ? true : false
 
 
+  // useEffect(() => {
+  //   alert('Profile Card')
+  // })
+
 
   return (
     <div className="ProfileCard">
 
       <div className="ProfileImages">
-
+      
         <div style={{ position: 'relative' }} >
+        
           <img className="cover" src={appInfo.userInfo.coverPicture} alt="CoverImage" />
           {own && <button style={{ position: 'absolute', right: '15px', bottom: '15px' }} className="button ps-button" onClick={() => { onClickEditCover() }} >
             {uploadingCover ? 'uploading' : 'Edit Cover'}
+            
           </button>}
         </div>
 
         <div className="ProfileImages" style={{ position: 'relative' }} >
           <img className="profilePic" src={appInfo.userInfo.profilePicture.toString()} alt={appInfo.userInfo.profilePicture} />
           {own && <button style={{ position: 'absolute', right: '15px', bottom: '15px' }} className="button ps-button" onClick={() => { onClickEditProfile() }}>
+          
             {uploadingCover ? 'uploading' : 'Edit Picture'}
           </button>}
         </div>

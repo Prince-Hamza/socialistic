@@ -9,13 +9,12 @@ import CommentSide from "../CommentSide/CommentSide";
 import { AppContext } from "../../Context";
 
 const PostSide = () => {
-
+  
   const { appInfo, setAppInfo } = useContext(AppContext)
 
   return (
     <div className="PostSide">
       <PostShare />
-    
       {appInfo.postsForPage === 'home' && <Posts />}
       {appInfo.postsForPage === 'profile' && <PostsProfilePage />}
       {/* <CommentSide /> */}

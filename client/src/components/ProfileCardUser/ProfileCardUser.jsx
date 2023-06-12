@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FollowersModal from "../FollowersModal/FollowersModal";
 import firebase from 'firebase/compat/app'
@@ -9,11 +9,13 @@ import { Storage } from "../../backend/storage/uploadFile";
 import axios from 'axios'
 import "./ProfileCard.css";
 import { toast } from "react-toastify"
+import { domain } from "../../constants/constants";
+import {AiOutlineEdit } from "react-icons/ai";
 const storage = new Storage()
 
 const ProfileCardUser = ({ location }) => {
 
-  alert('card user')
+  // alert('card user')
   
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [uploadingCover, setUploadingCover] = useState(false)
@@ -35,7 +37,7 @@ const ProfileCardUser = ({ location }) => {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/user/update',
+      url: `${domain}/user/update`,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -48,7 +50,7 @@ const ProfileCardUser = ({ location }) => {
       alert('successfully updated')
       toast('sucessfully uploaded')
       setIntroEdit(false)
-      appInfo.userInfo = { ...appInfo.userInfo, ...object }
+      appInfo.profileUser = { ...appInfo.profileUser, ...object }
       setAppInfo({ ...appInfo })
     } catch (ex) {
       alert(ex)
@@ -70,9 +72,9 @@ const ProfileCardUser = ({ location }) => {
     setUploadingCover(true)
     const file = e.target.files[0]
     if (file) {
-      const result = await storage.uploadImage(`users/${appInfo.userInfo.id}/cover`, 'image/jpeg', file)
+      const result = await storage.uploadImage(`users/${appInfo.profileInfo.id}/cover`, 'image/jpeg', file)
       const link = result.downloadLink
-      await updateUserInfo({ id: appInfo.userInfo.id, coverPicture: link })
+      await updateUserInfo({ id: appInfo.profileUser.id, coverPicture: link })
       setUploadingCover(false)
     }
 
@@ -83,25 +85,24 @@ const ProfileCardUser = ({ location }) => {
     setUploadingProfilePic(true)
     const file = e.target.files[0]
     if (file) {
-      const result = await storage.uploadImage(`users/${appInfo.userInfo.id}/cover`, 'image/jpeg', file)
+      const result = await storage.uploadImage(`users/${appInfo.profileUser.id}/cover`, 'image/jpeg', file)
       const link = result.downloadLink
-      await updateUserInfo({ id: appInfo.userInfo.id, profilePicture: link })
+      await updateUserInfo({ id: appInfo.profileUser.id, profilePicture: link })
       setUploadingProfilePic(false)
     }
   }
 
 
 
-
-  const showProfilePage = (user) => {
-    appInfo.profileUser = appInfo.userInfo
-    setAppInfo({ ...appInfo })
-    navigate(`/profile/${appInfo.userInfo.id}?type=user`)
-  }
-
-
-
   const own = window.location.href.includes('user') ? true : false
+
+
+
+
+  // useEffect(() => {
+  //   alert('Profile user 2 ')
+  // })
+
 
   return (
     <div className="ProfileCard">
@@ -109,16 +110,18 @@ const ProfileCardUser = ({ location }) => {
       <div className="ProfileImages">
 
         <div style={{ position: 'relative' }} >
-          <img className="cover" src={appInfo.userInfo.coverPicture} alt="CoverImage" />
-          {own && <button style={{ position: 'absolute', right: '15px', bottom: '15px' }} className="button ps-button" onClick={() => { onClickEditCover() }} >
-            {uploadingCover ? 'uploading' : 'Edit Cover'}
+          <img className="cover" src={appInfo.profileUser.coverPicture} alt="CoverImage" />
+          {own && <button style={{ position: 'absolute', right: '35px', bottom: '15px',border:0,background:'transparent' }} className="" onClick={() => { onClickEditCover() }} >
+             <AiOutlineEdit style={{height:20,width:20}}/>
+            {uploadingCover ? 'uploading' : ' '}
           </button>}
         </div>
 
         <div className="ProfileImages" style={{ position: 'relative' }} >
-          <img className="profilePic" src={appInfo.userInfo.profilePicture.toString()} alt={appInfo.userInfo.profilePicture} />
-          {own && <button style={{ position: 'absolute', right: '15px', bottom: '15px' }} className="button ps-button" onClick={() => { onClickEditProfile() }}>
-            {uploadingCover ? 'uploading' : 'Edit Picture'}
+          <img className="profilePic" src={appInfo.profileUser.profilePicture.toString()} alt={appInfo.profileUser.profilePicture} />
+          {own && <button style={{ position: 'absolute', right: '-54px', bottom: '-47px',border:0,background:'transparent' }}  onClick={() => { onClickEditProfile() }}>
+            <AiOutlineEdit style={{height:25,width:25,color:'black' }}/>
+            {uploadingCover ? 'uploading' : ''}
           </button>}
         </div>
 
@@ -126,15 +129,16 @@ const ProfileCardUser = ({ location }) => {
 
 
       <div className="ProfileName">
-        <span>{appInfo.userInfo.username}</span>
+        <span>{appInfo.profileUser.username}</span>
 
         <Row style={{ width: '50%' }} >
-          {!introEdit && <div style={{ width: own ? '70%' : '100%', textAlign: 'center' }} >{appInfo.userInfo.about ? appInfo.userInfo.about : 'Write about yourself'}</div>}
+          {!introEdit && <div style={{ width: own ? '70%' : '100%', textAlign: 'center' }} >{appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'}</div>}
           {introEdit &&
-            <input style={{ width: '70%' }} placeholder={appInfo.userInfo.about ? appInfo.userInfo.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.userInfo.id, about: e.target.value }) }} />
+            <input style={{ width: '70%' }} placeholder={appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.profileUser.id, about: e.target.value }) }} />
           }
-          {own && <button style={{ width: '55px', height: '25px' }} className="button ps-button" onClick={() => { setIntroEdit(true); }}>
-            Edit
+          {own && <button style={{ width: '55px', height: '25px' ,border:0,background:'transparent'}} className="" onClick={() => { setIntroEdit(true); }}>
+           <AiOutlineEdit style={{height:20,width:20,marginBottom:6}}/> 
+          
           </button>}
         </Row>
 
@@ -144,7 +148,7 @@ const ProfileCardUser = ({ location }) => {
         <hr />
         <div>
           <div className="follow">
-            <span>{appInfo.userInfo.followers.length}</span>
+            <span>{appInfo.profileUser.followers.length}</span>
             <span onClick={() => setFollowersModalOpened(true)} style={{ cursor: 'pointer' }}>Followers</span>
 
             <FollowersModal
@@ -157,7 +161,7 @@ const ProfileCardUser = ({ location }) => {
           </div>
           <div className="vl"></div>
           <div className="follow">
-            <span>{appInfo.userInfo.following.length}</span>
+            <span>{appInfo.profileUser.following.length}</span>
             <span onClick={() => setFollowingModalOpened(true)} style={{ cursor: 'pointer' }}>Following</span>
 
 
@@ -180,14 +184,6 @@ const ProfileCardUser = ({ location }) => {
         </div>
         <hr />
       </div>
-
-      {location === "profilePage" ? (
-        ""
-      ) : (
-        <span onClick={showProfilePage} >
-          My Profile
-        </span>
-      )}
 
       <input id="coverFile" style={{ display: 'none' }} type="file" onChange={(e) => { updateCover(e) }} />
       <input id="profileFile" style={{ display: 'none' }} type="file" onChange={(e) => { updateProfilePic(e) }} />

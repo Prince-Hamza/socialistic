@@ -12,7 +12,8 @@ import $, { error } from 'jquery'
 import { main } from "../Live/backend"
 import { Image } from "react-bootstrap"
 import greenPhone from '../../img/messenger/greenPhone.jpg'
-const ENDPOINT = `http://127.0.0.1:5000/`
+import { domain } from "../../constants/constants"
+const ENDPOINT = domain
 const socket = io(ENDPOINT);
 
 const ChatBox = ({ setSendMessage, receivedMessage }) => {

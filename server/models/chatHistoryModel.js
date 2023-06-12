@@ -4,23 +4,19 @@ const chatHistorySchema = new mongoose.Schema(
     {
         id: {
             type: String,
-            unique: true,
             required: true
         },
         chatRoomKey: {
             type: String,
-            unique: false,
             required: true
         },
         partnerId: {
             type: String,
-            unique: true,
             required: true
         },
         name: {
             type: String,
             required: true
-
         },
         photo: {
             type: String,

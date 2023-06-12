@@ -10,7 +10,7 @@ import axios from 'axios'
 import { domain } from "../../constants/constants"
 import { AppContext } from "../../Context"
 import { webAuth } from "../../firebase/firebaseAuth"
-import { Button, Container,Image,Row,Col,Form } from 'react-bootstrap';
+import { Button, Container, Image, Row, Col, Form } from 'react-bootstrap';
 
 const fireAuth = new webAuth()
 
@@ -66,7 +66,7 @@ const Auth = () => {
     let userConfig = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/schemes/createuser?',
+      url: `${domain}/schemes/createuser?`,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -90,15 +90,12 @@ const Auth = () => {
     let conversationConfig = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/chat/onInteractionForChat?',
+      url: `${domain}/chat/onInteractionForChat?`,
       headers: {
         'Content-Type': 'application/json'
       },
       data: conversationData
-    };
-
-
-
+    }
 
     axios.request(userConfig)
       .then((response) => {
@@ -133,6 +130,7 @@ const Auth = () => {
       .then((response) => {
         // alert(JSON.stringify(response.data))
         if (response.data.user) {
+          toast.success('Login Successful', { position: "bottom-center" })
           appInfo.userInfo = response.data.user
           setAppInfo({ ...appInfo })
         }
@@ -145,11 +143,8 @@ const Auth = () => {
   const emailLogin = async () => {
     try {
       const result = await signInWithEmailAndPassword(auth, data.email, data.password)
-      console.log(`result : ${result.user} `)
-      toast.success('Login Successful', { position: "top-center" })
       await fireAuth.setLoginSession(data.email, data.password)
       getUserInfoFromMongoDb(result.user)
-      // navigate('/home')
     } catch (ex) {
       console.log(`error : ${ex.toString().split('Firebase:')[1]}`)
       toast.warn(ex.toString().split('Firebase:')[1], { position: "top-center" })
@@ -184,136 +179,136 @@ const Auth = () => {
 
   return (
     <Container fluid>
-    <div className="Auth">
-     {/* left side */}
-    <Row>
-    <Col  lg={3}>
-      <Image src={Logo} alt="" fluid/>
-    </Col>
-    <Col className="Webname" lg={3} style={{padding:20}}>
-        <h1>Social lstic</h1>
-        <h6>Explore and share more knowledges <br></br>
-          through experiences</h6>
-    </Col>
-    {/* right form side */}
-    <Col className="a-right" lg={6}>
-      <Form className="authForm " onSubmit={handleSubmit}>
-         <h3 className="pb-4">{isSignUp ? "Register" : "Login"}</h3>
-        {isSignUp && (
-          <Row className="flex-sm-row  flex-column">
-            <Col>
-                <input
-                required
-                type="text"
-                placeholder="First Name"
-                className="form-control  mb-2"
-                name="firstname"
-                value={data.firstname}
-                onChange={handleChange}
-              />
-            </Col>
-           <Col>
-            <input
-              required
-              type="text"
-              placeholder="Last Name"
-              className="form-control mb-2 "
-              name="lastname"
-              value={data.lastname}
-              onChange={handleChange}
-            />
-           </Col>
-          </Row>
-        )}
-
-         <Row>
-          <Col>
-          <input
-            required
-            type="email"
-            placeholder="email"
-            className="infoInput form-control "
-            name="email"
-            value={data.email}
-            onChange={handleChange}
-          />
+      <div className="Auth">
+        {/* left side */}
+        <Row>
+          <Col lg={3}>
+            <Image src={Logo} alt="" fluid />
           </Col>
+          <Col className="Webname" lg={3} style={{ padding: 20 }}>
+            <h1>Social lstic</h1>
+            <h6>Explore and share more knowledges <br></br>
+              through experiences</h6>
+          </Col>
+          {/* right form side */}
+          <Col className="a-right" lg={6}>
+            <Form className="authForm " onSubmit={handleSubmit}>
+              <h3 className="pb-4">{isSignUp ? "Register" : "Login"}</h3>
+              {isSignUp && (
+                <Row className="flex-sm-row  flex-column">
+                  <Col>
+                    <input
+                      required
+                      type="text"
+                      placeholder="First Name"
+                      className="form-control  mb-2"
+                      name="firstname"
+                      value={data.firstname}
+                      onChange={handleChange}
+                    />
+                  </Col>
+                  <Col>
+                    <input
+                      required
+                      type="text"
+                      placeholder="Last Name"
+                      className="form-control mb-2 "
+                      name="lastname"
+                      value={data.lastname}
+                      onChange={handleChange}
+                    />
+                  </Col>
+                </Row>
+              )}
+
+              <Row>
+                <Col>
+                  <input
+                    required
+                    type="email"
+                    placeholder="email"
+                    className="infoInput form-control "
+                    name="email"
+                    value={data.email}
+                    onChange={handleChange}
+                  />
+                </Col>
+              </Row>
+
+
+              <Row className="flex-sm-row  flex-column">
+                <Col>
+                  <input
+                    required
+                    type="password"
+                    className="infoInput form-control mb-2"
+                    placeholder="Password"
+                    name="password"
+                    value={data.password}
+                    onChange={handleChange}
+                  />
+                </Col>
+                <Col>
+                  {isSignUp && (
+                    <input
+
+                      required
+                      type="password"
+                      className="infoInput  form-control mb-2"
+                      name="confirmpass"
+                      placeholder="Confirm Password"
+                      onChange={handleChange}
+                    />
+                  )}
+                </Col>
+              </Row>
+
+              <span
+                style={{
+                  color: "red",
+                  fontSize: "12px",
+                  alignSelf: "flex-end",
+                  marginRight: "5px",
+                  display: confirmPass ? "none" : "block",
+                }}
+              >
+                *Confirm password is not same
+              </span>
+              <Row className="flex-sm-row  flex-column">
+                <Col
+                  style={{
+                    fontSize: "12px",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    color: "green",
+                    marginBottom: '15px'
+                  }}
+                  onClick={() => {
+                    resetForm();
+                    setIsSignUp((prev) => !prev);
+                  }}
+                >
+                  {isSignUp
+                    ? "Already have an account Login"
+                    : "Don't have an account Sign up"}
+                </Col>
+                <Col>
+                  <button
+                    className="button infoButton "
+                    type="Submit"
+                    disabled={loading}
+                    onClick={handleSubmit}
+                  >
+                    {loading ? "Loading..." : isSignUp ? "SignUp" : "Login"}
+                  </button>
+                </Col>
+              </Row>
+            </Form>
+          </Col>
+          <ToastContainer />
         </Row>
-
-
-        <Row className="flex-sm-row  flex-column">
-          <Col>
-          <input
-            required
-            type="password"
-            className="infoInput form-control mb-2"
-            placeholder="Password"
-            name="password"
-            value={data.password}
-            onChange={handleChange}
-          />
-          </Col>
-          <Col>
-          {isSignUp && (
-            <input
-
-              required
-              type="password"
-              className="infoInput  form-control mb-2"
-              name="confirmpass"
-              placeholder="Confirm Password"
-              onChange={handleChange}
-            />
-          )}
-          </Col>
-        </Row>
-
-        <span
-          style={{
-            color: "red",
-            fontSize: "12px",
-            alignSelf: "flex-end",
-            marginRight: "5px",
-            display: confirmPass ? "none" : "block",
-          }}
-        >
-          *Confirm password is not same
-        </span>
-        <Row className="flex-sm-row  flex-column">
-          <Col
-            style={{
-              fontSize: "12px",
-              cursor: "pointer",
-              textDecoration: "underline",
-              color: "green",
-              marginBottom: '15px'
-            }}
-            onClick={() => {
-              resetForm();
-              setIsSignUp((prev) => !prev);
-            }}
-          >
-            {isSignUp
-              ? "Already have an account Login"
-              : "Don't have an account Sign up"}
-          </Col>
-          <Col>
-          <button
-            className="button infoButton "
-            type="Submit"
-            disabled={loading}
-            onClick={handleSubmit}
-          >
-            {loading ? "Loading..." : isSignUp ? "SignUp" : "Login"}
-          </button>
-          </Col>
-        </Row>
-      </Form>
-    </Col>
-    <ToastContainer />
-    </Row>
-  </div>
-  </Container>
+      </div>
+    </Container>
   );
 };
 
