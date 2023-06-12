@@ -40,11 +40,13 @@ const FollowersCard = ({ location }) => {
       setPersons(filteredPersons);
     };
     fetchPersons();
-  }, [user.following, appInfo.userInfo.id, displayCount]);
+  }, [user.following, appInfo.userInfo.id, displayCount])
+
 
   const handleSeeMore = () => {
-    setDisplayCount(persons.length);
-  };
+    setDisplayCount(persons.length)
+  }
+
 
   return (
     <div className="FollowersCard">
