@@ -28,6 +28,9 @@ const User = ({ person }) => {
 
   }
 
+
+  
+
   const follow = (myId, followId) => {
 
 
@@ -51,7 +54,6 @@ const User = ({ person }) => {
       .then((response) => {
         console.log(JSON.stringify(response.data));
         toast.success(`followed ${person.username}`)
-        updatePosts()
       })
       .catch((error) => {
         console.log(error);

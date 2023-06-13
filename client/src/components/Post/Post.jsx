@@ -39,8 +39,21 @@ const Post = ({ data, posts, setPosts }) => {
 
   const [isShare, setIsShare] = useState(false);
   const [isCommentInputVisible, setIsCommentInputVisible] = useState(false)
-
   const [comment, setComment] = useState("")
+
+  const totalItems = data.images.length + data.videos.length + data.locations.length + data.dates.length
+  let itemCount = 0
+
+  const adjust = ({
+    widthFor1: ['100%'],
+    widthFor2: ['50%', '50%'],
+    widthFor3: ['100%', '50%', '50%'],
+    widthFor4: ['50%', '50%', '50%', '50%'],
+    widthFor4p1us: ['100%', '100%', '100%', '100%', '100%', '100%', '100%', '100%', '100%', '100%'],
+  })
+
+
+
 
   const handleToggleCommentInput = () => {
     setIsCommentInputVisible((prev) => !prev);
@@ -115,13 +128,14 @@ const Post = ({ data, posts, setPosts }) => {
 
 
   const media = (
-    <div>
+    <div style={Styles.flexView} >
       {data.images &&
-        <div>
+        <div style={{ width: '100%' }} >
           {data.images.map((image) => {
+            itemCount++
             return (
               <img
-                style={{ width: '45%', height: '200px', margin: '1px', cursor: 'pointer' }}
+                style={{ width: '100%', height: '400px', margin: '1px', cursor: 'pointer' }}
                 onClick={() => { window.open(image, '_blank') }}
                 src={image}
                 alt={image}
@@ -132,10 +146,10 @@ const Post = ({ data, posts, setPosts }) => {
       }
 
       {data.videos &&
-        <div>
+        <div style={{ width: '100%' }}>
           {data.videos.map((video) => {
             return (
-              <video style={{ width: '45%', height: '200px', margin: '1px', cursor: 'pointer' }} controls onEnded={handleVideoEnd} src={video} >
+              <video style={{ width: '100%', height: '400px', margin: '1px', cursor: 'pointer' }} controls onEnded={handleVideoEnd} src={video} >
 
               </video>
             )
@@ -149,13 +163,15 @@ const Post = ({ data, posts, setPosts }) => {
         <div>
           {data.locations.map((location) => {
             return (
-              <div style={{ width: '100%', height: 'auto' }} >
+              <div style={{ width: 'auto', height: 'auto' }} >
                 {isLoaded &&
-                  <GoogleMap
-                    mapContainerStyle={{ width: '100%', height: '500px' }}
-                    center={{ lat: location.latitude, lng: location.longitude }}
-                    zoom={10}
-                  />
+                  <div style={{ width: '550px', height: '400px' }} >
+                    <GoogleMap
+                      mapContainerStyle={{ width: '550px', height: '400px' }}
+                      center={{ lat: location.latitude, lng: location.longitude }}
+                      zoom={10}
+                    />
+                  </div>
                 }
               </div>
             )
@@ -269,3 +285,16 @@ function DropdownItem(props) {
 }
 
 export default Post
+
+
+const Styles = ({
+  flexView: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: '550px',
+  }
+})
+
+

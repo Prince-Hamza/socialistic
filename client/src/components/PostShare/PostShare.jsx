@@ -175,7 +175,7 @@ function PostShare(props) {
             <img style={{ width: '40px', height: '40px' }} src={appInfo.userInfo.profilePicture} alt="Profile" />
 
 
-            <div style={{ width: '100%' }} >
+            <div style={{ width: '90%'}} >
 
                 <input
                     type="text"
@@ -189,8 +189,8 @@ function PostShare(props) {
 
                 <div className="option" style={{ color: "var(--shedule)" }}>
                     {DateIcon &&
-                     <input type="Date" onBlur={onBlur} 
-                     style={{ marginRight: 4, border: '0', color: "var(--shedule)", marginLeft: 5, fontSize: '13px' }} />}
+                        <input type="Date" onBlur={onBlur}
+                            style={{ marginRight: 4, border: '0', color: "var(--shedule)", marginLeft: 5, fontSize: '13px' }} />}
                 </div>
 
 
