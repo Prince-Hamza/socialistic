@@ -58,6 +58,8 @@ const Chat = () => {
         appInfo.chatHistory = response.data.conversations
         setAppInfo({ ...appInfo })
 
+        
+
       })
       .catch((error) => {
         console.log(error);

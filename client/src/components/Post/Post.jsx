@@ -20,11 +20,11 @@ import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
 import { domain } from "../../constants/constants";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
-
+import Calendar from 'react-calendar'
+import 'react-calendar/dist/Calendar.css';
 
 
 const Post = ({ data, posts, setPosts }) => {
-
   const { appInfo, setAppInfo } = useContext(AppContext)
   const center = useMemo(() => ({ lat: 18.52043, lng: 73.856743 }), []);
   const { isLoaded } = useLoadScript({ googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY })
@@ -163,16 +163,16 @@ const Post = ({ data, posts, setPosts }) => {
         </div>
       }
 
-
       {data.dates &&
         <div>
-          <div className="option" style={{ color: "var(--shedule)" }}>
-            <input type="Date"
-              style={{ marginRight: 4, border: '0', color: "var(--shedule)", marginLeft: 5, fontSize: '13px' }} />
-          </div>
+          {data.dates.map((dateString) => {
+            let jsDate = moment(dateString, 'YYYY-MM-DD').toDate()
+            return (
+              <Calendar value={jsDate} />
+            )
+          })}
         </div>
       }
-
 
     </div>
   )

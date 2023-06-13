@@ -32,6 +32,8 @@ function GlobalSocketListener({ children }) {
 
     const socketListener = () => {
 
+        // alert('socket listener')
+        
         socket.on('message', (data) => {
 
             // alert(`global message listener : ${JSON.stringify(data.fullDocument)}`)
@@ -60,7 +62,7 @@ function GlobalSocketListener({ children }) {
 
     const onNotificationClick = () => {
         setAppInfo({ ...appInfo })
-        navigate('/chat')
+        navigate(`/chat/${notificationData.myId}`)
     }
 
     const effect = () => {

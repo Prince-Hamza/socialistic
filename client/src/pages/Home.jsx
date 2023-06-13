@@ -24,6 +24,10 @@ const Home = () => {
     socket.on("disconnect", () => {
       console.log(socket.id)
     })
+
+    appInfo.postsForPage = 'home'
+    setAppInfo({ ...appInfo })
+    
   }, [])
 
 

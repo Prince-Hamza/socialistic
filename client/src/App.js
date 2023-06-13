@@ -32,6 +32,7 @@ function App() {
         postsForPage: 'home',
         myPostsCount: 0,
         postsByFollowedCount: 0,
+        updatePostsByFollowed: false,
 
         chat: true,
         call: false,
@@ -45,12 +46,18 @@ function App() {
     if (!firebase.apps.length) firebase.initializeApp(config)
     // var user = firebase.auth().currentUser
 
+
+    const setOnlineUsers = (list) => {
+        alert(`online users : ${list}`)
+    }
+
+
     const getUserInfoFromMongoDb = (user) => {
 
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: `http://localhost:5000/user/${user.uid}`,
+            url: `${domain}/user/${user.uid}`,
             headers: {}
         }
 
@@ -73,11 +80,15 @@ function App() {
 
 
     const init = async () => {
+        // alert(`App: get session`)
         // get login session 
         const user = await fireAuth.getLoginSession()
         // alert(`user from login session : ${JSON.stringify(user)}`)
         if (user.uid) getUserInfoFromMongoDb(user)
-        if (!user.uid) setLoading(false)
+        if (!user.uid) {
+            setLoading(false)
+            if (`${window.location.protocol}//${window.location.host}/` !== window.location.href) window.location.replace('/')
+        }
     }
 
 
@@ -101,7 +112,7 @@ function App() {
 
                     <Route
                         path="/home"
-                        element={<Home />}
+                        element={loading ? <Loading /> : (appData.userInfo.id ? <Home /> : <Auth />)}
                     />
 
                     <Route
@@ -111,17 +122,21 @@ function App() {
 
                     <Route
                         path="/profile/:id"
-                        element={<Profile />}
+                        element={loading ? <Loading /> : (appData.userInfo.id ? <Profile /> : <Auth />)}
                     />
 
                     <Route
                         path="/chat"
-                        element={<Chat />}
+                        element={loading ? <Loading /> : (appData.userInfo.id ? <Chat /> : <Auth />)}
+                    />
+
+                    <Route
+                        path="/chat/:id"
+                        element={loading ? <Loading /> : (appData.userInfo.id ? <Chat /> : <Auth />)}
                     />
 
                 </Routes>
             </BrowserRouter>
-
         </AppContext.Provider>
     )
 }

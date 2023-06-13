@@ -9,6 +9,7 @@ import { addMessage, getMessages } from "../../api/MessageRequests"
 const Conversation = ({ data, currentUser }) => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
+  const [chosenChat, setChosenChat] = useState(false)
   const online = appInfo.online
 
 
@@ -39,6 +40,22 @@ const Conversation = ({ data, currentUser }) => {
 
 
 
+  const chooseChat = () => {
+    console.log(`chosen`);
+    setChosenChat(true)
+    let urlParts = window.location.href.split('/')
+    if (urlParts.length === 5 && data.partnerId === urlParts[4]) selectConversation()
+  }
+
+  const effect = () => {
+    console.log(`chosen chat ? ${chosenChat}`);
+    if (chosenChat === false) chooseChat()
+  }
+
+  useEffect(effect, [])
+
+
+
   if (data && appInfo.userInfo && appInfo.chatHistory) {
     return (
       <>
@@ -53,7 +70,7 @@ const Conversation = ({ data, currentUser }) => {
             />
             <div className="name" style={{ fontSize: '0.8rem' }}>
               <span>{data.name}</span>
-              <span style={{ color: online ? "#51e200" : "" }}>{online ? "Online" : "Offline"}</span>
+              {/* <span style={{ color: online ? "#51e200" : "" }}>{online ? "Online" : "Offline"}</span> */}
             </div>
           </div>
         </div>
@@ -66,4 +83,5 @@ const Conversation = ({ data, currentUser }) => {
 
 }
 
-export default Conversation;
+export default Conversation
+

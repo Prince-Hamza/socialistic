@@ -22,7 +22,6 @@ const Posts = () => {
   const { appInfo, setAppInfo } = useContext(AppContext)
 
 
-
   const getPostsByFollowedUsers = () => {
     let config = {
       method: 'get',
@@ -48,6 +47,9 @@ const Posts = () => {
       })
   }
 
+
+
+
   const init = () => {
     setLoading(true)
     getPostsByFollowedUsers()
@@ -62,7 +64,6 @@ const Posts = () => {
   } */
 
   const effect = () => {
-    
     if (!complete && appInfo.userInfo.id) init()
   }
 
@@ -83,7 +84,7 @@ const Posts = () => {
 
 
       {!posts.length && complete &&
-        <p style={{ marginLeft: '30%',font:'italic 18px times new roman' }} > No posts from people you follow to show </p>
+        <p style={{ marginLeft: '30%', font: 'italic 18px times new roman' }} > No posts from people you follow to show </p>
       }
 
     </div>

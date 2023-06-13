@@ -6,13 +6,14 @@ import "./Posts.css"
 import { useParams } from "react-router-dom"
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
-import axios from 'axios'
 import { AppContext } from "../../Context"
+import Loading from "../Loading/Loading"
 import { domain } from "../../constants/constants"
+import axios from 'axios'
 
 const PostsProfilePage = () => {
 
-  const params = useParams();
+  const params = useParams()
   const user = firebase.auth().currentUser
 
   const [posts, setPosts] = useState([])
@@ -59,25 +60,30 @@ const PostsProfilePage = () => {
 
   const effect = () => {
     if (!complete && appInfo.profileUser.id) init()
+
   }
 
 
   useEffect(effect, [])
 
+  if (appInfo.profileUser.id) {
+    return (
+      <div className="Posts">
+        {loading ? ("Fetching posts....")
+          : (
+            posts.map((post, id) => {
+              return <Post data={post} key={id} posts={posts} setPosts={setPosts} />;
+            })
+          )}
 
-  return (
-    <div className="Posts">
-      {loading ? ("Fetching posts....")
-        : (
-          posts.map((post, id) => {
-            return <Post data={post} key={id} posts={posts} setPosts={setPosts} />;
-          })
-        )}
+        {!posts.length && complete && <span style={{ marginLeft: '38%' }} > You have not posted anything so far  </span>}
 
-      {!posts.length && complete && <span style={{ marginLeft: '38%' }} > You have not posted anything so far  </span>}
+      </div>
+    )
+  } else {
+    return <Loading />
+  }
 
-    </div>
-  )
 }
 
 export default PostsProfilePage;

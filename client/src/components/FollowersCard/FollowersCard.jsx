@@ -26,7 +26,6 @@ const FollowersCard = ({ location }) => {
   const navigate = useNavigate();
 
   const handleProfileClick = (followerId) => {
-    
     navigate(`/profile/${followerId}`);
   };
 
@@ -56,7 +55,6 @@ const FollowersCard = ({ location }) => {
       {persons.map((person) => (
         <div
           key={person._id}
-          onClick={() => handleProfileClick(person._id)}
           style={{ cursor: "pointer" }}
         >
           {location === "profilePage" ? (

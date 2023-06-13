@@ -60,21 +60,11 @@ const InfoCard = () => {
 
   }
 
-
-
-  useEffect(() => {
-    const fetchProfileUser = async () => {
-
-      setProfileUser(user)
-    }
-    fetchProfileUser()
-  }, [user, profileUserId]);
-
   return (
     <div className="InfoCard">
       <div className="infoHead">
         <h4>Profile Info</h4>
-        {user.id === profileUserId ? (
+        {user.uid === profileUserId ? (
           <div>
             <UilPen
               width="2rem"
@@ -99,12 +89,12 @@ const InfoCard = () => {
         </span>
         <span>{appInfo.profileUser.username.split(' ').length ? appInfo.profileUser.username.split(' ')[0] : appInfo.profileUser.username}</span>
       </div>
-      <div className="info">
+      {/* <div className="info">
         <span style={{ marginRight: '20px' }} >
           <b> Lives in </b>
         </span>
         <span style={{ font: 'italic 14px times new roman' }} >{profileUser.livesIn ? profileUser.livesIn : 'Not mentioned'}</span>
-      </div>
+      </div> */}
       <div className="info">
         {/* <span>
           <b>Works at </b>

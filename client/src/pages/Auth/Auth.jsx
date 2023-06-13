@@ -192,7 +192,7 @@ const Auth = () => {
           </Col>
           {/* right form side */}
           <Col className="a-right" lg={6}>
-            <Form className="authForm " onSubmit={handleSubmit}>
+            <Form className="authForm">
               <h3 className="pb-4">{isSignUp ? "Register" : "Login"}</h3>
               {isSignUp && (
                 <Row className="flex-sm-row  flex-column">

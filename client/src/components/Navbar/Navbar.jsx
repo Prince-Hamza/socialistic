@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Logo from "../../img/logo_istic.jpg"
 import { Image } from 'react-bootstrap'
 import "./Navbar.css"
@@ -19,14 +19,14 @@ const fireAuth = new webAuth()
 function CustomNavbar() {
 
   const { appInfo } = useContext(AppContext)
-
+  const navigate = useNavigate()
   const [notificationBarActive, setNotificationBarActive] = useState(false)
   const [settingsBarActive, setSettingsBarActive] = useState(false)
 
 
   function DropdownItem(props) {
     return (
-      <li className='dropdownItem'>
+      <li style={{ cursor: 'pointer' }} className='dropdownItem' onClick={() => { navigate(props.link) }} >
         <img src={props.img} alt=""></img>
         <div> {props.text} </div>
       </li>
@@ -59,7 +59,7 @@ function CustomNavbar() {
           </Nav>
           <Nav className='gap-4'>
 
-            <Nav.Link href="#deets">
+            <Nav.Link href="#deets"  >
               <Link to="../home">
                 <Image src={Home} alt="" fluid style={{ width: 25, height: 25 }} />
               </Link>
@@ -91,8 +91,8 @@ function CustomNavbar() {
         <div style={Styles.menuBar} >
           <h3> Social Istic </h3>
           <ul>
-            <DropdownItem img={user01} text={"My Profile"} />
-            <DropdownItem img={inbox} text={"Inbox"} />
+            <DropdownItem img={user01} text={"My Profile"} link={`/profile/${appInfo.userInfo.id}`} />
+            <DropdownItem img={inbox} text={"Inbox"} link={`/chat`} />
             <hr style={{ marginRight: '40px', marginBottom: '15px' }}></hr>
             <button className="button logout-button" onClick={handleLogOut} style={{ marginTop: '-1px' }}>Log Out</button>
           </ul>
@@ -104,7 +104,7 @@ function CustomNavbar() {
         <div style={Styles.menuBar} >
           <h3> Social Istic </h3>
           <ul>
-            
+
           </ul>
         </div>
       }

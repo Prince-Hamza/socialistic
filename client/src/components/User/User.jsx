@@ -17,7 +17,16 @@ const User = ({ person }) => {
   const [following, setFollowing] = useState(person.followers.includes(appInfo.userInfo.id))
 
 
+  const updatePosts = () => {
+    appInfo.updatePostsByFollowed = true
+    setAppInfo({ ...appInfo })
 
+    setTimeout(()=>{
+      appInfo.updatePostsByFollowed = false
+      setAppInfo({ ...appInfo })
+    },10000)
+
+  }
 
   const follow = (myId, followId) => {
 
@@ -42,6 +51,7 @@ const User = ({ person }) => {
       .then((response) => {
         console.log(JSON.stringify(response.data));
         toast.success(`followed ${person.username}`)
+        updatePosts()
       })
       .catch((error) => {
         console.log(error);
