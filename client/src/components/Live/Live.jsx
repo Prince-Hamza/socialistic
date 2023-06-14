@@ -127,7 +127,7 @@ function Live() {
 
             <br />
 
-            <button style={Styles.Button} id="hangupButton" >Hangup</button>
+            <button style={Styles.abortButton} id="hangupButton" >Hangup</button>
 
 
         </div >
@@ -146,6 +146,15 @@ const Styles = ({
         color: 'white',
         cursor: 'pointer',
         display: 'none'
+    },
+    abortButton: {
+        font: "14px roboto",
+        width: '140px',
+        height: '50px',
+        backgroundColor: '#2c3e50',
+        border: 'none',
+        color: 'white',
+        cursor: 'pointer'
     },
     bigText: {
         font: "14px roboto"

@@ -21,15 +21,42 @@ const User = ({ person }) => {
     appInfo.updatePostsByFollowed = true
     setAppInfo({ ...appInfo })
 
-    setTimeout(()=>{
+    setTimeout(() => {
       appInfo.updatePostsByFollowed = false
       setAppInfo({ ...appInfo })
-    },10000)
+    }, 10000)
 
   }
 
 
-  
+
+  const notify = (person, action) => {
+
+    let data = JSON.stringify({
+      "id": person.id,
+      "text": `${appInfo.userInfo.username} has ${action} you`
+    })
+    
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:5000/notify',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : data
+    }
+    
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    
+  }
+
 
   const follow = (myId, followId) => {
 
@@ -54,6 +81,7 @@ const User = ({ person }) => {
       .then((response) => {
         console.log(JSON.stringify(response.data));
         toast.success(`followed ${person.username}`)
+        notify(person, 'followed')
       })
       .catch((error) => {
         console.log(error);
@@ -64,9 +92,6 @@ const User = ({ person }) => {
 
 
   const unfollow = (myId, unfollowId) => {
-
-
-
     let data = JSON.stringify({
       "myId": myId,
       "unfollow": unfollowId
@@ -92,6 +117,7 @@ const User = ({ person }) => {
       .then((response) => {
         console.log(JSON.stringify(response.data))
         toast.success(`unfollowed ${person.username}`)
+        notify(person, 'unfollowed')
       })
       .catch((error) => {
         console.log(error);

@@ -17,10 +17,10 @@ const FollowersCard = ({ location }) => {
   const [modalOpened, setModalOpened] = useState(false)
   const [persons, setPersons] = useState([])
   const [displayCount, setDisplayCount] = useState(8)
- 
+
   var user = firebase.auth().currentUser
   user.following = []
-  
+
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
 
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ const FollowersCard = ({ location }) => {
 
   useEffect(() => {
     const fetchPersons = async () => {
+
       const { data } = await getAllUser(displayCount, [
         //...user.following,
         user.id,

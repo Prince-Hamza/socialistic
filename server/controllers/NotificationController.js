@@ -1,4 +1,4 @@
-import NotificationModel from "../models/notificationModel";
+import NotificationModel from "../models/notificationModel.js";
 
 export const notify = async (req, res) => {
 
@@ -12,6 +12,19 @@ export const notify = async (req, res) => {
 
     await notification.save()
 
-    return res.send({ success: true })
+    return res.send({ success: true, n: notification })
 
 }
+
+
+
+export const getNotifications = async (req, res) => {
+
+    if (!req.query.id) return res.status(400).send({ error: 'id field required' })
+
+    const result = await NotificationModel.find({ id: req.query.id })
+
+    return res.send({ success: true, notifications: result })
+}
+
+

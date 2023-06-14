@@ -11,6 +11,8 @@ import ChatRoute from './routes/ChatRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
 import CommentRoute from './routes/CommentRoute.js'
 import SchemeRoute from './routes/SchemeRoutes.js'
+import NotificationRoute from './routes/NotificationRoute.js'
+
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import { MongoClient } from 'mongodb'
@@ -64,6 +66,7 @@ app.use('/chat', ChatRoute)
 app.use('/message', MessageRoute)
 app.use('/comments', CommentRoute)
 app.use('/schemes', SchemeRoute)
+app.use('/notify', NotificationRoute)
 
 
 

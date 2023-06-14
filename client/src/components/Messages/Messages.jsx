@@ -5,6 +5,7 @@ import { io } from "socket.io-client"
 import _ from 'lodash'
 import $ from 'jquery'
 import { domain } from '../../constants/constants'
+import Live from '../Live/Live'
 
 const ENDPOINT = domain
 const socket = io(ENDPOINT);
@@ -57,7 +58,6 @@ function Messages() {
     }, [])
 
 
-
     return (
         <div className='chat-body'>
             {appInfo.messages.map((message) => {
@@ -72,6 +72,9 @@ function Messages() {
             })}
         </div>
     )
+
+
 }
 
 export default Messages
+

@@ -11,18 +11,14 @@ import { AppContext } from "../../Context"
 import Live from "../../components/Live/Live"
 import axios from 'axios'
 import { domain } from "../../constants/constants";
+import ChatBoxAndLive from "../../components/ChatBoxAndLive/ChatBoxAndLive";
 const Chat = () => {
 
   const socket = useRef();
 
   const { appInfo, setAppInfo } = useContext(AppContext)
-  const [chats, setChats] = useState([]);
-  const [onlineUsers, setOnlineUsers] = useState([]);
-  const [currentChat, setCurrentChat] = useState(null);
-  const [sendMessage, setSendMessage] = useState(null);
-  const [receivedMessage, setReceivedMessage] = useState(null);
-  const [activeUsers, setActiveUsers] = useState([{ userId: '123', profilePicture: '' }]);
-
+  const [onlineUsers, setOnlineUsers] = useState([])
+  const [currentChat, setCurrentChat] = useState(null)
   const user = appInfo.userInfo
 
   const checkOnlineStatus = (chat) => {
@@ -58,7 +54,7 @@ const Chat = () => {
         appInfo.chatHistory = response.data.conversations
         setAppInfo({ ...appInfo })
 
-        
+
 
       })
       .catch((error) => {
@@ -68,6 +64,7 @@ const Chat = () => {
   }
 
   const init = () => {
+    // alert(appInfo.chatHistory)
     if (appInfo.chatHistory.length <= 0) getMyChatHistory()
   }
 
@@ -76,7 +73,6 @@ const Chat = () => {
   }
 
   useEffect(effect, [])
-
 
   return (
     <div className="Chat">
@@ -118,14 +114,7 @@ const Chat = () => {
           <NavIcons />
         </div>
 
-        {appInfo.chat &&
-          <ChatBox
-            setSendMessage={setSendMessage}
-            receivedMessage={receivedMessage}
-          />
-        }
-
-        {appInfo.call && <Live />}
+        <ChatBoxAndLive />
 
       </div>
     </div>

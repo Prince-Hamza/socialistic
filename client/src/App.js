@@ -17,6 +17,7 @@ import GlobalSocketListener from './listener/globalSocketListener'
 import { ToastContainer, toast, useToast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Loading from './components/Loading/Loading'
+import Live from './components/Live/Live'
 const fireAuth = new webAuth()
 
 function App() {
@@ -133,6 +134,11 @@ function App() {
                     <Route
                         path="/chat/:id"
                         element={loading ? <Loading /> : (appData.userInfo.id ? <Chat /> : <Auth />)}
+                    />
+
+                    <Route
+                        path="/live"
+                        element={loading ? <Loading /> : (appData.userInfo.id ? <Live /> : <Auth />)}
                     />
 
                 </Routes>

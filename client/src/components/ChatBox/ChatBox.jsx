@@ -1,33 +1,24 @@
 import React, { useContext, useEffect, useState } from "react"
 import { useRef } from "react"
-import { addMessage, getMessages } from "../../api/MessageRequests"
-import { format } from "timeago.js"
+import { addMessage } from "../../api/MessageRequests"
 import InputEmoji from 'react-input-emoji'
 import "./ChatBox.css"
 import { AppContext } from "../../Context"
 import Messages from "../Messages/Messages"
 import _ from 'lodash'
-import { io } from "socket.io-client"
 import $, { error } from 'jquery'
-import { main } from "../Live/backend"
 import { Image } from "react-bootstrap"
 import greenPhone from '../../img/messenger/greenPhone.jpg'
-import { domain } from "../../constants/constants"
-const ENDPOINT = domain
-const socket = io(ENDPOINT);
+import { useNavigate } from "react-router-dom"
 
-const ChatBox = ({ setSendMessage, receivedMessage }) => {
+
+
+const ChatBox = () => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
-  const [userData, setUserData] = useState(null);
-  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("")
-  const [loadedHistory, setLoadedHistory] = useState(false)
-  const [listenToMongo, setListenToMongo] = useState(false)
-  const [listening, setListening] = useState(false)
-  const chat = appInfo.selectedChatRoom
-  const currentUser = appInfo.userInfo
 
+  const navigate = useNavigate()
 
   const handleChange = (newMessage) => {
     setNewMessage(newMessage)
@@ -72,10 +63,13 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   const imageRef = useRef();
 
   const sendCall = () => {
-    appInfo.call = true
-    appInfo.chat = false
+    // appInfo.call = true
+    // appInfo.chat = false
     appInfo.callType = 'sending'
     setAppInfo({ ...appInfo })
+
+    navigate('/live')
+
   }
 
   const recieveCall = (key) => {
@@ -95,9 +89,8 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
 
   return (
     <>
-
       <div className="ChatBox-container">
-        {appInfo.selectedChatRoom.partner && chat ? (
+        {appInfo.selectedChatRoom.partner ? (
           <>
             {/* chat-header */}
             <div className="chat-header">
@@ -118,7 +111,6 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
 
 
                 <Image style={{ wiidth: '50px', height: '50px', cursor: 'pointer', marginBottom: '20px' }} onClick={sendCall} src={greenPhone} />
-                {/* <button onClick={sendCall} >   Send Call   </button> */}
                 <button style={{ display: 'none' }} onClick={recieveCall} >   Recieve Call   </button>
 
               </div>
@@ -166,4 +158,4 @@ const ChatBox = ({ setSendMessage, receivedMessage }) => {
   );
 };
 
-export default ChatBox;
+export default ChatBox

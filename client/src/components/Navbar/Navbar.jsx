@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
@@ -20,8 +20,38 @@ function CustomNavbar() {
 
   const { appInfo } = useContext(AppContext)
   const navigate = useNavigate()
+
+  const [notifications, setNotifications] = useState(false)
   const [notificationBarActive, setNotificationBarActive] = useState(false)
   const [settingsBarActive, setSettingsBarActive] = useState(false)
+
+
+  const init = () => {
+    const axios = require('axios');
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `http://localhost:5000/notify/getNotifications?id=${appInfo.userInfo.id}`,
+      headers: {}
+    };
+
+    axios.request(config)
+      .then((response) => {
+        setNotifications(response.data.notifications)
+        console.log(JSON.stringify(response.data))
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
+
+  const effect = () => {
+    init()
+  }
+
+  useEffect(effect, [])
 
 
   function DropdownItem(props) {
@@ -33,6 +63,13 @@ function CustomNavbar() {
     )
   }
 
+  function NotificationDropDown(props) {
+    return (
+      <li style={{ cursor: 'pointer' }} className='dropdownItem' >
+        <div> {props.text} </div>
+      </li>
+    )
+  }
 
   const handleLogOut = async () => {
     console.log(`Logout :: email : ${appInfo.userInfo.email}, password : ${appInfo.userInfo.password}`)
@@ -67,7 +104,7 @@ function CustomNavbar() {
 
 
             <Nav.Link eventKey={2} >
-              <Image src={Noti} alt="" fluid style={{ width: 25, height: 25 }} onClick={() => { setNotificationBarActive(notificationBarActive ? false : true) }} />
+              <Image src={Noti} alt="" fluid style={{ width: 25, height: 25 }} onClick={() => { setSettingsBarActive(false); setNotificationBarActive(notificationBarActive ? false : true) }} />
             </Nav.Link>
 
             <Nav.Link eventKey={2} >
@@ -78,7 +115,7 @@ function CustomNavbar() {
 
 
             <Nav.Link eventKey={2} >
-              <Image src={Setting} alt="" fluid style={{ width: 25, height: 25 }} onClick={() => { setSettingsBarActive(settingsBarActive ? false : true) }} />
+              <Image src={Setting} alt="" fluid style={{ width: 25, height: 25 }} onClick={() => { setNotificationBarActive(false); setSettingsBarActive(settingsBarActive ? false : true) }} />
             </Nav.Link>
 
 
@@ -104,7 +141,13 @@ function CustomNavbar() {
         <div style={Styles.menuBar} >
           <h3> Social Istic </h3>
           <ul>
-
+            {notifications.length >= 0 &&
+              notifications.map((item) => {
+                return (
+                  <NotificationDropDown text={item.text} />
+                )
+              })
+            }
           </ul>
         </div>
       }
@@ -132,6 +175,9 @@ const Styles = ({
     zIndex: 1
   }
 })
+
+
+
 
 
 

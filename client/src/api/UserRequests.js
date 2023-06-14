@@ -11,35 +11,35 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const getUser = (userId) => {
+export const getUser = async (userId) => {
   console.log(`API.get`)
-  API.get(`/user/${userId}`)
+  return API.get(`/user/${userId}`)
 }
-export const updateUser = (id, formData) => {
+export const updateUser = async (id, formData) => {
   console.log(`API.get`)
-  API.put(`/user/${id}`, formData)
-}
-
-export const getAllUser = () => {
-  console.log(`API.get`)
-  API.get('/user')
-}
-export const followUser = (id, data) => {
-  console.log(`API.get`)
-  API.put(`/user/${id}/follow`, data)
-}
-export const unfollowUser = (id, data) => {
-  console.log(`API.get`)
-  API.put(`/user/${id}/unfollow`, data)
-}
-export const deleteUser = (id) => {
-  console.log(`API.get`)
-  API.delete(`/user/${id}`)
+  return API.put(`/user/${id}`, formData)
 }
 
-export const getUserById = (userId) => {
+export const getAllUser = async () => {
   console.log(`API.get`)
-  API.get(`/user/${userId}`)
+  return API.get('/user')
+}
+export const followUser = async (id, data) => {
+  console.log(`API.get`)
+  return API.put(`/user/${id}/follow`, data)
+}
+export const unfollowUser = async (id, data) => {
+  console.log(`API.get`)
+  return API.put(`/user/${id}/unfollow`, data)
+}
+export const deleteUser = async (id) => {
+  console.log(`API.get`)
+  return API.delete(`/user/${id}`)
+}
+
+export const getUserById = async (userId) => {
+  console.log(`API.get`)
+  return API.get(`/user/${userId}`)
 }
 
 
