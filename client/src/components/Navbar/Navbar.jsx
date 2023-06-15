@@ -14,6 +14,9 @@ import user01 from '../../img/user01.png'
 import inbox from '../../img/envelope.png'
 import { webAuth } from '../../firebase/firebaseAuth'
 import { AppContext } from '../../Context'
+import { domain } from '../../constants/constants'
+import axios from 'axios'
+
 const fireAuth = new webAuth()
 
 function CustomNavbar() {
@@ -27,14 +30,13 @@ function CustomNavbar() {
 
 
   const init = () => {
-    const axios = require('axios');
 
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
-      url: `http://localhost:5000/notify/getNotifications?id=${appInfo.userInfo.id}`,
+      url: `${domain}/notify/getNotifications?id=${appInfo.userInfo.id}`,
       headers: {}
-    };
+    }
 
     axios.request(config)
       .then((response) => {
@@ -43,7 +45,7 @@ function CustomNavbar() {
       })
       .catch((error) => {
         console.log(error);
-      });
+      })
 
   }
 

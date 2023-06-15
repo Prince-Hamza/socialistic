@@ -40,7 +40,7 @@ const User = ({ person }) => {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:5000/notify',
+      url: `${domain}/notify`,
       headers: { 
         'Content-Type': 'application/json'
       },
