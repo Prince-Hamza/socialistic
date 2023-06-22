@@ -70,7 +70,7 @@ function Live() {
     }
 
     const effect = () => {
-        main(notify)
+        main(notify, appInfo, setAppInfo, navigate)
         if (appInfo.callType === 'sending') automateSendCall()
         if (appInfo.callType === 'recieving') automateRecieveCall()
     }

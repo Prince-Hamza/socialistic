@@ -1,7 +1,8 @@
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
 
-export const main = (notify) => {
+export const main = (notify, appInfo, setAppInfo, navigate) => {
+
 
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
@@ -17,6 +18,7 @@ export const main = (notify) => {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
   const firestore = firebase.firestore();
+
 
   const servers = {
     iceServers: [
@@ -86,9 +88,31 @@ export const main = (notify) => {
     } catch (ex) {
       alert(`error: ${ex}`)
     }
-
-
   }
+
+
+  hangupButton.onclick = async () => {
+    if (localStream) {
+      // Stop local tracks
+      localStream.getTracks().forEach(track => track.stop());
+      localStream = null;
+    }
+
+    if (remoteStream) {
+      // Stop remote tracks
+      remoteStream.getTracks().forEach(track => track.stop());
+      remoteStream = null;
+    }
+
+    // Reset video elements
+    webcamVideo.srcObject = null;
+    remoteVideo.srcObject = null;
+
+    appInfo.call = false;
+    setAppInfo({ ...appInfo });
+    navigate("/chat");
+  }
+
 
   // 2. Create an offer Button clicked
   callButton.onclick = async () => {
@@ -143,7 +167,7 @@ export const main = (notify) => {
   // 3. Answer the call with the unique ID
   answerButton.onclick = async () => {
     // alert(`answer : ${callInput.value}`)
-    
+
     const callId = callInput.value;
     const callDoc = firestore.collection('calls').doc(callId);
     const answerCandidates = callDoc.collection('answerCandidates');
