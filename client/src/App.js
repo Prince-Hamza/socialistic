@@ -29,6 +29,7 @@ function App() {
         selectedChatRoom: {},
         messages: [],
         online: true,
+        onlineUsers: [],
 
         postsForPage: 'home',
         myPostsCount: 0,

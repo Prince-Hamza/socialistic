@@ -137,41 +137,48 @@ async function mongooseEvents() {
 
 // socket events
 
+var listening = false
+var onlineUsers = []
 
-io.on('connection', (socket) => {
+if (!listening) {
+  listening = true
 
-  console.log(`on connection : server connected to soket.io : ${socket.id} `)
+  io.on('connection', (socket) => {
+    console.log(`on connection : server connected to soket.io : ${socket.id} `)
+
+    console.log(`listening`)
+    socket.on('listen', async (data) => {
+      if (data && Object.keys(data).length) {
+        console.log(`LISTEN_EVEN :: Activate a listener for : ${JSON.stringify(data)}`)
+        await mongooseEvents()
+      }
+    })
+
+    socket.on('joined', ({ userId }) => {
+      console.log(` user : ${userId} has joined`)
+      // add to online users
+      onlineUsers.push({ userId: userId, socketId: socket.id })
+      // save/send online users along socket.id
+      console.log(`emit online users : ${onlineUsers}`);
+      socket.emit('onlineUsers', onlineUsers)
+    })
 
 
-  socket.on('listen', async (data) => {
-    if (data && Object.keys(data).length) {
-      console.log(`LISTEN_EVEN :: Activate a listener for : ${JSON.stringify(data)}`)
-      await mongooseEvents()
-    }
+
+    socket.on("disconnect", () => {
+
+      console.log(`socket : ${socket.id} is disconnected`)
+
+      // findUserBySocketId & remove
+
+      onlineUsers = onlineUsers.filter((item) => { return item.socketId !== socket.id })
+      
+      socket.emit('onlineUsers', onlineUsers)
+
+    })
+
   })
 
-
-
-  // let onlineUsers = []
-
-
-  // socket.on("new-user-add", (newUserId) => {
-  //   if (!onlineUsers.some((user) => user.userId === newUserId)) {  // if user is not added before
-  //     onlineUsers.push({ userId: newUserId, socketId: socket.id });
-  //     console.log("new user is here!", onlineUsers);
-  //   }
-  //   io.emit("get-users", onlineUsers);
-  // })
-
-
-
-  // socket.on("disconnect", () => {
-  //   onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
-  //   console.log("user disconnected", onlineUsers);
-  //   io.emit("get-users", onlineUsers);
-  // })
-
-
-})
+}
 
 

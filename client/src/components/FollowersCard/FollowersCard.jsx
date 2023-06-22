@@ -39,7 +39,7 @@ const FollowersCard = ({ location }) => {
       const filteredPersons = data.filter((person) => person.id !== appInfo.userInfo.id)
       setPersons(filteredPersons);
     };
-    fetchPersons();
+    if (!persons.length) fetchPersons();
   }, [user.following, appInfo.userInfo.id, displayCount])
 
 

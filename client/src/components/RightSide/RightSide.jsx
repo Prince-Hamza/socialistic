@@ -22,6 +22,6 @@ const RightSide = () => {
       <ShareModal modalOpened={modalOpened} setModalOpened={setModalOpened} />
     </div>
   );
-};
+}
 
 export default RightSide

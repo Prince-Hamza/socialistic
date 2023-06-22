@@ -44,15 +44,6 @@ const Post = ({ data, posts, setPosts }) => {
   const totalItems = data.images.length + data.videos.length + data.locations.length + data.dates.length
   let itemCount = 0
 
-  const adjust = ({
-    widthFor1: ['100%'],
-    widthFor2: ['50%', '50%'],
-    widthFor3: ['100%', '50%', '50%'],
-    widthFor4: ['50%', '50%', '50%', '50%'],
-    widthFor4p1us: ['100%', '100%', '100%', '100%', '100%', '100%', '100%', '100%', '100%', '100%'],
-  })
-
-
 
 
   const handleToggleCommentInput = () => {
@@ -135,6 +126,7 @@ const Post = ({ data, posts, setPosts }) => {
             itemCount++
             return (
               <img
+                key={Math.random()}
                 style={{ width: '100%', height: '400px', margin: '1px', cursor: 'pointer' }}
                 onClick={() => { window.open(image, '_blank') }}
                 src={image}
@@ -149,7 +141,7 @@ const Post = ({ data, posts, setPosts }) => {
         <div style={{ width: '100%' }}>
           {data.videos.map((video) => {
             return (
-              <video style={{ width: '100%', height: '400px', margin: '1px', cursor: 'pointer' }} controls onEnded={handleVideoEnd} src={video} >
+              <video  key={Math.random()} style={{ width: '100%', height: '400px', margin: '1px', cursor: 'pointer' }} controls onEnded={handleVideoEnd} src={video} >
 
               </video>
             )
@@ -163,7 +155,7 @@ const Post = ({ data, posts, setPosts }) => {
         <div>
           {data.locations.map((location) => {
             return (
-              <div style={{ width: 'auto', height: 'auto' }} >
+              <div style={{ width: 'auto', height: 'auto' }}  key={Math.random()} >
                 {isLoaded &&
                   <div style={{ width: '550px', height: '400px' }} >
                     <GoogleMap
@@ -184,7 +176,7 @@ const Post = ({ data, posts, setPosts }) => {
           {data.dates.map((dateString) => {
             let jsDate = moment(dateString, 'YYYY-MM-DD').toDate()
             return (
-              <Calendar value={jsDate} />
+              <Calendar value={jsDate} key={Math.random()} />
             )
           })}
         </div>
