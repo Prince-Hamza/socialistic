@@ -110,7 +110,7 @@ export const main = (notify, appInfo, setAppInfo, navigate) => {
 
     appInfo.call = false;
     setAppInfo({ ...appInfo });
-    navigate("/chat");
+    navigate(`/chat/${appInfo.selectedChatRoom.key}`);
   }
 
 
