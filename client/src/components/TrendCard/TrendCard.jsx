@@ -25,10 +25,10 @@ const TrendCard = () => {
       .then((response) => {
         let users = response.data
         setComplete(true)
-        // console.log(JSON.stringify(users))
-        // let onlines = users.filter((user) => { return user.online === true })
-        // onlines.forEach((item) => { appInfo.onlineUsers.push(item) })
-        // setAppInfo({ ...appInfo })
+        console.log(JSON.stringify(users))
+        let onlines = users.filter((user) => { return user.online === true })
+        onlines.forEach((item) => { appInfo.onlineUsers.push(item) })
+        setAppInfo({ ...appInfo })
 
       })
       .catch((error) => {
@@ -39,7 +39,7 @@ const TrendCard = () => {
 
   useEffect(() => {
     //alert(`update : ${JSON.stringify()}`)
-    // if (!complete) getOnlineUsers()
+    if (!complete) getOnlineUsers()
   }, [])
 
 

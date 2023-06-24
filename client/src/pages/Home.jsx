@@ -55,13 +55,6 @@ const Home = () => {
       socket.emit('joined', { userId: appInfo.userInfo.id, userName: appInfo.userInfo.username, profilePicture: appInfo.userInfo.profilePicture })
     })
 
-    // socket.on('onlineUsers', (onlineList) => {
-    //   alert(`onlineUsers : count : ${onlineList.length} , data: ${JSON.stringify(onlineList)} `)
-    //   var refinedList = _.uniqBy(onlineList, 'userId')
-    //   appInfo.onlineUsers = refinedList
-    //   setAppInfo({ ...appInfo })
-    // })
-
 
     socket.on('onlineUsersMongoEvent', async (data) => {
       console.log(`mongo event : online users : ${JSON.stringify(data)}`)
