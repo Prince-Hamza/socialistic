@@ -3,9 +3,13 @@ import _ from 'lodash'
 import { AppContext } from '../Context'
 import { io } from "socket.io-client"
 import { useNavigate } from 'react-router-dom'
-import { Button, Col, Row } from 'react-bootstrap'
+import { Col, Form, Image, Row } from 'react-bootstrap'
 import { domain } from '../constants/constants'
 import { addMessage } from '../api/MessageRequests'
+import greenPhone from '../img/messenger/greenPhone.jpg'
+import redPhone from '../img/redCallButton.png'
+
+
 const ENDPOINT = domain
 const socket = io(ENDPOINT);
 
@@ -54,6 +58,8 @@ function GlobalSocketListener() {
 
             if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
                 setNotificationData({ prompt: `A user is calling you`, type: 'call', ...user })
+                // let play = document.getElementById('playButton')
+                // if (play) play.click()
                 // hideNotification()
             }
 
@@ -64,7 +70,7 @@ function GlobalSocketListener() {
 
 
     const onMessage = () => {
-        if (notificationData.type === 'message') navigate(`/chat/${notificationData.chatRoomKey}`)
+        if (notificationData.type !== 'call') navigate(`/chat/${notificationData.chatRoomKey}`)
     }
     const onAttend = () => {
         updateAppState()
@@ -74,10 +80,12 @@ function GlobalSocketListener() {
 
     const onReject = async () => {
         // addMessage
+        // let pause = document.getElementById('paseButton')
+        // if (pause) pause.click()
+
         let message = { ...notificationData, text: '${{abort call}}', abort: true }
-        alert(`abort message : ${JSON.stringify(message)}`)
         await addMessage(message)
-     //   hideNotification()
+        hideNotification()
     }
 
 
@@ -98,8 +106,18 @@ function GlobalSocketListener() {
                             <p style={{ color: '#222', font: '16px times new roman' }} onClick={onMessage} > {notificationData.prompt} </p>
                             {notificationData.type === 'call' &&
                                 <Row>
-                                    <Button onClick={onAttend} > Attend </Button>
-                                    <Button onClick={onReject} > Reject </Button>
+
+                                    <Col lg={6} >
+                                        <Image style={Styles.button} src={greenPhone} onClick={onAttend} />
+                                        <Form.Text> Attend  </Form.Text>
+                                    </Col>
+
+                                    <Col lg={6} >
+                                        <Image style={Styles.button} src={redPhone} onClick={onAttend} />
+                                        <Form.Text> Reject  </Form.Text>
+                                    </Col>
+
+
                                 </Row>
                             }
                         </Col>
@@ -128,6 +146,7 @@ const Styles = ({
     button: {
         borderRadius: '50px',
         width: '40px',
-        height: '40px'
+        height: '40px',
+        cursor: 'pointer'
     }
 })

@@ -51,14 +51,32 @@ function Messages() {
     return (
         <div className='chat-body'>
             {appInfo.messages.map((message) => {
-                return (
-                    <div key={Math.random()} style={{ display: 'flex', justifyContent: message.myId === appInfo.userInfo.id ? 'flex-start' : 'flex-end' }} >
-                        <div id="message" className={message.myId === appInfo.userInfo.id ? "message own" : "message"} >
-                            <span>{message.text}</span>{" "}
-                            <span>{format(message.createdAt)}</span>
+
+                if (!message.text.includes('${{') && !message.text.includes('}}')) {
+                    return (
+                        <div key={Math.random()} style={{ display: 'flex', justifyContent: message.myId === appInfo.userInfo.id ? 'flex-start' : 'flex-end' }} >
+                            <div id="message" className={message.myId === appInfo.userInfo.id ? "message own" : "message"} >
+                                <span>{message.text}</span>{" "}
+                                <span>{format(message.createdAt)}</span>
+                            </div>
                         </div>
-                    </div>
-                )
+                    )
+                }
+
+
+                if (message.text == '${{abort call}}') {
+                    return (
+                        <div key={Math.random()} style={{ display: 'flex', justifyContent: message.myId === appInfo.userInfo.id ? 'flex-start' : 'flex-end' }} >
+                            <div id="message" className={'callAborted'} >
+                                <span>{'live call was aborted'}</span>{" "}
+                                <span>{format(message.createdAt)}</span>
+                            </div>
+                        </div>
+                    )
+                }
+
+
+
             })}
         </div>
     )
