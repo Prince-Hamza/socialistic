@@ -1,26 +1,22 @@
 import React, { useContext, useRef, useEffect, useState } from 'react'
 import { AppContext } from '../../Context'
 import { format } from "timeago.js"
-import { io } from "socket.io-client"
 import _ from 'lodash'
 import $ from 'jquery'
+import { io } from "socket.io-client"
 import { domain } from '../../constants/constants'
-import Live from '../Live/Live'
-
 const ENDPOINT = domain
 const socket = io(ENDPOINT);
 
 function Messages() {
     const { appInfo, setAppInfo } = useContext(AppContext)
-    const [listenToMongo, setListenToMongo] = useState(false)
-    const [listening, setListening] = useState(false)
 
     const socketListener = () => {
         appInfo.listening = true
         setAppInfo({ ...appInfo })
         // alert(`socket listener : ${listening}`)
         socket.on('message', (data) => {
-            if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey) {
+            if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey && !data.fullDocument.abort) {
                 let list = appInfo.messages
                 let nm = data.fullDocument
                 if (nm.text !== 'call Request') list.push(nm)
@@ -28,12 +24,6 @@ function Messages() {
                 appInfo.messages = list
                 setAppInfo({ ...appInfo })
             }
-
-            if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
-                // alert(`chatbox: live key : ${data.fullDocument.liveStreamingKey}`)
-                // recieveCall(data.liveStreamingKey)
-            }
-
         })
 
 

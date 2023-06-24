@@ -1,17 +1,39 @@
 import { useContext, useEffect, useState } from 'react'
 import { main } from './backend'
 import { addMessage, getMessages } from "../../api/MessageRequests"
-import './App.css'
 import { AppContext } from '../../Context'
+import { useNavigate } from 'react-router-dom'
+import { io } from "socket.io-client"
+import { domain } from '../../constants/constants'
+import './App.css'
+const ENDPOINT = domain
+const socket = io(ENDPOINT)
+
 
 function Live() {
 
     const { appInfo, setAppInfo } = useContext(AppContext)
 
+    const navigate = useNavigate()
+
+    const socketListener = () => {
+        socket.on('message', (data) => {
+            let message = data.fullDocument
+            console.log(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
+            // alert(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
+            let hangup = document.getElementById('hangupButton')
+            if (hangup && message && message.text === '${{abort call}}') {
+                appInfo.abortedByPartner = true
+                setTimeout(() => {
+                    setAppInfo({ ...appInfo })
+                    console.log('click hangup')
+                    hangup.click()
+                }, 3000)
+            }
+        })
+    }
 
     const notify = async (streamKey) => {
-
-        // alert(`stream key notify : ${streamKey}`)
 
         const message = {
             chatRoomKey: appInfo.selectedChatRoom.key,
@@ -22,11 +44,8 @@ function Live() {
             liveStreamingKey: streamKey
         }
 
-        // alert(`${JSON.stringify(message)}`)
-
         try {
-            const resp = await addMessage(message)
-            // alert(`resp : ${JSON.stringify(resp.data)}`)
+            await addMessage(message)
         }
         catch (ex) {
             alert(`error : ${ex}`)
@@ -70,6 +89,7 @@ function Live() {
     }
 
     const effect = () => {
+        socketListener()
         main(notify, appInfo, setAppInfo, navigate)
         if (appInfo.callType === 'sending') automateSendCall()
         if (appInfo.callType === 'recieving') automateRecieveCall()

@@ -172,11 +172,10 @@ function PostShare(props) {
     return (
         <Row className="PostShare">
 
-            <img style={{ width: '40px', height: '40px' }} src={appInfo.userInfo.profilePicture} alt="Profile" />
+            <img style={{ width: '57px', height: '37px' }} src={appInfo.userInfo.profilePicture} alt="Profile" />
 
 
-            <div style={{ width: '90%'}} >
-
+            <div style={{ width: '85%'}} >
                 <input
                     type="text"
                     placeholder="What's happening ?"

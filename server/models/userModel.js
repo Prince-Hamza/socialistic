@@ -38,6 +38,7 @@ const UserSchema = mongoose.Schema(
     country: String,
     followers: [],
     following: [],
+    online: Boolean,
     streamingKey: String
   },
   { timestamps: true }

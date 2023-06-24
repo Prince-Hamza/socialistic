@@ -3,12 +3,13 @@ import _ from 'lodash'
 import { AppContext } from '../Context'
 import { io } from "socket.io-client"
 import { useNavigate } from 'react-router-dom'
-import { Button, Row } from 'react-bootstrap'
+import { Button, Col, Row } from 'react-bootstrap'
 import { domain } from '../constants/constants'
+import { addMessage } from '../api/MessageRequests'
 const ENDPOINT = domain
 const socket = io(ENDPOINT);
 
-function GlobalSocketListener({ children }) {
+function GlobalSocketListener() {
 
     const { appInfo, setAppInfo } = useContext(AppContext)
     const navigate = useNavigate()
@@ -21,12 +22,17 @@ function GlobalSocketListener({ children }) {
         }, 2000)
     }
 
-    const updateAppState = (user) => {
+    const updateAppState = () => {
         console.log(`notify:update state: ${JSON.stringify(notificationData)}`)
-        appInfo.call = user.liveStreamingKey ? true : false
-        appInfo.chat = user.liveStreamingKey ? false : true
+        appInfo.call = notificationData.liveStreamingKey ? true : false
+        appInfo.chat = notificationData.liveStreamingKey ? false : true
         appInfo.callType = 'recieving'
-        appInfo.liveStreamingKey = user.liveStreamingKey
+        appInfo.liveStreamingKey = notificationData.liveStreamingKey
+        appInfo.selectedChatRoom.key = notificationData.chatRoomKey
+        appInfo.selectedChatRoom.partner = {}
+        appInfo.selectedChatRoom.partner.id = notificationData.partnerId
+        appInfo.streamingData = notificationData
+        // alert(`update : live : ${notificationData.liveStreamingKey}, key: ${notificationData.chatRoomKey} | ${JSON.stringify(notificationData)}`)
         setAppInfo({ ...appInfo })
     }
 
@@ -41,13 +47,13 @@ function GlobalSocketListener({ children }) {
             var user = data.fullDocument
             if (data && Object.keys(data).length && !user.liveStreamingKey) {
                 //alert('notify')
-                if (!window.location.href.includes('chat')) setNotificationData({ prompt: `A user sent you a message`, ...user })
+                if (!window.location.href.includes('chat')) setNotificationData({ prompt: `A user sent you a message`, type: 'message', ...user })
                 // hideNotification()
                 // updateAppState(user)
             }
 
             if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
-                setNotificationData({ prompt: `A user is calling you`, ...user })
+                setNotificationData({ prompt: `A user is calling you`, type: 'call', ...user })
                 // hideNotification()
             }
 
@@ -57,16 +63,21 @@ function GlobalSocketListener({ children }) {
     }
 
 
-
+    const onMessage = () => {
+        if (notificationData.type === 'message') navigate(`/chat/${notificationData.chatRoomKey}`)
+    }
     const onAttend = () => {
-        updateAppState(notificationData)
-        // navigate(`/chat/${notificationData.myId}`)
+        updateAppState()
         navigate(`/live`)
     }
 
 
-    const onReject = () => {
-        hideNotification()
+    const onReject = async () => {
+        // addMessage
+        let message = { ...notificationData, text: '${{abort call}}', abort: true }
+        alert(`abort message : ${JSON.stringify(message)}`)
+        await addMessage(message)
+     //   hideNotification()
     }
 
 
@@ -83,11 +94,15 @@ function GlobalSocketListener({ children }) {
             <div>
                 {notificationData &&
                     <div style={Styles.card}>
-                        <Row>
-                            <p style={{ color: '#222', font: '16px poppins' }} > {notificationData.prompt} </p>
-                            <Button onClick={onAttend} > Attend </Button>
-                            <Button onClick={onReject} > Reject </Button>
-                        </Row>
+                        <Col>
+                            <p style={{ color: '#222', font: '16px times new roman' }} onClick={onMessage} > {notificationData.prompt} </p>
+                            {notificationData.type === 'call' &&
+                                <Row>
+                                    <Button onClick={onAttend} > Attend </Button>
+                                    <Button onClick={onReject} > Reject </Button>
+                                </Row>
+                            }
+                        </Col>
                     </div>
                 }
             </div>
@@ -109,5 +124,10 @@ const Styles = ({
         height: '100px',
         boxShadow: '0px 0px 8px 1px black',
         backgroundColor: 'white'
+    },
+    button: {
+        borderRadius: '50px',
+        width: '40px',
+        height: '40px'
     }
 })

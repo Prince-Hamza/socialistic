@@ -7,7 +7,8 @@ export const getUser = async (req, res) => {
 
   const id = req.params.id;
 
-  console.log(`user id : ${id}`);
+  console.log(`get user : user id : ${id}`)
+
   try {
     const cursor = await UserModel.find()
     const count = await UserModel.countDocuments()
@@ -29,6 +30,28 @@ export const getUser = async (req, res) => {
   }
 
 }
+
+
+export const getUserByDocId = async (req, res) => {
+
+  const id = req.query.id
+
+  console.log(`userByDocId : id : ${id}`)
+
+  try {
+    const user = await UserModel.findById(id)
+
+    console.log(`user : ${JSON.stringify(user)}`)
+
+    return res.status(200).send(user)
+
+  } catch (ex) {
+    console.log(`get key : error : ${ex}`)
+    return res.status(404).send({ error: `No users matching ${id} have been found` })
+  }
+
+}
+
 
 
 

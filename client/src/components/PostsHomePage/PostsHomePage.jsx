@@ -16,13 +16,15 @@ const Posts = () => {
   const user = firebase.auth().currentUser
 
   const [posts, setPosts] = useState([])
+  const [myPosts, setMyPosts] = useState([])
+
   const [loading, setLoading] = useState(false)
   const [complete, setComplete] = useState(false)
 
   const { appInfo, setAppInfo } = useContext(AppContext)
 
 
-  const getPostsByFollowedUsers = () => {
+  const getPostsByFollowedUsers = async () => {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -30,41 +32,62 @@ const Posts = () => {
       headers: {}
     };
 
-    axios.request(config)
-      .then((response) => {
-        let list = response.data.posts
-        // alert(`timeline posts :: ${JSON.stringify(list)}`)
-        setPosts([...list])
-        setLoading(false)
-        setComplete(true)
 
-        appInfo.postsByFollowedCount = list.length // by users i follow
-        setAppInfo({ ...appInfo })
+    try {
 
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+      const response = await axios.request(config)
+      let list = response.data.posts
+      setPosts([...list])
+
+      appInfo.postsByFollowedCount = list.length // by users i follow
+      setAppInfo({ ...appInfo })
+
+    } catch (ex) {
+      console.log(`error : ${ex}`);
+    }
+
+  }
+
+
+  const getMyPosts = async () => {
+
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `${domain}/posts/myposts?id=${appInfo.userInfo.id}`,
+      headers: {}
+    }
+
+
+    try {
+      const response = await axios.request(config)
+      let list = response.data.posts
+      // alert(`my posts :: ${JSON.stringify(list)}`)
+      setMyPosts([...list])
+      appInfo.myPostsCount = list.length
+      setAppInfo({ ...appInfo })
+    } catch (ex) {
+      console.log(`error : ${ex}`);
+    }
+
+
   }
 
 
 
 
-  const init = () => {
+  const init = async () => {
     setLoading(true)
-    getPostsByFollowedUsers()
+    await getPostsByFollowedUsers()
+    await getMyPosts()
+    setLoading(false)
+    setComplete(true)
   }
 
 
-
-  /*const init = () => {
-    setLoading(true)
-    //   if (window.location.href.includes(user)) getMyPosts()
-    getPostsByFollowedUsers()
-  } */
 
   const effect = () => {
-    if (!complete && appInfo.userInfo.id) init()
+    init()
   }
 
 
@@ -73,14 +96,29 @@ const Posts = () => {
 
   return (
     <div className="Posts">
+
+
+      {loading ? (
+        ""
+      ) : (
+        myPosts.map((post, id) => {
+          return <Post data={post} key={id} posts={myPosts} setPosts={setMyPosts} />
+          // return null
+        })
+      )}
+
+
       {loading ? (
         "Fetching posts...."
       ) : (
         posts.map((post, id) => {
-          return <Post data={post} key={id} posts={posts} setPosts={setPosts} />;
+          return <Post data={post} key={id} posts={posts} setPosts={setPosts} />
           // return null
         })
       )}
+
+
+
 
 
       {!posts.length && complete &&

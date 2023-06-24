@@ -1,5 +1,6 @@
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/firestore'
+import { addMessage } from '../../api/MessageRequests';
 
 export const main = (notify, appInfo, setAppInfo, navigate) => {
 
@@ -92,6 +93,7 @@ export const main = (notify, appInfo, setAppInfo, navigate) => {
 
 
   hangupButton.onclick = async () => {
+    alert(`hangup button clicked`)
     if (localStream) {
       // Stop local tracks
       localStream.getTracks().forEach(track => track.stop());
@@ -104,13 +106,25 @@ export const main = (notify, appInfo, setAppInfo, navigate) => {
       remoteStream = null;
     }
 
-    // Reset video elements
-    webcamVideo.srcObject = null;
-    remoteVideo.srcObject = null;
+    // Reset video element
+    webcamVideo.srcObject = null
+    remoteVideo.srcObject = null
 
-    appInfo.call = false;
-    setAppInfo({ ...appInfo });
-    navigate(`/chat/${appInfo.selectedChatRoom.key}`);
+    appInfo.call = false
+
+    // send abort message/event
+    console.log(`aborted by partner : ${appInfo.abortedByPartner}`)
+    if (!appInfo.abortedByPartner) {
+      let message = { chatRoomKey: appInfo.selectedChatRoom.key, messageId: Math.random().toString(), myId: appInfo.userInfo.id, partnerId: appInfo.selectedChatRoom.partner.id, text: '${{abort call}}', liveStreamingKey: appInfo.liveStreamingKey, abort: true }
+      console.log(`aborted by me : abort message : ${JSON.stringify(message)}`)
+      alert(`aborted by me : abort message : ${JSON.stringify(message)}`)
+      await addMessage(message)
+    }
+
+    setAppInfo({ ...appInfo })
+    alert('hangup:navigate')
+    navigate(`/chat/${appInfo.selectedChatRoom.key}`)
+
   }
 
 

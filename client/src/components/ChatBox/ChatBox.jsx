@@ -34,13 +34,12 @@ const ChatBox = () => {
       messageId: Math.random().toString(),
       myId: appInfo.userInfo.id,
       partnerId: appInfo.selectedChatRoom.partner.id,
-      text: newMessage,
+      text: newMessage
     }
 
 
     try {
-      await addMessage(message);
-      // setMessages([...messages]);
+      await addMessage(message)
       setNewMessage("")
     }
     catch (ex) {

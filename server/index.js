@@ -18,6 +18,8 @@ import { Server } from 'socket.io'
 import { MongoClient } from 'mongodb'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import UserModel from "./models/userModel.js"
+import { log } from "console"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -98,7 +100,6 @@ async function monitorListingsUsingEventEmitter(client, timeInMs = 60000, pipeli
     io.emit('message', data)
   })
 
-
   console.log(`listings : waiting for changes in mongodb`);
 
   // Wait the given amount of time and then close the change stream
@@ -135,6 +136,57 @@ async function mongooseEvents() {
 }
 
 
+
+
+async function monitorUsersOnline(client, timeInMs = 60000, pipeline = []) {
+  const collection = client.db("test").collection("users")
+
+  // See https://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html#watch for the watch() docs
+  const changeStream = collection.watch(pipeline);
+
+  // ChangeStream inherits from the Node Built-in Class EventEmitter (https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_class_eventemitter).
+  // We can use EventEmitter's on() to add a listener function that will be called whenever a change occurs in the change stream.
+  // See https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_emitter_on_eventname_listener for the on() docs.
+  changeStream.on('change', (data) => {
+    console.log(`changes detected in mongodb : users : ${JSON.stringify(data)}`)
+    io.emit('onlineUsersMongoEvent', data)
+  })
+
+  console.log(`listings : waiting for changes in mongodb`);
+
+  // Wait the given amount of time and then close the change stream
+  await closeChangeStream(timeInMs, changeStream);
+}
+
+
+async function userOnlineEvent() {
+
+  let uri = process.env.MONGODB_CONNECTION
+  let client = new MongoClient(uri);
+
+  try {
+    await client.connect()
+    const pipeline = [
+      {
+        '$match': {
+          'operationType': 'update'
+        }
+      }
+    ]
+
+    await monitorUsersOnline(client, 60000 * 30, pipeline)
+
+  } finally {
+    await client.close();
+  }
+}
+
+
+const ev = async () => {
+  await userOnlineEvent()
+}
+ev()
+
 // socket events
 
 var listening = false
@@ -144,7 +196,7 @@ if (!listening) {
   listening = true
 
   io.on('connection', (socket) => {
-    console.log(`on connection : server connected to soket.io : ${socket.id} `)
+    // console.log(`on connection : server connected to soket.io : ${socket.id} `)
 
     console.log(`listening`)
     socket.on('listen', async (data) => {
@@ -154,26 +206,45 @@ if (!listening) {
       }
     })
 
-    socket.on('joined', ({ userId }) => {
-      console.log(` user : ${userId} has joined`)
+    socket.on('joined', async ({ userId, userName, profilePicture }) => {
       // add to online users
-      onlineUsers.push({ userId: userId, socketId: socket.id })
       // save/send online users along socket.id
-      console.log(`emit online users : ${onlineUsers}`);
-      socket.emit('onlineUsers', onlineUsers)
+      console.log(`user : ${userId} has joined`)
+      onlineUsers.push({ userId: userId, socketId: socket.id, userName: userName, profilePicture: profilePicture })
+      console.log(`emit online users : ${onlineUsers}`)
+
+      await UserModel.findOneAndUpdate({ id: userId }, { online: true })
+      console.log(`updated user as online succesfully`)
+
+      // socket.emit('onlineUsers', onlineUsers)
     })
 
 
+    socket.on("disconnect", async (data) => {
 
-    socket.on("disconnect", () => {
+      console.log(`disconnect data : ${data}`)
 
       console.log(`socket : ${socket.id} is disconnected`)
 
-      // findUserBySocketId & remove
 
-      onlineUsers = onlineUsers.filter((item) => { return item.socketId !== socket.id })
-      
-      socket.emit('onlineUsers', onlineUsers)
+      var userId = false
+      onlineUsers.forEach((item) => {
+        console.log(`si  (${item.socketId})  === s.i(${socket.id})  or in ${data} ???`)
+        if (item.socketId === socket.id) {
+          console.log(`FOUND DISCONNECTED USER : Id : ${item.userId} `)
+          userId = item.userId
+        }
+        return item.socketId === socket.id
+      })
+
+      if (userId) {
+        await UserModel.findOneAndUpdate({ id: userId }, { online: false })
+
+        console.log(`updated user : ${userId} as offline succesfully`)
+
+        onlineUsers = onlineUsers.filter((item) => { return item.socketId !== socket.id })
+
+      }
 
     })
 
