@@ -64,7 +64,6 @@ const Chat = () => {
   }
 
   const init = () => {
-    // alert(appInfo.chatHistory)
     if (appInfo.chatHistory.length <= 0) getMyChatHistory()
   }
 

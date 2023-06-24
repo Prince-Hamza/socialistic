@@ -48,7 +48,7 @@ function Live() {
             await addMessage(message)
         }
         catch (ex) {
-            alert(`error : ${ex}`)
+            console.log(`error : ${ex}`)
         }
 
     }

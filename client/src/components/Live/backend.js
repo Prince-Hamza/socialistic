@@ -87,13 +87,13 @@ export const main = (notify, appInfo, setAppInfo, navigate) => {
       // webcamButton.disabled = true;
 
     } catch (ex) {
-      alert(`error: ${ex}`)
+      console.log(`error: ${ex}`)
     }
   }
 
 
   hangupButton.onclick = async () => {
-    alert(`hangup button clicked`)
+    // alert(`hangup button clicked`)
     if (localStream) {
       // Stop local tracks
       localStream.getTracks().forEach(track => track.stop());
@@ -117,12 +117,12 @@ export const main = (notify, appInfo, setAppInfo, navigate) => {
     if (!appInfo.abortedByPartner) {
       let message = { chatRoomKey: appInfo.selectedChatRoom.key, messageId: Math.random().toString(), myId: appInfo.userInfo.id, partnerId: appInfo.selectedChatRoom.partner.id, text: '${{abort call}}', liveStreamingKey: appInfo.liveStreamingKey, abort: true }
       console.log(`aborted by me : abort message : ${JSON.stringify(message)}`)
-      alert(`aborted by me : abort message : ${JSON.stringify(message)}`)
+      // alert(`aborted by me : abort message : ${JSON.stringify(message)}`)
       await addMessage(message)
     }
 
     setAppInfo({ ...appInfo })
-    alert('hangup:navigate')
+    // alert('hangup:navigate')
     navigate(`/chat/${appInfo.selectedChatRoom.key}`)
 
   }
