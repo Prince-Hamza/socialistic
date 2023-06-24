@@ -15,11 +15,11 @@ import NotificationRoute from './routes/NotificationRoute.js'
 
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+
 import { MongoClient } from 'mongodb'
 import path from 'path';
 import { fileURLToPath } from 'url';
 import UserModel from "./models/userModel.js"
-import { log } from "console"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -186,6 +186,9 @@ const ev = async () => {
   await userOnlineEvent()
 }
 ev()
+
+
+
 
 // socket events
 

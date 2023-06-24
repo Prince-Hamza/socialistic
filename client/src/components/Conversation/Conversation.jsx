@@ -5,12 +5,12 @@ import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
 import { addMessage, getMessages } from "../../api/MessageRequests"
+import $ from 'jquery'
 
 const Conversation = ({ data, currentUser }) => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [chosenChat, setChosenChat] = useState(false)
-  const online = appInfo.online
 
 
   const fetchMessages = async (id) => {
@@ -36,6 +36,14 @@ const Conversation = ({ data, currentUser }) => {
     // alert(appInfo.selectedChatRoom.key)
     await fetchMessages(data.chatRoomKey)
     setAppInfo({ ...appInfo })
+
+
+    var down = setInterval(() => {
+      var scroll = $('.chat-body')
+      if (scroll) scroll.animate({ scrollTop: '1000000px' })
+      if (scroll) clearInterval(down)
+    }, 300)
+
   }
 
 

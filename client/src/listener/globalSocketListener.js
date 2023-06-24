@@ -8,6 +8,7 @@ import { domain } from '../constants/constants'
 import { addMessage } from '../api/MessageRequests'
 import greenPhone from '../img/messenger/greenPhone.jpg'
 import redPhone from '../img/redCallButton.png'
+import Audio from './Audio'
 
 
 const ENDPOINT = domain
@@ -18,6 +19,7 @@ function GlobalSocketListener() {
     const { appInfo, setAppInfo } = useContext(AppContext)
     const navigate = useNavigate()
     const [notificationData, setNotificationData] = useState()
+    const [playAudio, setPlayAudio] = useState(false)
 
 
     const hideNotification = () => {
@@ -50,17 +52,13 @@ function GlobalSocketListener() {
 
             var user = data.fullDocument
             if (data && Object.keys(data).length && !user.liveStreamingKey) {
-                //alert('notify')
                 if (!window.location.href.includes('chat')) setNotificationData({ prompt: `A user sent you a message`, type: 'message', ...user })
-                // hideNotification()
-                // updateAppState(user)
             }
 
             if (data && Object.keys(data).length && data.fullDocument.liveStreamingKey) {
                 setNotificationData({ prompt: `A user is calling you`, type: 'call', ...user })
-                // let play = document.getElementById('playButton')
-                // if (play) play.click()
-                // hideNotification()
+                setPlayAudio(true)
+                setTimeout(() => { setPlayAudio(false) }, 7000)
             }
 
         })
@@ -99,6 +97,7 @@ function GlobalSocketListener() {
 
     return (
         <div>
+            {playAudio && <Audio />}
             <div>
                 {notificationData &&
                     <div style={Styles.card}>

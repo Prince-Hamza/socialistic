@@ -6,7 +6,7 @@ import "./ChatBox.css"
 import { AppContext } from "../../Context"
 import Messages from "../Messages/Messages"
 import _ from 'lodash'
-import $, { error } from 'jquery'
+import $ from 'jquery'
 import { Image } from "react-bootstrap"
 import greenPhone from '../../img/messenger/greenPhone.jpg'
 import { useNavigate } from "react-router-dom"
@@ -47,8 +47,8 @@ const ChatBox = () => {
     }
 
 
-    var scroll = $('.chat-body');
-    scroll.animate({ scrollTop: '8000px' });
+    var scroll = $('.chat-body')
+    scroll.animate({ scrollTop: '1000000000px' })
 
   }
 

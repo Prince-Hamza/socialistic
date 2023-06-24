@@ -20,6 +20,8 @@ const RightSide = () => {
         Share
       </button>
       <ShareModal modalOpened={modalOpened} setModalOpened={setModalOpened} /> */}
+
+      
     </div>
   );
 }
