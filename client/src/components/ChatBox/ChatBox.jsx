@@ -81,15 +81,15 @@ const ChatBox = () => {
 
 
   useEffect(() => {
-    var scroll = $('.chat-body');
-    scroll.animate({ scrollTop: '8000px' });
+    // var scroll = $('.chat-body');
+    // scroll.animate({ scrollTop: '8000px' });
   }, [])
 
 
   return (
     <>
       <div className="ChatBox-container">
-        {appInfo.selectedChatRoom.partner ? (
+        {appInfo.chosenChat && appInfo.selectedChatRoom.partner ? (
           <>
             {/* chat-header */}
             <div className="chat-header">

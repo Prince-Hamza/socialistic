@@ -16,9 +16,8 @@ const Conversation = ({ data, currentUser }) => {
   const fetchMessages = async (id) => {
     try {
       var { data } = await getMessages(id)
-
       data = data.filter((item) => { return item.text !== 'call Request' && item.text !== 'call request' })
-
+      appInfo.chosenChat = true
       appInfo.messages = data
       // alert(`selected :: ${appInfo.selectedChatRoom.key}`)
       setAppInfo({ ...appInfo })
@@ -49,15 +48,14 @@ const Conversation = ({ data, currentUser }) => {
 
 
   const chooseChat = () => {
-    console.log(`chosen`);
-    setChosenChat(true)
+    console.log(`chosen`)
     let urlParts = window.location.href.split('/')
     if (urlParts.length === 5 && data.partnerId === urlParts[4]) selectConversation()
   }
 
   const effect = () => {
-    console.log(`chosen chat ? ${chosenChat}`);
-    if (chosenChat === false) chooseChat()
+    console.log(`chosen chat ? ${chosenChat}`)
+    if (appInfo.chosenChat === false) chooseChat()
   }
 
   useEffect(effect, [])

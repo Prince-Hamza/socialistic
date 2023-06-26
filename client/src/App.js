@@ -41,7 +41,9 @@ function App() {
         callType: 'recieving',
         buttonsClicked: false,
         listenToMongo: false,
-        listening: false
+        listening: false,
+        abortedByPartner: false,
+        chosenChat: false
     })
     const [loading, setLoading] = useState(true)
 

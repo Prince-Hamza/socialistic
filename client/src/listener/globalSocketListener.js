@@ -100,9 +100,9 @@ function GlobalSocketListener() {
             {playAudio && <Audio />}
             <div>
                 {notificationData &&
-                    <div style={Styles.card}>
-                        <Col>
-                            <p style={{ color: '#222', font: '16px times new roman' }} onClick={onMessage} > {notificationData.prompt} </p>
+                    <div style={Styles.card} onClick={onMessage}>
+                        <Col style={{ padding: '0px', textAlign: 'center' }} >
+                            <p style={{ color: '#222', font: '16px times new roman', marginTop: '10px' }} > {'notificationData.prompt'} </p>
                             {notificationData.type === 'call' &&
                                 <Row>
 
@@ -115,8 +115,6 @@ function GlobalSocketListener() {
                                         <Image style={Styles.button} src={redPhone} onClick={onAttend} />
                                         <Form.Text> Reject  </Form.Text>
                                     </Col>
-
-
                                 </Row>
                             }
                         </Col>
@@ -139,8 +137,18 @@ const Styles = ({
         right: '50px',
         width: '300px',
         height: '100px',
-        boxShadow: '0px 0px 8px 1px black',
-        backgroundColor: 'white'
+        boxShadow: '0px 0px 12px 2px gray',
+        backgroundColor: 'white',
+        color: 'limegreen',
+        padding: '10px',
+        font: '12px times new roman',
+
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+
+
+
     },
     button: {
         borderRadius: '50px',

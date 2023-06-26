@@ -111,7 +111,7 @@ export const main = (notify, appInfo, setAppInfo, navigate) => {
     remoteVideo.srcObject = null
 
     appInfo.call = false
-
+    appInfo.chosenChat = false
     // send abort message/event
     console.log(`aborted by partner : ${appInfo.abortedByPartner}`)
     if (!appInfo.abortedByPartner) {

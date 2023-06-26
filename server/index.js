@@ -226,7 +226,6 @@ if (!listening) {
     socket.on("disconnect", async (data) => {
 
       console.log(`disconnect data : ${data}`)
-
       console.log(`socket : ${socket.id} is disconnected`)
 
 
