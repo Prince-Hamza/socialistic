@@ -1,8 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../../Context.js'
 import { Image, Row } from 'react-bootstrap'
+import { io } from "socket.io-client"
+import { domain } from '../../constants/constants.js'
 import axios from 'axios'
-import { domain } from '../../constants/constants'
+import _ from 'lodash'
+
 import './TrendCard.css'
 
 
@@ -12,7 +15,8 @@ const TrendCard = () => {
   const [complete, setComplete] = useState(false)
 
 
-  const getOnlineUsers = () => {
+
+  const getOnlineUsers = async () => {
 
     let config = {
       method: 'get',
@@ -21,25 +25,87 @@ const TrendCard = () => {
       headers: {}
     };
 
-    axios.request(config)
-      .then((response) => {
-        let users = response.data
-        setComplete(true)
-        console.log(JSON.stringify(users))
-        let onlines = users.filter((user) => { return user.online === true })
-        onlines.forEach((item) => { appInfo.onlineUsers.push(item) })
-        setAppInfo({ ...appInfo })
 
-      })
-      .catch((error) => {
-        alert(error)
-        setComplete(true)
-      })
+    try {
+      const response = await axios.request(config)
+      let users = response.data
+      console.log(JSON.stringify(users))
+      let onlines = users.filter((user) => { return user.online === true })
+      return onlines
+    } catch (error) {
+      alert(error)
+      setComplete(true)
+      return []
+    }
   }
 
+
+
+  const getUserByDocId = async (id) => {
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${domain}/user/findByDocId?id=${id}`,
+      headers: {}
+    }
+
+    try {
+      const response = await axios.request(config)
+      let user = response.data
+      console.log(`user by doc id : ${JSON.stringify(user)}`)
+      // alert(`user by doc id : ${JSON.stringify(user)}`)
+      return user
+    } catch (ex) {
+      console.log(`ex : ${ex}`)
+      return ex
+    }
+  }
+
+
   useEffect(() => {
-    //alert(`update : ${JSON.stringify()}`)
-    if (!complete) getOnlineUsers()
+
+    const ENDPOINT = domain
+    const socket = io(ENDPOINT)
+
+    socket.on('connect', () => {
+      console.log(`${socket.id} is connected to socket.io`)
+      socket.emit('joined', { userId: appInfo.userInfo.id, userName: appInfo.userInfo.username, profilePicture: appInfo.userInfo.profilePicture })
+    })
+
+
+    socket.on('onlineUsersMongoEvent', async (data) => {
+      // if (!complete) {
+      // alert(`mongo event : online users : ${JSON.stringify(data)}`)
+      let docId = data.documentKey._id
+      var user = await getUserByDocId(docId)
+      appInfo.onlineUsers.push(user)
+
+
+
+      if (!complete) {
+        setComplete(true)
+        const preOnlines = await getOnlineUsers()
+        preOnlines.forEach((user) => { appInfo.onlineUsers.push(user) })
+      }
+
+      if (!user.online) {
+        // alert(`offline : ${appInfo.onlineUsers.length}`)
+        let userIndex = -1
+        appInfo.onlineUsers.forEach((listItem, index) => { if (user.id === listItem.id) userIndex = index })
+        if (userIndex >= 0) appInfo.onlineUsers.splice(userIndex, 1)
+        // alert(`offline : index : ${userIndex} | ${appInfo.onlineUsers.length}`)
+      }
+
+      const uniqueList = _.uniqBy(appInfo.onlineUsers, '_id')
+      appInfo.onlineUsers = uniqueList
+      setAppInfo({ ...appInfo })
+
+    })
+
+    socket.open()
+
+
   }, [])
 
 

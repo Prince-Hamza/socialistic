@@ -38,9 +38,6 @@ const Home = () => {
       console.log(`ex : ${ex}`)
       return ex
     }
-
-
-
   }
 
 
@@ -67,7 +64,6 @@ const Home = () => {
       appInfo.onlineUsers = uniqueList
       setAppInfo({ ...appInfo })
 
-
     })
 
     socket.open()
@@ -77,16 +73,12 @@ const Home = () => {
 
   }, [])
 
-
-
-
-
   return (
     <Container fluid>
       <CustomNavbar />
       <Row className="Home flex-sm-col flex-md-row flex-lg-row  flex-column">
         <Col lg={3}> <ProfileSide /> </Col>
-        {/* <Col lg={5}> <PostSide /> </Col> */}
+        <Col lg={5}> <PostSide /> </Col>
         <Col lg={3} ><RightSide /></Col>
       </Row>
       <GlobalSocketListener />

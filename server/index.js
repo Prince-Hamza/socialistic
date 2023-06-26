@@ -148,7 +148,7 @@ async function monitorUsersOnline(client, timeInMs = 60000, pipeline = []) {
   // We can use EventEmitter's on() to add a listener function that will be called whenever a change occurs in the change stream.
   // See https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_emitter_on_eventname_listener for the on() docs.
   changeStream.on('change', (data) => {
-    console.log(`changes detected in mongodb : users : ${JSON.stringify(data)}`)
+    console.log(`changes detected in mongodb : users : a user offline`)
     io.emit('onlineUsersMongoEvent', data)
   })
 
