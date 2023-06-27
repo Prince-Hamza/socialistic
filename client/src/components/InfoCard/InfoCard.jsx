@@ -5,11 +5,14 @@ import { useNavigate, useParams } from "react-router-dom"
 import * as UserApi from "../../api/UserRequests.js"
 import { logout } from "../../actions/AuthActions"
 import firebase from 'firebase/compat/app'
-import 'firebase/compat/auth'
-import "./InfoCard.css"
 import { AppContext } from "../../Context"
 import { toast } from "react-toastify"
 import { interact } from "../../backend/chat/chat"
+import { io } from "socket.io-client"
+import { domain } from '../../constants/constants.js'
+import 'firebase/compat/auth'
+import "./InfoCard.css"
+
 
 const InfoCard = () => {
 
@@ -25,8 +28,15 @@ const InfoCard = () => {
 
   // alert(JSON.stringify(appInfo.profileUser))
   // alert(appInfo.profileUser.username)
-
+  const onSocketOff = () => {
+    alert(`socket off`)
+  }
   const sendMessage = async () => {
+
+    // off sockets
+    const socket = io(domain)
+    await socket.off('onlineUsersMongoEvent', onSocketOff)
+    await socket.close()
 
 
     // me : user
@@ -55,8 +65,10 @@ const InfoCard = () => {
     setAppInfo({ ...appInfo })
     // alert(`conversations :: ${JSON.stringify(result.conversations)}`)
 
-    // navigate(`/chat/${me.uid}/${partner.id}`)
-    navigate('/chat')
+
+
+    navigate(`/chat/${me.id}`)
+    // navigate('/chat')
 
   }
 

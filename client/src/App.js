@@ -2,8 +2,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppContext } from './Context'
 import { useEffect, useState } from 'react'
 import { config } from './config'
-import "bootstrap/dist/css/bootstrap.min.css"
-import './App.css'
 import Home from './pages/Home'
 import Auth from './pages/Auth/Auth'
 import Profile from './pages/Profile/Profile'
@@ -18,9 +16,12 @@ import { ToastContainer, toast, useToast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Loading from './components/Loading/Loading'
 import Live from './components/Live/Live'
+import "bootstrap/dist/css/bootstrap.min.css"
+import './App.css'
 const fireAuth = new webAuth()
 
 function App() {
+
 
     const [appData, setAppData] = useState({
         userInfo: {},
@@ -107,7 +108,7 @@ function App() {
         <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
             <ToastContainer />
             <BrowserRouter>
-                <GlobalSocketListener />
+                {/* <GlobalSocketListener /> */}
                 <Routes>
                     <Route
                         path="/"

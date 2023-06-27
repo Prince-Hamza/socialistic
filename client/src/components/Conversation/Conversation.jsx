@@ -30,6 +30,7 @@ const Conversation = ({ data, currentUser }) => {
 
 
   const selectConversation = async () => {
+    // alert('select')
     appInfo.selectedChatRoom.key = data.chatRoomKey
     appInfo.selectedChatRoom._id = data.chatRoomKey
     appInfo.selectedChatRoom.partner = { id: data.partnerId, name: data.name, photo: data.photo }
@@ -48,8 +49,10 @@ const Conversation = ({ data, currentUser }) => {
 
 
   const chooseChat = () => {
-    console.log(`chosen`)
+    // alert(`choose`)
     let urlParts = window.location.href.split('/')
+    
+    // alert(data.partnerId)
     if (urlParts.length === 5 && data.partnerId === urlParts[4]) selectConversation()
   }
 

@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import "./RightSide.css";
-
-import TrendCard from "../TrendCard/TrendCard";
-import ShareModal from "../ShareModal/ShareModal";
-import NavIcons from "../NavIcons/NavIcons";
+import React, { useState } from "react"
+import TrendCard from "../TrendCard/TrendCard"
+import ShareModal from "../ShareModal/ShareModal"
+import NavIcons from "../NavIcons/NavIcons"
+import "./RightSide.css"
 
 const RightSide = () => {
   const [modalOpened, setModalOpened] = useState(false);
@@ -23,7 +22,7 @@ const RightSide = () => {
 
       
     </div>
-  );
+  )
 }
 
 export default RightSide

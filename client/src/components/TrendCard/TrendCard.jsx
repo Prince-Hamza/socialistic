@@ -5,7 +5,6 @@ import { io } from "socket.io-client"
 import { domain } from '../../constants/constants.js'
 import axios from 'axios'
 import _ from 'lodash'
-
 import './TrendCard.css'
 
 
@@ -13,7 +12,7 @@ const TrendCard = () => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [complete, setComplete] = useState(false)
-
+  const [onlineUsers, setOnlineUsers] = useState([])
 
 
   const getOnlineUsers = async () => {
@@ -63,6 +62,41 @@ const TrendCard = () => {
   }
 
 
+  const getMyChatHistory = () => {
+
+    alert('get history')
+
+    let data = JSON.stringify({
+      "me": {
+        "id": appInfo.userInfo.id,
+        "name": appInfo.userInfo.username,
+        "photo": appInfo.userInfo.profilePicture
+      }
+    })
+
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: `${domain}/chat/myChatHistory?`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data))
+        appInfo.chatHistory = response.data.conversations
+        alert(`convos : ${response.data.conversations}`)
+        setAppInfo({ ...appInfo })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+  }
+
   useEffect(() => {
 
     const ENDPOINT = domain
@@ -75,31 +109,35 @@ const TrendCard = () => {
 
 
     socket.on('onlineUsersMongoEvent', async (data) => {
-      // if (!complete) {
+
       // alert(`mongo event : online users : ${JSON.stringify(data)}`)
+
+      console.log(`online event : chathistory : ${JSON.stringify(appInfo.chatHistory)}`)
+      alert(`online event : chathistory : ${JSON.stringify(appInfo.chatHistory)}`)
+
+
       let docId = data.documentKey._id
       var user = await getUserByDocId(docId)
-      appInfo.onlineUsers.push(user)
+      onlineUsers.push(user)
 
 
 
       if (!complete) {
         setComplete(true)
         const preOnlines = await getOnlineUsers()
-        preOnlines.forEach((user) => { appInfo.onlineUsers.push(user) })
+        preOnlines.forEach((user) => { onlineUsers.push(user) })
       }
 
       if (!user.online) {
-        // alert(`offline : ${appInfo.onlineUsers.length}`)
         let userIndex = -1
-        appInfo.onlineUsers.forEach((listItem, index) => { if (user.id === listItem.id) userIndex = index })
-        if (userIndex >= 0) appInfo.onlineUsers.splice(userIndex, 1)
+        onlineUsers.forEach((listItem, index) => { if (user.id === listItem.id) userIndex = index })
+        if (userIndex >= 0) onlineUsers.splice(userIndex, 1)
         // alert(`offline : index : ${userIndex} | ${appInfo.onlineUsers.length}`)
       }
 
-      const uniqueList = _.uniqBy(appInfo.onlineUsers, '_id')
-      appInfo.onlineUsers = uniqueList
-      setAppInfo({ ...appInfo })
+      const uniqueList = _.uniqBy(onlineUsers, '_id')
+      setOnlineUsers([...uniqueList])
+
 
     })
 
@@ -114,7 +152,7 @@ const TrendCard = () => {
 
       <h3> Online Users </h3>
 
-      {appInfo.onlineUsers.length > 0 && appInfo.onlineUsers.map((activeUser, id) => {
+      {onlineUsers.length > 0 && onlineUsers.map((activeUser, id) => {
         return (
           <div className="trend" key={id}>
             <Row style={Styles.row} >

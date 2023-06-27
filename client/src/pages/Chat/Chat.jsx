@@ -30,6 +30,8 @@ const Chat = () => {
 
   const getMyChatHistory = () => {
 
+    alert('get history')
+
     let data = JSON.stringify({
       "me": {
         "id": appInfo.userInfo.id,
@@ -52,10 +54,8 @@ const Chat = () => {
       .then((response) => {
         console.log(JSON.stringify(response.data))
         appInfo.chatHistory = response.data.conversations
+        alert(`convos : ${response.data.conversations}`)
         setAppInfo({ ...appInfo })
-
-
-
       })
       .catch((error) => {
         console.log(error);
@@ -63,61 +63,70 @@ const Chat = () => {
 
   }
 
+
   const init = () => {
+
+    // alert(JSON.stringify(appInfo.chatHistory))
     if (appInfo.chatHistory.length <= 0) getMyChatHistory()
   }
 
   const effect = () => {
+  //  alert('ef')
     init()
   }
 
   useEffect(effect, [])
 
-  return (
-    <div className="Chat">
-      {/* Left Side */}
-      <div className="Left-side-chat">
-        <LogoSearch />
+  if (appInfo.chatHistory.length >= 0) {
+    return (
+      <div className="Chat">
+        {/* Left Side */}
+        <div className="Left-side-chat">
+          <LogoSearch />
 
 
-        <div className="Chat-container">
+          <div className="Chat-container">
 
-          <h2>Chats</h2>
-          <hr style={{ width: '100%', border: '0.3px solid #f4cb35' }}></hr>
+            <h2>Chats</h2>
+            <hr style={{ width: '100%', border: '0.3px solid #f4cb35' }}></hr>
 
-          <div className="Chat-list" >
-            {appInfo.chatHistory.length > 0 && appInfo.chatHistory.map((chat) => (
-              <div
-                onClick={() => {
-                  setCurrentChat(chat);
-                }}
-                key={Math.random()}
-              >
-                <Conversation
-                  data={chat}
-                  currentUser={user.id}
-                  online={checkOnlineStatus(chat)}
-                />
-              </div>
-            ))}
+            <div className="Chat-list" >
+              {appInfo.chatHistory.length > 0 && appInfo.chatHistory.map((chat) => (
+                <div
+                  onClick={() => {
+                    setCurrentChat(chat);
+                  }}
+                  key={Math.random()}
+                >
+                  <Conversation
+                    data={chat}
+                    currentUser={user.id}
+                    online={checkOnlineStatus(chat)}
+                  />
+                </div>
+              ))}
 
 
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Right Side */}
+        {/* Right Side */}
 
-      <div className="Right-side-chat">
-        <div style={{ width: "20rem", alignSelf: "flex-end", marginRight: '25px' }}>
-          <NavIcons />
+        <div className="Right-side-chat">
+          <div style={{ width: "20rem", alignSelf: "flex-end", marginRight: '25px' }}>
+            <NavIcons />
+          </div>
+
+          <ChatBoxAndLive />
+
         </div>
-
-        <ChatBoxAndLive />
-
       </div>
-    </div>
-  )
+    )
+  } else {
+    return <h1> loading </h1>
+  }
+
 }
 
 export default Chat

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react"
 import { useRef } from "react"
 import { addMessage } from "../../api/MessageRequests"
 import InputEmoji from 'react-input-emoji'
-import "./ChatBox.css"
 import { AppContext } from "../../Context"
 import Messages from "../Messages/Messages"
 import _ from 'lodash'
@@ -10,6 +9,7 @@ import $ from 'jquery'
 import { Image } from "react-bootstrap"
 import greenPhone from '../../img/messenger/greenPhone.jpg'
 import { useNavigate } from "react-router-dom"
+import "./ChatBox.css"
 
 
 
@@ -17,14 +17,14 @@ const ChatBox = () => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [newMessage, setNewMessage] = useState("")
-
   const navigate = useNavigate()
+
+  console.log(`app Info : ${JSON.stringify(appInfo)}`)
+  // alert(`app Info : chathistory : ${JSON.stringify(appInfo.chatHistory)}`)
 
   const handleChange = (newMessage) => {
     setNewMessage(newMessage)
   }
-
-
 
   // Send Message
   const handleSend = async () => {
