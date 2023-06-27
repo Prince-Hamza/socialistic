@@ -107,8 +107,8 @@ function App() {
         <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
             <ToastContainer />
             <BrowserRouter>
+                <GlobalSocketListener />
                 <Routes>
-
                     <Route
                         path="/"
                         element={loading ? <Loading /> : (appData.userInfo.id ? <Home /> : <Auth />)}

@@ -68,6 +68,7 @@ function GlobalSocketListener() {
 
 
     const onMessage = () => {
+        hideNotification()
         if (notificationData.type !== 'call') navigate(`/chat/${notificationData.chatRoomKey}`)
     }
     const onAttend = () => {
@@ -99,10 +100,10 @@ function GlobalSocketListener() {
         <div>
             {playAudio && <Audio />}
             <div>
-                {notificationData &&
+                {notificationData && notificationData.partnerId === appInfo.userInfo.id &&
                     <div style={Styles.card} onClick={onMessage}>
                         <Col style={{ padding: '0px', textAlign: 'center' }} >
-                            <p style={{ color: '#222', font: '16px times new roman', marginTop: '10px' }} > {'notificationData.prompt'} </p>
+                            <p style={{ color: '#222', font: '16px times new roman', marginTop: '10px' }} > {notificationData.prompt} </p>
                             {notificationData.type === 'call' &&
                                 <Row>
 
@@ -112,7 +113,7 @@ function GlobalSocketListener() {
                                     </Col>
 
                                     <Col lg={6} >
-                                        <Image style={Styles.button} src={redPhone} onClick={onAttend} />
+                                        <Image style={Styles.button} src={redPhone} onClick={onReject} />
                                         <Form.Text> Reject  </Form.Text>
                                     </Col>
                                 </Row>
@@ -144,7 +145,9 @@ const Styles = ({
         font: '12px times new roman',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        cursor: 'pointer',
+        zIndex: 1
     },
     button: {
         borderRadius: '50px',
