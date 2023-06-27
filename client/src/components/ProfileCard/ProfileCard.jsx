@@ -44,7 +44,7 @@ const ProfileCard = ({ location }) => {
     try {
 
       await axios.request(config)
-      alert('successfully updated')
+      //alert('successfully updated')
       toast('sucessfully uploaded')
       setIntroEdit(false)
       appInfo.userInfo = { ...appInfo.userInfo, ...object }

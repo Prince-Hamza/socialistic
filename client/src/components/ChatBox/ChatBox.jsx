@@ -47,8 +47,11 @@ const ChatBox = () => {
     }
 
 
-    var scroll = $('.chat-body')
-    scroll.animate({ scrollTop: '1000000000px' })
+    var down = setInterval(() => {
+      var scroll = $('.chat-body')
+      if (scroll) scroll.animate({ scrollTop: '1000000px' })
+      if (scroll) clearInterval(down)
+    }, 300)
 
   }
 

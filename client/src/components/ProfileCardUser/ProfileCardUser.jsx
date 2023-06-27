@@ -47,7 +47,7 @@ const ProfileCardUser = ({ location }) => {
     try {
 
       await axios.request(config)
-      alert('successfully updated')
+    //  alert('successfully updated')
       toast('sucessfully uploaded')
       setIntroEdit(false)
       appInfo.profileUser = { ...appInfo.profileUser, ...object }
@@ -72,9 +72,9 @@ const ProfileCardUser = ({ location }) => {
     setUploadingCover(true)
     const file = e.target.files[0]
     if (file) {
-      const result = await storage.uploadImage(`users/${appInfo.profileInfo.id}/cover`, 'image/jpeg', file)
+      const result = await storage.uploadImage(`users/${appInfo.userInfo.id}/cover`, 'image/jpeg', file)
       const link = result.downloadLink
-      await updateUserInfo({ id: appInfo.profileUser.id, coverPicture: link })
+      await updateUserInfo({ id: appInfo.userInfo.id, coverPicture: link })
       setUploadingCover(false)
     }
 

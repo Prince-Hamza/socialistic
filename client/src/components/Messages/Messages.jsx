@@ -17,16 +17,22 @@ function Messages() {
         // alert(`socket listener : ${listening}`)
         socket.on('message', (data) => {
             // alert(`${data.fullDocument}`)
-
             if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey && !data.fullDocument.abort) {
                 // alert(`${data.fullDocument}`)
                 let list = appInfo.messages
                 let nm = data.fullDocument
                 if (nm.text !== 'call Request') list.push(nm)
-                list = _.uniqBy(list, 'text')
+                // alert(`new message : ${JSON.stringify(nm)}`)
+                list = _.uniqBy(list, '_id')
                 appInfo.messages = list
                 setAppInfo({ ...appInfo })
             }
+
+            var down = setInterval(() => {
+                var scroll = $('.chat-body')
+                if (scroll) scroll.animate({ scrollTop: '1000000px' })
+                if (scroll) clearInterval(down)
+            }, 300)
         })
 
 

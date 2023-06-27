@@ -18,14 +18,13 @@ function GlobalSocketListener() {
 
     const { appInfo, setAppInfo } = useContext(AppContext)
     const navigate = useNavigate()
-    const [notificationData, setNotificationData] = useState()
+    const [notificationData, setNotificationData] = useState(false)
     const [playAudio, setPlayAudio] = useState(false)
 
 
     const hideNotification = () => {
-        setTimeout(() => {
-            setNotificationData()
-        }, 2000)
+        setNotificationData(false)
+        // alert(`notify data : ${JSON.stringify(notificationData)}`)
     }
 
     const updateAppState = () => {
@@ -69,7 +68,9 @@ function GlobalSocketListener() {
 
     const onMessage = () => {
         hideNotification()
-        if (notificationData.type !== 'call') navigate(`/chat/${notificationData.chatRoomKey}`)
+        setTimeout(() => {
+            if (notificationData.type !== 'call') navigate(`/chat/${notificationData.chatRoomKey}`)
+        }, 3000)
     }
     const onAttend = () => {
         updateAppState()
@@ -100,7 +101,7 @@ function GlobalSocketListener() {
         <div>
             {playAudio && <Audio />}
             <div>
-                {notificationData && notificationData.partnerId === appInfo.userInfo.id &&
+                {notificationData && notificationData.partnerId === appInfo.userInfo.id && notificationData.text !== '${{call abort}}' && notificationData.text !== '${{call ended}}' &&
                     <div style={Styles.card} onClick={onMessage}>
                         <Col style={{ padding: '0px', textAlign: 'center' }} >
                             <p style={{ color: '#222', font: '16px times new roman', marginTop: '10px' }} > {notificationData.prompt} </p>
@@ -127,7 +128,6 @@ function GlobalSocketListener() {
 }
 
 export default GlobalSocketListener
-
 
 
 
