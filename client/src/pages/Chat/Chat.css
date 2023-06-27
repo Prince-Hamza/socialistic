@@ -4,6 +4,7 @@
   grid-template-columns: 22% auto;
   gap: 1rem;
   background-color: whitesmoke;
+  z-index: 0;
 }
 
 .Left-side-chat {

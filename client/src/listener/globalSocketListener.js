@@ -142,13 +142,9 @@ const Styles = ({
         color: 'limegreen',
         padding: '10px',
         font: '12px times new roman',
-
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
-
-
-
+        alignItems: 'center'
     },
     button: {
         borderRadius: '50px',

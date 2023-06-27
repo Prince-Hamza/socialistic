@@ -16,7 +16,10 @@ function Messages() {
         setAppInfo({ ...appInfo })
         // alert(`socket listener : ${listening}`)
         socket.on('message', (data) => {
+            alert(`${data.fullDocument}`)
+
             if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey && !data.fullDocument.abort) {
+                alert(`${data.fullDocument}`)
                 let list = appInfo.messages
                 let nm = data.fullDocument
                 if (nm.text !== 'call Request') list.push(nm)
