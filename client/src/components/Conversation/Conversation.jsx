@@ -25,6 +25,7 @@ const Conversation = ({ data, currentUser }) => {
       alert(error);
     }
     //    setLoadedHistory(true)
+    console.log(`nice`);
   }
 
 
@@ -35,7 +36,6 @@ const Conversation = ({ data, currentUser }) => {
     // alert(appInfo.selectedChatRoom.key)
     await fetchMessages(data.chatRoomKey)
     setAppInfo({ ...appInfo })
-
 
     var down = setInterval(() => {
       var scroll = $('.chat-body')
