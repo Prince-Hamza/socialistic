@@ -141,7 +141,7 @@ const Post = ({ data, posts, setPosts }) => {
         <div style={{ width: '100%' }}>
           {data.videos.map((video) => {
             return (
-              <video  key={Math.random()} style={{ width: '100%', height: '400px', margin: '1px', cursor: 'pointer' }} controls onEnded={handleVideoEnd} src={video} >
+              <video key={Math.random()} style={{ width: '100%', height: '400px', margin: '1px', cursor: 'pointer' }} controls onEnded={handleVideoEnd} src={video} >
 
               </video>
             )
@@ -155,7 +155,7 @@ const Post = ({ data, posts, setPosts }) => {
         <div>
           {data.locations.map((location) => {
             return (
-              <div style={{ width: 'auto', height: 'auto' }}  key={Math.random()} >
+              <div style={{ width: 'auto', height: 'auto' }} key={Math.random()} >
                 {isLoaded &&
                   <div style={{ width: '550px', height: '400px' }} >
                     <GoogleMap
@@ -184,7 +184,7 @@ const Post = ({ data, posts, setPosts }) => {
 
     </div>
   )
-
+  // if (data.text) alert(`${JSON.stringify(data)}`)
 
   return (
     <div className="Post">
@@ -227,7 +227,6 @@ const Post = ({ data, posts, setPosts }) => {
         </div>
       </div>
       <div className="detail" style={{ alignSelf: "flex-start" }}>
-
         <span>{data.text}</span>
       </div>
       {media}

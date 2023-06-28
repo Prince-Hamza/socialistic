@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react"
-import { BoxLoading, CircleLoading, LoopCircleLoading, CommonLoading, RotateCircleLoading, TouchBallLoading } from 'react-loadingg'
+import { RotateCircleLoading } from 'react-loadingg'
 
 const Loading = () => {
     return (
@@ -12,19 +12,16 @@ const Loading = () => {
 export default Loading
 
 
-
 const Styles = ({
     center: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        height: '105vh'
+        height: '105vh',
+        backgroundColor: '#222'
     }
 })
-
-
-
 
 
 

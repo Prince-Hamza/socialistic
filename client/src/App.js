@@ -47,6 +47,7 @@ function App() {
         abortedByPartner: false,
         chosenChat: false
     })
+    
     const [loading, setLoading] = useState(true)
 
     if (!firebase.apps.length) firebase.initializeApp(config)
@@ -108,7 +109,6 @@ function App() {
     return (
         <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
             <LiveUsersContext.Provider value={{ onlineUsers: [] }}>
-
                 <ToastContainer />
                 <BrowserRouter>
                     {/* <GlobalSocketListener /> */}

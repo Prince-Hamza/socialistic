@@ -137,9 +137,10 @@ function PostShare(props) {
         const postId = getRandomArbitrary(1, 1000000000)
         await uploadImagesToFirebase(postId)
 
+        postInfo.text = text
+        setPostInfo({ ...postInfo })
+
         let data = JSON.stringify(postInfo)
-
-
 
         let config = {
             method: 'post',
@@ -175,7 +176,7 @@ function PostShare(props) {
             <img style={{ width: '57px', height: '37px' }} src={appInfo.userInfo.profilePicture} alt="Profile" />
 
 
-            <div style={{ width: '85%'}} >
+            <div style={{ width: '85%' }} >
                 <input
                     type="text"
                     placeholder="What's happening ?"
