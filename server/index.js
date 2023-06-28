@@ -51,16 +51,10 @@ mongoose
     httpServer.listen(PORT)
     console.log(`Listening @ Port ${PORT} | Mongoose is successfully connected`)
   })
-  .catch((error) => console.log(`${error} Mongodb did not connect`));
+  .catch((error) => console.log(`${error} Mongodb did not connect`))
 
 
-
-
-
-
-
-
-app.use('/auth', AuthRoute);
+app.use('/auth', AuthRoute)
 app.use('/user', UserRoute)
 app.use('/posts', PostRoute)
 app.use('/upload', UploadRoute)
@@ -69,6 +63,17 @@ app.use('/message', MessageRoute)
 app.use('/comments', CommentRoute)
 app.use('/schemes', SchemeRoute)
 app.use('/notify', NotificationRoute)
+
+// online users api
+
+var onlineUsers = []
+
+
+app.get('/onlineUsers', (req, res) => {
+  // onlineUsers = _.uniqBy(onlineUsers, 'userId')
+  console.log(`online users length : ${onlineUsers.length}`)
+  return res.status(200).send(onlineUsers)
+})
 
 
 
@@ -106,13 +111,6 @@ async function monitorListingsUsingEventEmitter(client, timeInMs = 60000, pipeli
   await closeChangeStream(timeInMs, changeStream);
 }
 
-
-
-
-
-
-
-
 async function mongooseEvents() {
 
   let uri = process.env.MONGODB_CONNECTION
@@ -138,6 +136,8 @@ async function mongooseEvents() {
 
 
 
+
+
 async function monitorUsersOnline(client, timeInMs = 60000, pipeline = []) {
   const collection = client.db("test").collection("users")
 
@@ -149,7 +149,7 @@ async function monitorUsersOnline(client, timeInMs = 60000, pipeline = []) {
   // See https://nodejs.org/dist/latest-v12.x/docs/api/events.html#events_emitter_on_eventname_listener for the on() docs.
   changeStream.on('change', (data) => {
     console.log(`changes detected in mongodb : users : a user offline`)
-    io.emit('onlineUsersMongoEvent', data)
+    // io.emit('onlineUsersMongoEvent', data)
   })
 
   console.log(`listings : waiting for changes in mongodb`);
@@ -193,7 +193,6 @@ ev()
 // socket events
 
 var listening = false
-var onlineUsers = []
 
 if (!listening) {
   listening = true
@@ -219,7 +218,6 @@ if (!listening) {
       await UserModel.findOneAndUpdate({ id: userId }, { online: true })
       console.log(`updated user as online succesfully`)
 
-      // socket.emit('onlineUsers', onlineUsers)
     })
 
 

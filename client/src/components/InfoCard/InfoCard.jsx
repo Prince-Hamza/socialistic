@@ -26,18 +26,16 @@ const InfoCard = () => {
   const navigate = useNavigate()
 
 
-  // alert(JSON.stringify(appInfo.profileUser))
-  // alert(appInfo.profileUser.username)
   const onSocketOff = () => {
-    alert(`socket off`)
+    console.log(`socket off`)
   }
+
+
+
   const sendMessage = async () => {
 
     // off sockets
     const socket = io(domain)
-    await socket.off('onlineUsersMongoEvent', onSocketOff)
-    await socket.close()
-
 
     // me : user
     let me = {
@@ -60,10 +58,8 @@ const InfoCard = () => {
     appInfo.chatHistory = result.conversations
 
     console.log(`convo : ${JSON.stringify(result.conversations)}`)
-    // alert(`convo : ${JSON.stringify(result.conversations)}`)
 
     setAppInfo({ ...appInfo })
-    // alert(`conversations :: ${JSON.stringify(result.conversations)}`)
 
 
 

@@ -18,6 +18,7 @@ import Loading from './components/Loading/Loading'
 import Live from './components/Live/Live'
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css'
+import { LiveUsersContext } from './liveUsersContext'
 const fireAuth = new webAuth()
 
 function App() {
@@ -106,47 +107,50 @@ function App() {
 
     return (
         <AppContext.Provider value={{ appInfo: appData, setAppInfo: setAppData }}>
-            <ToastContainer />
-            <BrowserRouter>
-                {/* <GlobalSocketListener /> */}
-                <Routes>
-                    <Route
-                        path="/"
-                        element={loading ? <Loading /> : (appData.userInfo.id ? <Home /> : <Auth />)}
-                    />
+            <LiveUsersContext.Provider value={{ onlineUsers: [] }}>
 
-                    <Route
-                        path="/home"
-                        element={loading ? <Loading /> : (appData.userInfo.id ? <Home /> : <Auth />)}
-                    />
+                <ToastContainer />
+                <BrowserRouter>
+                    {/* <GlobalSocketListener /> */}
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={loading ? <Loading /> : (appData.userInfo.id ? <Home /> : <Auth />)}
+                        />
 
-                    <Route
-                        path="/auth"
-                        element={<Auth />}
-                    />
+                        <Route
+                            path="/home"
+                            element={loading ? <Loading /> : (appData.userInfo.id ? <Home /> : <Auth />)}
+                        />
 
-                    <Route
-                        path="/profile/:id"
-                        element={loading ? <Loading /> : (appData.userInfo.id ? <Profile /> : <Auth />)}
-                    />
+                        <Route
+                            path="/auth"
+                            element={<Auth />}
+                        />
 
-                    <Route
-                        path="/chat"
-                        element={loading ? <Loading /> : (appData.userInfo.id ? <Chat /> : <Auth />)}
-                    />
+                        <Route
+                            path="/profile/:id"
+                            element={loading ? <Loading /> : (appData.userInfo.id ? <Profile /> : <Auth />)}
+                        />
 
-                    <Route
-                        path="/chat/:id"
-                        element={loading ? <Loading /> : (appData.userInfo.id ? <Chat /> : <Auth />)}
-                    />
+                        <Route
+                            path="/chat"
+                            element={loading ? <Loading /> : (appData.userInfo.id ? <Chat /> : <Auth />)}
+                        />
 
-                    <Route
-                        path="/live"
-                        element={loading ? <Loading /> : (appData.userInfo.id ? <Live /> : <Auth />)}
-                    />
+                        <Route
+                            path="/chat/:id"
+                            element={loading ? <Loading /> : (appData.userInfo.id ? <Chat /> : <Auth />)}
+                        />
 
-                </Routes>
-            </BrowserRouter>
+                        <Route
+                            path="/live"
+                            element={loading ? <Loading /> : (appData.userInfo.id ? <Live /> : <Auth />)}
+                        />
+
+                    </Routes>
+                </BrowserRouter>
+            </LiveUsersContext.Provider>
         </AppContext.Provider>
     )
 }
