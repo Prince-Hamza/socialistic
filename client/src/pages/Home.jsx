@@ -81,7 +81,7 @@ const Home = () => {
         <Col lg={5}> <PostSide /> </Col>
         <Col lg={3} ><RightSide /></Col>
       </Row>
-      <GlobalSocketListener />
+      {/* <GlobalSocketListener /> */}
     </Container>
   )
 }

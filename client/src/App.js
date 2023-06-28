@@ -111,7 +111,7 @@ function App() {
             <LiveUsersContext.Provider value={{ onlineUsers: [] }}>
                 <ToastContainer />
                 <BrowserRouter>
-                    {/* <GlobalSocketListener /> */}
+                    <GlobalSocketListener />
                     <Routes>
                         <Route
                             path="/"
@@ -156,4 +156,8 @@ function App() {
 }
 
 export default App
+
+
+
+
 

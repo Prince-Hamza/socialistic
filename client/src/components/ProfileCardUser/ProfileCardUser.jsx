@@ -4,19 +4,19 @@ import FollowersModal from "../FollowersModal/FollowersModal";
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import { AppContext } from "../../Context";
-import { Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { Storage } from "../../backend/storage/uploadFile";
 import axios from 'axios'
 import "./ProfileCard.css";
 import { toast } from "react-toastify"
 import { domain } from "../../constants/constants";
-import {AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit } from "react-icons/ai";
 const storage = new Storage()
 
 const ProfileCardUser = ({ location }) => {
 
   // alert('card user')
-  
+
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [uploadingCover, setUploadingCover] = useState(false)
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false)
@@ -47,7 +47,7 @@ const ProfileCardUser = ({ location }) => {
     try {
 
       await axios.request(config)
-    //  alert('successfully updated')
+      //  alert('successfully updated')
       toast('sucessfully uploaded')
       setIntroEdit(false)
       appInfo.profileUser = { ...appInfo.profileUser, ...object }
@@ -111,16 +111,16 @@ const ProfileCardUser = ({ location }) => {
 
         <div style={{ position: 'relative' }} >
           <img className="cover" src={appInfo.profileUser.coverPicture} alt="CoverImage" />
-          {own && <button style={{ position: 'absolute', right: '35px', bottom: '15px',border:0,background:'transparent' }} className="" onClick={() => { onClickEditCover() }} >
-             <AiOutlineEdit style={{height:20,width:20}}/>
+          {own && <button style={{ position: 'absolute', right: '35px', bottom: '15px', border: 0, background: 'transparent' }} className="" onClick={() => { onClickEditCover() }} >
+            <AiOutlineEdit style={{ height: 20, width: 20 }} />
             {uploadingCover ? 'uploading' : ' '}
           </button>}
         </div>
 
         <div className="ProfileImages" style={{ position: 'relative' }} >
           <img className="profilePic" src={appInfo.profileUser.profilePicture.toString()} alt={appInfo.profileUser.profilePicture} />
-          {own && <button style={{ position: 'absolute', right: '-54px', bottom: '-47px',border:0,background:'transparent' }}  onClick={() => { onClickEditProfile() }}>
-            <AiOutlineEdit style={{height:25,width:25,color:'black' }}/>
+          {own && <button style={{ position: 'absolute', right: '-54px', bottom: '-47px', border: 0, background: 'transparent' }} onClick={() => { onClickEditProfile() }}>
+            <AiOutlineEdit style={{ height: 25, width: 25, color: 'black' }} />
             {uploadingCover ? 'uploading' : ''}
           </button>}
         </div>
@@ -131,15 +131,23 @@ const ProfileCardUser = ({ location }) => {
       <div className="ProfileName">
         <span>{appInfo.profileUser.username}</span>
 
-        <Row style={{ width: '50%' }} >
-          {!introEdit && <div style={{ width: own ? '70%' : '100%', textAlign: 'center' }} >{appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'}</div>}
-          {introEdit &&
-            <input style={{ width: '70%' }} placeholder={appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.profileUser.id, about: e.target.value }) }} />
-          }
-          {own && <button style={{ width: '55px', height: '25px' ,border:0,background:'transparent'}} className="" onClick={() => { setIntroEdit(true); }}>
-           <AiOutlineEdit style={{height:20,width:20,marginBottom:6}}/> 
-          
-          </button>}
+        <Row style={{ width: '70%', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }} >
+          <Col lg={11} >
+            {!introEdit && <div style={{ width: '100%', marginLeft: '25px' }} >{appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'}</div>}
+
+            {introEdit &&
+              <input  placeholder={appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.profileUser.id, about: e.target.value }) }} />
+            }
+          </Col>
+
+          <Col lg={1}  >
+            {own &&
+              <div style={{ width: '55px', height: '25px', background: 'transparent' }} className="" onClick={() => { setIntroEdit(true); }}>
+                <AiOutlineEdit width={'50px'} height={'50px'} style={{ height: '20px', width: '20px', color: '#222', marginBottom: 6 }} />
+              </div>
+            }
+          </Col>
+
         </Row>
 
       </div>

@@ -30,7 +30,6 @@ const Chat = () => {
 
   const getMyChatHistory = () => {
 
-    alert('get history')
 
     let data = JSON.stringify({
       "me": {
@@ -54,7 +53,6 @@ const Chat = () => {
       .then((response) => {
         console.log(JSON.stringify(response.data))
         appInfo.chatHistory = response.data.conversations
-        alert(`convos : ${response.data.conversations}`)
         setAppInfo({ ...appInfo })
       })
       .catch((error) => {
@@ -65,8 +63,7 @@ const Chat = () => {
 
 
   const init = () => {
-
-    // alert(JSON.stringify(appInfo.chatHistory))
+   //  alert(`chat history : ${JSON.stringify(appInfo.chatHistory)}`)
     if (appInfo.chatHistory.length <= 0) getMyChatHistory()
   }
 

@@ -71,7 +71,7 @@ var onlineUsers = []
 
 app.get('/onlineUsers', (req, res) => {
   // onlineUsers = _.uniqBy(onlineUsers, 'userId')
-  console.log(`online users length : ${onlineUsers.length}`)
+  // console.log(`online users length : ${onlineUsers.length}`)
   return res.status(200).send(onlineUsers)
 })
 

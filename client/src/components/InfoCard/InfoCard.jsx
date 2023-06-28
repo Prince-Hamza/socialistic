@@ -61,9 +61,7 @@ const InfoCard = () => {
 
     setAppInfo({ ...appInfo })
 
-
-
-    navigate(`/chat/${me.id}`)
+    navigate(`/chat/${partner.id}`)
     // navigate('/chat')
 
   }
@@ -110,7 +108,7 @@ const InfoCard = () => {
         {/* <span>{profileUser.worksAt}</span> */}
       </div>
 
-      <button className="button logout-button" onClick={sendMessage}> Message  </button>
+      <button className="button logout-button" onClick={sendMessage}> Message </button>
     </div>
   );
 };

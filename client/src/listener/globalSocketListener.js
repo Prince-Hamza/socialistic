@@ -96,12 +96,13 @@ function GlobalSocketListener() {
     useEffect(effect, [])
 
 
-
+  
+    
     return (
         <div>
             {playAudio && <Audio />}
             <div>
-                {notificationData && notificationData.partnerId === appInfo.userInfo.id && notificationData.text !== '${{call abort}}' && notificationData.text !== '${{call ended}}' &&
+                {notificationData && notificationData.partnerId === appInfo.userInfo.id && notificationData.text !== '${{abort call}}' && notificationData.text !== '${{end call}}' &&
                     <div style={Styles.card} onClick={onMessage}>
                         <Col style={{ padding: '0px', textAlign: 'center' }} >
                             <p style={{ color: '#222', font: '16px times new roman', marginTop: '10px' }} > {notificationData.prompt} </p>

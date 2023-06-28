@@ -16,7 +16,7 @@ function Messages() {
         setAppInfo({ ...appInfo })
         // alert(`socket listener : ${listening}`)
         socket.on('message', (data) => {
-            alert(`on message :  ${JSON.stringify(data.fullDocument)}`)
+            // alert(`on message :  ${JSON.stringify(data.fullDocument)}`)
             if (data && Object.keys(data).length && !data.fullDocument.liveStreamingKey && !data.fullDocument.abort) {
                 // alert(`${data.fullDocument}`)
                 let list = appInfo.messages
@@ -50,7 +50,6 @@ function Messages() {
     }
 
     useEffect(() => {
-         alert('messafges effect')
         // var scroll = $('.chat-body');
         // scroll.animate({ scrollTop: '8000px' })
         if (!appInfo.listening) socketListener()

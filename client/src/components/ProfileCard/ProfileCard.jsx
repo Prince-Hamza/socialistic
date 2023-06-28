@@ -10,7 +10,7 @@ import axios from 'axios'
 import "./ProfileCard.css";
 import { toast } from "react-toastify"
 import { domain } from "../../constants/constants";
-import {AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit } from "react-icons/ai";
 
 const storage = new Storage()
 
@@ -115,20 +115,21 @@ const ProfileCard = ({ location }) => {
     <div className="ProfileCard">
 
       <div className="ProfileImages">
-      
+
         <div style={{ position: 'relative' }} >
-        
+
           <img className="cover" src={appInfo.userInfo.coverPicture} alt="CoverImage" />
+
           {own && <button style={{ position: 'absolute', right: '15px', bottom: '15px' }} className="button ps-button" onClick={() => { onClickEditCover() }} >
             {uploadingCover ? 'uploading' : 'Edit Cover'}
-            
+
           </button>}
         </div>
 
         <div className="ProfileImages" style={{ position: 'relative' }} >
           <img className="profilePic" src={appInfo.userInfo.profilePicture.toString()} alt={appInfo.userInfo.profilePicture} />
           {own && <button style={{ position: 'absolute', right: '15px', bottom: '15px' }} className="button ps-button" onClick={() => { onClickEditProfile() }}>
-          
+
             {uploadingCover ? 'uploading' : 'Edit Picture'}
           </button>}
         </div>
@@ -141,12 +142,16 @@ const ProfileCard = ({ location }) => {
 
         <Row style={{ width: '50%' }} >
           {!introEdit && <div style={{ width: own ? '70%' : '100%', textAlign: 'center' }} >{appInfo.userInfo.about ? appInfo.userInfo.about : 'Write about yourself'}</div>}
+          
           {introEdit &&
             <input style={{ width: '70%' }} placeholder={appInfo.userInfo.about ? appInfo.userInfo.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.userInfo.id, about: e.target.value }) }} />
           }
-          {own && <button style={{ width: '55px', height: '25px' }} className="button ps-button" onClick={() => { setIntroEdit(true); }}>
-            Edit
-          </button>}
+
+          {own &&
+            <button style={{ width: '55px', height: '25px' }} className="button ps-button" onClick={() => { setIntroEdit(true) }}>
+              Edit
+            </button>
+          }
         </Row>
 
       </div>
