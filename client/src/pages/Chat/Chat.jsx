@@ -22,13 +22,16 @@ const Chat = () => {
   const user = appInfo.userInfo
 
   const checkOnlineStatus = (chat) => {
-    return false
+    return user.online
   }
 
 
+  const getOnlineUsers = () => {
+
+  }
 
 
-  const getMyChatHistory = () => {
+  const getMyChatHistory = async () => {
 
 
     let data = JSON.stringify({
@@ -63,12 +66,12 @@ const Chat = () => {
 
 
   const init = () => {
-   //  alert(`chat history : ${JSON.stringify(appInfo.chatHistory)}`)
+    //  alert(`chat history : ${JSON.stringify(appInfo.chatHistory)}`)
     if (appInfo.chatHistory.length <= 0) getMyChatHistory()
   }
 
   const effect = () => {
-  //  alert('ef')
+    //  alert('ef')
     init()
   }
 
@@ -97,7 +100,7 @@ const Chat = () => {
                 >
                   <Conversation
                     data={chat}
-                    currentUser={user.id}
+                    userId={user.id}
                     online={checkOnlineStatus(chat)}
                   />
                 </div>

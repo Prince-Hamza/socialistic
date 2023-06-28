@@ -25,12 +25,8 @@ const InfoCard = () => {
   const user = firebase.auth().currentUser
   const navigate = useNavigate()
 
-
-  const onSocketOff = () => {
-    console.log(`socket off`)
-  }
-
-
+  let urlParts = window.location.href.split('/')
+  let profileId = urlParts[4].split('?')[0]
 
   const sendMessage = async () => {
 
@@ -108,9 +104,11 @@ const InfoCard = () => {
         {/* <span>{profileUser.worksAt}</span> */}
       </div>
 
-      <button className="button logout-button" onClick={sendMessage}> Message </button>
+      {profileId !== appInfo.userInfo.id && <button className="button logout-button" onClick={sendMessage}> Message </button>}
     </div>
-  );
-};
+  )
+}
 
-export default InfoCard;
+export default InfoCard
+
+

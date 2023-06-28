@@ -84,8 +84,7 @@ const ChatBox = () => {
 
 
   useEffect(() => {
-    // var scroll = $('.chat-body');
-    // scroll.animate({ scrollTop: '8000px' });
+    // alert(`chat history length: ${appInfo.chatHistory.length}`)
   }, [])
 
 

@@ -67,9 +67,11 @@ function GlobalSocketListener() {
 
 
     const onMessage = () => {
+        // alert(JSON.stringify(notificationData))
+        // return
         hideNotification()
         setTimeout(() => {
-            if (notificationData.type !== 'call') navigate(`/chat/${notificationData.chatRoomKey}`)
+            if (notificationData.type !== 'call') navigate(`/chat/${notificationData.myId}`)
         }, 3000)
     }
     const onAttend = () => {
@@ -96,8 +98,8 @@ function GlobalSocketListener() {
     useEffect(effect, [])
 
 
-  
-    
+
+
     return (
         <div>
             {playAudio && <Audio />}

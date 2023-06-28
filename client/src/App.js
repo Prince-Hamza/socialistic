@@ -45,9 +45,11 @@ function App() {
         listenToMongo: false,
         listening: false,
         abortedByPartner: false,
-        chosenChat: false
+        chosenChat: false,
+
+        liveNavGoBack: '/'
     })
-    
+
     const [loading, setLoading] = useState(true)
 
     if (!firebase.apps.length) firebase.initializeApp(config)

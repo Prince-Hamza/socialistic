@@ -83,6 +83,17 @@ function Messages() {
                     )
                 }
 
+                if (message.text == '${{end call}}') {
+                    return (
+                        <div key={Math.random()} style={{ display: 'flex', justifyContent: message.myId === appInfo.userInfo.id ? 'flex-start' : 'flex-end' }} >
+                            <div id="message" className={'callEnded'} >
+                                <span>{'users attended a live call'}</span>{" "}
+                                <span>{format(message.createdAt)}</span>
+                            </div>
+                        </div>
+                    )
+                }
+
 
 
             })}

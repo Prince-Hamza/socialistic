@@ -7,7 +7,7 @@ import { AppContext } from "../../Context";
 import { addMessage, getMessages } from "../../api/MessageRequests"
 import $ from 'jquery'
 
-const Conversation = ({ data, currentUser }) => {
+const Conversation = ({ data, userId, online }) => {
 
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [chosenChat, setChosenChat] = useState(false)
@@ -49,10 +49,8 @@ const Conversation = ({ data, currentUser }) => {
 
 
   const chooseChat = () => {
-    // alert(`choose`)
     let urlParts = window.location.href.split('/')
-    
-    // alert(data.partnerId)
+    if (data.partnerId === urlParts[4]) appInfo.liveNavGoBack = `/chat/${urlParts[4]}`
     if (urlParts.length === 5 && data.partnerId === urlParts[4]) selectConversation()
   }
 
@@ -79,7 +77,7 @@ const Conversation = ({ data, currentUser }) => {
             />
             <div className="name" style={{ fontSize: '0.8rem' }}>
               <span>{data.name}</span>
-              {/* <span style={{ color: online ? "#51e200" : "" }}>{online ? "Online" : "Offline"}</span> */}
+              {/* <span style={{ color: online ? "#51e200" : "#222" }}>{online ? "Online" : "Offline"}</span> */}
             </div>
           </div>
         </div>

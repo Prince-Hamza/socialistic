@@ -15,6 +15,7 @@ function Live() {
     const { appInfo, setAppInfo } = useContext(AppContext)
 
     const navigate = useNavigate()
+    
 
     const socketListener = () => {
         socket.on('message', (data) => {
@@ -22,7 +23,7 @@ function Live() {
             console.log(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
             // alert(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
             let hangup = document.getElementById('hangupButton')
-            if (hangup && message && message.text === '${{abort call}}') {
+            if (hangup && message && message.text === '${{end call}}') {
                 appInfo.abortedByPartner = true
                 setTimeout(() => {
                     setAppInfo({ ...appInfo })

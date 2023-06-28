@@ -112,18 +112,18 @@ export const main = (notify, appInfo, setAppInfo, navigate) => {
 
     appInfo.call = false
     appInfo.chosenChat = false
+
     // send abort message/event
+
     console.log(`aborted by partner : ${appInfo.abortedByPartner}`)
     if (!appInfo.abortedByPartner) {
-      let message = { chatRoomKey: appInfo.selectedChatRoom.key, messageId: Math.random().toString(), myId: appInfo.userInfo.id, partnerId: appInfo.selectedChatRoom.partner.id, text: '${{abort call}}', liveStreamingKey: appInfo.liveStreamingKey, abort: true }
+      let message = { chatRoomKey: appInfo.selectedChatRoom.key, messageId: Math.random().toString(), myId: appInfo.userInfo.id, partnerId: appInfo.selectedChatRoom.partner.id, text: '${{end call}}', liveStreamingKey: appInfo.liveStreamingKey, abort: true }
       console.log(`aborted by me : abort message : ${JSON.stringify(message)}`)
-      // alert(`aborted by me : abort message : ${JSON.stringify(message)}`)
       await addMessage(message)
     }
 
     setAppInfo({ ...appInfo })
-    // alert('hangup:navigate')
-    navigate(`/chat/${appInfo.selectedChatRoom.key}`)
+    navigate(appInfo.liveNavGoBack)
 
   }
 
