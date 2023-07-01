@@ -25,7 +25,7 @@ export default function SearchResults({ results }) {
 
 
         setTimeout(() => {
-            navigate(`/profile/${user.id}?type=user`)
+            navigate(`/profile/${user.id}`)
         }, 1000)
 
     }
