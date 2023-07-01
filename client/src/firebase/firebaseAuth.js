@@ -38,41 +38,41 @@ export class webAuth {
         return result.user
     }
 
-    setLoginSession = async (email, password) => {
-        // executed after successful login
-        var authSha = sha256(`${email}___${password}`)  // 3 underscores
-        try {
-            await firebase.database().ref(`sessions/${authSha}`).update({ email: email, password: password })
-        } catch (ex) {
-            alert(ex)
-        }
+    // setLoginSession = async (email, password) => {
+    //     // executed after successful login
+    //     var authSha = sha256(`${email}___${password}`)  // 3 underscores
+    //     try {
+    //         await firebase.database().ref(`sessions/${authSha}`).update({ email: email, password: password })
+    //     } catch (ex) {
+    //         alert(ex)
+    //     }
 
-        // alert('update successful')
-        Cookies.set('sessionEncSha256', authSha)
-        return { success: true }
-    }
+    //     // alert('update successful')
+    //     Cookies.set('sessionEncSha256', authSha)
+    //     return { success: true }
+    // }
 
-    getLoginSession = async () => {
-        var loginInfo = {}
-        var sha256 = Cookies.get('sessionEncSha256')
+    // getLoginSession = async () => {
+    //     var loginInfo = {}
+    //     var sha256 = Cookies.get('sessionEncSha256')
 
-        await this.AnonymousLogin()
+    //     await this.AnonymousLogin()
 
-        var resp = await firebase.database().ref(`sessions/${sha256}`).once('value')
-        loginInfo = resp.val()
-        if (loginInfo) {
-            let user
-            if (!loginInfo.email) console.warn('login session has expired')
-            if (!loginInfo.email) return { error: 'Session expired or not found' }
-            if (loginInfo.email) user = await this.EmailLogin(loginInfo.email, loginInfo.password)
-            return user
-        } else {
-            return { error: 'Session expired or not found' }
-        }
-    }
+    //     var resp = await firebase.database().ref(`sessions/${sha256}`).once('value')
+    //     loginInfo = resp.val()
+    //     if (loginInfo) {
+    //         let user
+    //         if (!loginInfo.email) console.warn('login session has expired')
+    //         if (!loginInfo.email) return { error: 'Session expired or not found' }
+    //         if (loginInfo.email) user = await this.EmailLogin(loginInfo.email, loginInfo.password)
+    //         return user
+    //     } else {
+    //         return { error: 'Session expired or not found' }
+    //     }
+    // }
 
-    removeLoginSession = (email, password) => {
-        var authSha = sha256(`${email}___${password}`)  // 3 underscores
-        firebase.database().ref(`/sessions/${authSha}`).remove()
-    }
+    // removeLoginSession = (email, password) => {
+    //     var authSha = sha256(`${email}___${password}`)  // 3 underscores
+    //     firebase.database().ref(`/sessions/${authSha}`).remove()
+    // }
 }

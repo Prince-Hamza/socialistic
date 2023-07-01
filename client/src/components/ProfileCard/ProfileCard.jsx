@@ -86,6 +86,7 @@ const ProfileCard = ({ location }) => {
     if (file) {
       const result = await storage.uploadImage(`users/${appInfo.profileUser.id}/cover`, 'image/jpeg', file)
       const link = result.downloadLink
+      alert(`file upoadeed : ${link}`)
       await updateUserInfo({ id: appInfo.profileUser.id, profilePicture: link })
       setUploadingProfilePic(false)
     }
@@ -104,7 +105,8 @@ const ProfileCard = ({ location }) => {
     }, 1000)
   }
 
-
+  const urlParts = window.location.href.split('/')
+  
   const own = window.location.href.includes('user') ? true : false
 
   return (
@@ -193,13 +195,7 @@ const ProfileCard = ({ location }) => {
         <hr />
       </div>
 
-      {location === "profilePage" ? (
-        ""
-      ) : (
-        <span onClick={showProfilePage} >
-          My Profile
-        </span>
-      )}
+  
 
       <input id="coverFile" style={{ display: 'none' }} type="file" onChange={(e) => { updateCover(e) }} />
       <input id="profileFile" style={{ display: 'none' }} type="file" onChange={(e) => { updateProfilePic(e) }} />

@@ -143,7 +143,7 @@ const Auth = () => {
   const emailLogin = async () => {
     try {
       const result = await signInWithEmailAndPassword(auth, data.email, data.password)
-      await fireAuth.setLoginSession(data.email, data.password)
+      // await fireAuth.setLoginSession(data.email, data.password)
       getUserInfoFromMongoDb(result.user)
     } catch (ex) {
       console.log(`error : ${ex.toString().split('Firebase:')[1]}`)

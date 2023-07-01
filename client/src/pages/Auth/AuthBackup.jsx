@@ -148,7 +148,7 @@ const Auth = () => {
       const result = await signInWithEmailAndPassword(auth, data.email, data.password)
       console.log(`result : ${result.user} `)
       toast.success('Login Successful', { position: "top-center" })
-      await fireAuth.setLoginSession(data.email, data.password)
+      // await fireAuth.setLoginSession(data.email, data.password)
       getUserInfoFromMongoDb(result.user)
       // navigate('/home')
     } catch (ex) {

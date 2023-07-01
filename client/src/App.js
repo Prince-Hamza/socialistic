@@ -91,13 +91,13 @@ function App() {
     const init = async () => {
         // alert(`App: get session`)
         // get login session 
-        const user = await fireAuth.getLoginSession()
+        // const user = await fireAuth.getLoginSession()
         // alert(`user from login session : ${JSON.stringify(user)}`)
-        if (user.uid) getUserInfoFromMongoDb(user)
-        if (!user.uid) {
-            setLoading(false)
-            if (`${window.location.protocol}//${window.location.host}/` !== window.location.href) window.location.replace('/')
-        }
+        // if (user.uid) getUserInfoFromMongoDb(user)
+        // if (!user.uid) {
+        //     setLoading(false)
+        //     if (`${window.location.protocol}//${window.location.host}/` !== window.location.href) window.location.replace('/')
+        // }
     }
 
 
@@ -117,7 +117,7 @@ function App() {
                     <Routes>
                         <Route
                             path="/"
-                            element={loading ? <Loading /> : (appData.userInfo.id ? <Home /> : <Auth />)}
+                            element={appData.userInfo.id ? <Home /> : <Auth />}
                         />
 
                         <Route
