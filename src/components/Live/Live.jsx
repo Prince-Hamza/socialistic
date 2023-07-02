@@ -27,7 +27,7 @@ function Live() {
                 appInfo.abortedByPartner = true
                 setTimeout(() => {
                     setAppInfo({ ...appInfo })
-                    console.log('click hangup')
+                    alert('click hangup')
                     hangup.click()
                 }, 3000)
             }
