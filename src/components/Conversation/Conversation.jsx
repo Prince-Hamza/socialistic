@@ -55,7 +55,6 @@ const Conversation = ({ data, userId, online }) => {
   }
 
   const effect = () => {
-    console.log(`chosen chat ? ${chosenChat}`)
     if (appInfo.chosenChat === false) chooseChat()
   }
 

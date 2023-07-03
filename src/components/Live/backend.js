@@ -122,7 +122,7 @@ export const main = (notify, appInfo, setAppInfo, navigate) => {
     }
 
     setAppInfo({ ...appInfo })
-    alert(`back to : ${appInfo.liveNavGoBack}`)
+    alert(`Back To : ${appInfo.liveNavGoBack}`)
     navigate(appInfo.liveNavGoBack)
 
   }

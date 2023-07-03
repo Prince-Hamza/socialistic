@@ -14,7 +14,7 @@ import { AiOutlineEdit } from "react-icons/ai";
 const storage = new Storage()
 
 const ProfileCardUser = ({ location }) => {
-  
+
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [uploadingCover, setUploadingCover] = useState(false)
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false)
@@ -31,6 +31,8 @@ const ProfileCardUser = ({ location }) => {
   const updateUserInfo = async (object) => {
 
     let data = JSON.stringify(object)
+
+    alert(data)
 
     let config = {
       method: 'post',
@@ -85,7 +87,8 @@ const ProfileCardUser = ({ location }) => {
     if (file) {
       const result = await storage.uploadImage(`users/${appInfo.profileUser.id}/cover`, 'image/jpeg', file)
       const link = result.downloadLink
-      await updateUserInfo({ id: appInfo.profileUser.id, profilePicture: link })
+      alert(`pic uploaded : ${link}`)
+      await updateUserInfo({ id: appInfo.userInfo.id, profilePicture: link })
       setUploadingProfilePic(false)
     }
   }
@@ -134,7 +137,7 @@ const ProfileCardUser = ({ location }) => {
             {!introEdit && <div style={{ width: '100%', marginLeft: '25px' }} >{appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'}</div>}
 
             {introEdit &&
-              <input  placeholder={appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.profileUser.id, about: e.target.value }) }} />
+              <input placeholder={appInfo.profileUser.about ? appInfo.profileUser.about : 'Write about yourself'} onKeyUp={(e) => { if (e.key === 'Enter') updateUserInfo({ id: appInfo.profileUser.id, about: e.target.value }) }} />
             }
           </Col>
 
