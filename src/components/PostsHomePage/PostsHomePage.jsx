@@ -24,19 +24,31 @@ const Posts = () => {
   const { appInfo, setAppInfo } = useContext(AppContext)
 
 
+
+  const replacePic = (list) => {
+    list.forEach((item) => {
+      if (item.userId === appInfo.userInfo.id) {
+        item.profilePicture = appInfo.userInfo.profilePicture
+      }
+    })
+    return list
+  }
+
+
   const getPostsByFollowedUsers = async () => {
+
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `${domain}/posts/timeline?id=${appInfo.userInfo.id}`,
       headers: {}
-    };
-
+    }
 
     try {
 
       const response = await axios.request(config)
       let list = response.data.posts
+      list = replacePic(list)
       setPosts([...list])
 
       appInfo.postsByFollowedCount = list.length // by users i follow
@@ -62,7 +74,8 @@ const Posts = () => {
     try {
       const response = await axios.request(config)
       let list = response.data.posts
-      // alert(`my posts :: ${JSON.stringify(list)}`)
+      list = replacePic(list)
+      console.log(`my posts :: ${JSON.stringify(list)}`)
       setMyPosts([...list])
       appInfo.myPostsCount = list.length
       setAppInfo({ ...appInfo })
@@ -99,7 +112,7 @@ const Posts = () => {
 
 
       {loading ? (
-        ""
+                "              Fetching posts...."
       ) : (
         myPosts.map((post, id) => {
           return <Post data={post} key={id} posts={myPosts} setPosts={setMyPosts} />
@@ -109,7 +122,7 @@ const Posts = () => {
 
 
       {loading ? (
-        "Fetching posts...."
+        ""
       ) : (
         posts.map((post, id) => {
           return <Post data={post} key={id} posts={posts} setPosts={setPosts} />
@@ -129,4 +142,4 @@ const Posts = () => {
   )
 }
 
-export default Posts;
+export default Posts

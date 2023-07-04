@@ -32,7 +32,6 @@ const ProfileCardUser = ({ location }) => {
 
     let data = JSON.stringify(object)
 
-    alert(data)
 
     let config = {
       method: 'post',
@@ -47,7 +46,6 @@ const ProfileCardUser = ({ location }) => {
     try {
 
       await axios.request(config)
-      //  alert('successfully updated')
       toast('sucessfully uploaded')
       setIntroEdit(false)
       appInfo.profileUser = { ...appInfo.profileUser, ...object }
@@ -72,9 +70,9 @@ const ProfileCardUser = ({ location }) => {
     setUploadingCover(true)
     const file = e.target.files[0]
     if (file) {
-      const result = await storage.uploadImage(`users/${appInfo.userInfo.id}/cover`, 'image/jpeg', file)
+      const result = await storage.uploadImage(`users/${appInfo.profileUser.id}/cover`, 'image/jpeg', file)
       const link = result.downloadLink
-      await updateUserInfo({ id: appInfo.userInfo.id, coverPicture: link })
+      await updateUserInfo({ id: appInfo.profileUser.id, coverPicture: link })
       setUploadingCover(false)
     }
 
@@ -85,10 +83,9 @@ const ProfileCardUser = ({ location }) => {
     setUploadingProfilePic(true)
     const file = e.target.files[0]
     if (file) {
-      const result = await storage.uploadImage(`users/${appInfo.profileUser.id}/cover`, 'image/jpeg', file)
+      const result = await storage.uploadImage(`users/${appInfo.profileUser.id}/profile`, 'image/jpeg', file)
       const link = result.downloadLink
-      alert(`pic uploaded : ${link}`)
-      await updateUserInfo({ id: appInfo.userInfo.id, profilePicture: link })
+      await updateUserInfo({ id: appInfo.profileUser.id, profilePicture: link })
       setUploadingProfilePic(false)
     }
   }
@@ -101,9 +98,7 @@ const ProfileCardUser = ({ location }) => {
 
 
   // useEffect(() => {
-  //   alert('Profile user 2 ')
   // })
-
 
   return (
     <div className="ProfileCard">
@@ -111,19 +106,23 @@ const ProfileCardUser = ({ location }) => {
       <div className="ProfileImages">
 
         <div style={{ position: 'relative' }} >
-          <img className="cover" src={appInfo.profileUser.coverPicture} alt="CoverImage" />
-          {own && <button style={{ position: 'absolute', right: '35px', bottom: '15px', border: 0, background: 'transparent' }} className="" onClick={() => { onClickEditCover() }} >
-            <AiOutlineEdit style={{ height: 20, width: 20 }} />
-            {uploadingCover ? 'uploading' : ' '}
-          </button>}
+          <img className="cover" src={appInfo.profileUser.coverPicture} alt={appInfo.profileUser.coverPicture} />
+          {own &&
+            <button style={{ position: 'absolute', right: '35px', bottom: '15px', border: 0, background: 'transparent' }} className="" onClick={() => { onClickEditCover() }} >
+              <AiOutlineEdit style={{ height: 20, width: 20 }} />
+              {uploadingCover ? 'uploading' : ' '}
+            </button>
+          }
         </div>
 
         <div className="ProfileImages" style={{ position: 'relative' }} >
-          <img className="profilePic" src={appInfo.profileUser.profilePicture.toString()} alt={appInfo.profileUser.profilePicture} />
-          {own && <button style={{ position: 'absolute', right: '-54px', bottom: '-47px', border: 0, background: 'transparent' }} onClick={() => { onClickEditProfile() }}>
-            <AiOutlineEdit style={{ height: 25, width: 25, color: 'black' }} />
-            {uploadingCover ? 'uploading' : ''}
-          </button>}
+          <img className="profilePic" src={appInfo.profileUser.profilePicture} alt={appInfo.profileUser.profilePicture} />
+          {own &&
+            <button style={{ position: 'absolute', right: '-54px', bottom: '-47px', border: 0, background: 'transparent' }} onClick={() => { onClickEditProfile() }}>
+              <AiOutlineEdit style={{ height: 25, width: 25, color: 'black' }} />
+              {uploadingProfilePic ? 'uploading' : ''}
+            </button>
+          }
         </div>
 
       </div>

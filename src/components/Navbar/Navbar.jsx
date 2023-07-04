@@ -82,6 +82,7 @@ function CustomNavbar() {
 
   return (
     <Container fluid>
+      
       <Navbar collapseOnSelect expand="lg" bg="light" variant="light" className='NavbarContainer'>
 
         <Navbar.Brand href="#home" className=''>

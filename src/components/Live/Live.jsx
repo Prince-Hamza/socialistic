@@ -5,7 +5,7 @@ import { AppContext } from '../../Context'
 import { useNavigate } from 'react-router-dom'
 import { io } from "socket.io-client"
 import { domain } from '../../constants/constants'
-import './App.css'
+import { RotateCircleLoading } from 'react-loadingg'
 const ENDPOINT = domain
 const socket = io(ENDPOINT)
 
@@ -13,24 +13,27 @@ const socket = io(ENDPOINT)
 function Live() {
 
     const { appInfo, setAppInfo } = useContext(AppContext)
-
+    const [answerClicked, setAnswerClicked] = useState(false)
     const navigate = useNavigate()
-    
+
 
     const socketListener = () => {
         socket.on('message', (data) => {
             let message = data.fullDocument
             console.log(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
             // alert(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
-            let hangup = document.getElementById('hangupButton')
-            if (hangup && message && message.text === '${{end call}}') {
+
+            if (message && message.text === '${{end call}}') {
                 appInfo.abortedByPartner = true
-                setTimeout(() => {
-                    setAppInfo({ ...appInfo })
-                    alert('click hangup')
-                    hangup.click()
-                }, 3000)
+                setAppInfo({ ...appInfo })
+
+                var x = setInterval(() => {
+                    let hangup = document.getElementById('hangupButton')
+                    if (hangup) clearInterval(x)
+                    if (hangup) hangup.click()
+                }, 500)
             }
+
         })
     }
 
@@ -84,6 +87,7 @@ function Live() {
         }, 3000)
 
         setTimeout(() => {
+            setAnswerClicked(true)
             document.getElementById('answerButton').click()
         }, 6000)
 
@@ -91,6 +95,7 @@ function Live() {
 
     const effect = () => {
         socketListener()
+        
         main(notify, appInfo, setAppInfo, navigate)
         if (appInfo.callType === 'sending') automateSendCall()
         if (appInfo.callType === 'recieving') automateRecieveCall()
@@ -99,24 +104,21 @@ function Live() {
     useEffect(effect, [])
 
     return (
-        <div className="App">
+        <div style={Styles.container}>
 
             {/* <div style={{ font: "bold 18px roboto" }}> Start your Webcam</div> */}
 
             <br />
 
-            <div>
-                <div>
-                    {/* <div style={{ font: "bold 14px roboto" }}>Local Stream</div> */}
-                    <video id="webcamVideo" autoPlay playsInline></video>
-                </div>
-                <br />
 
-                <div>
-                    {/* <div style={{ font: "bold 14px roboto" }}>Remote Stream</div> */}
-                    <video id="remoteVideo" autoPlay playsInline></video>
+            <video style={Styles.video} id="webcamVideo" controls width={'900px'} height={'500px'} autoPlay playsInline></video>
+            <video style={Styles.video} id="remoteVideo" controls width={'900px'} height={'500px'} autoPlay playsInline></video>
+            {!answerClicked &&
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '70%' }} >
+                    <h6> Loading </h6>
+                    <RotateCircleLoading />
                 </div>
-            </div>
+            }
 
             <button style={Styles.Button} id="webcamButton">Start webcam</button>
             <br />
@@ -140,12 +142,9 @@ function Live() {
 
             <button style={Styles.Button} id="answerButton" >Answer</button>
 
-            <br />
-            <br />
-            <br />
-            <br />
-            {/* <div style={Styles.smallText}> Abort Live stream</div> */}
 
+
+            <br />
             <br />
 
             <button style={Styles.abortButton} id="hangupButton" >Hangup</button>
@@ -158,6 +157,14 @@ function Live() {
 export default Live
 
 const Styles = ({
+    container: {
+        backgroundColor: '#222',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     Button: {
         font: "14px roboto",
         width: '140px',
@@ -182,5 +189,12 @@ const Styles = ({
     },
     smallText: {
         font: "18px roboto"
+    },
+    video: {
+        width: '900px',
+        height: '500px',
+        marginBottom: '5px',
+        border: 'solid 1px',
+        backgroundColor: 'rgb(50,50,50)'
     }
 })
