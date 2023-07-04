@@ -80,6 +80,7 @@ function App() {
     }
 
     const effect = () => {
+        alert('effect')
         if (Object.keys(appData.userInfo).length <= 0) init()
     }
 

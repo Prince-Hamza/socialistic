@@ -20,10 +20,10 @@ function Live() {
     const socketListener = () => {
         socket.on('message', (data) => {
             let message = data.fullDocument
-            console.log(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
-            // alert(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
-
             if (message && message.text === '${{end call}}') {
+                console.log(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
+                // alert(`abort message tracked in Live.jsx: ${message.text}, full :  ${JSON.stringify(message)}`)
+
                 appInfo.abortedByPartner = true
                 setAppInfo({ ...appInfo })
 
@@ -79,23 +79,29 @@ function Live() {
     const automateRecieveCall = () => {
         setTimeout(() => {
             setAppInfo({ ...appInfo })
+            console.log(`click cam button`)
             document.getElementById('webcamButton').click()
         }, 2000)
 
         setTimeout(() => {
+            console.log(`click call input button`)
             document.getElementById('callInput').value = appInfo.liveStreamingKey
-        }, 3000)
+        }, 5000)
 
         setTimeout(() => {
+            console.log(`click call answer button`)
             setAnswerClicked(true)
+            
             document.getElementById('answerButton').click()
-        }, 6000)
+        }, 8000)
 
     }
 
     const effect = () => {
+
+        alert('effect')
         socketListener()
-        
+
         main(notify, appInfo, setAppInfo, navigate)
         if (appInfo.callType === 'sending') automateSendCall()
         if (appInfo.callType === 'recieving') automateRecieveCall()

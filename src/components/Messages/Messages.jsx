@@ -4,6 +4,7 @@ import _ from 'lodash'
 import $ from 'jquery'
 import { io } from "socket.io-client"
 import { domain } from '../../constants/constants'
+import moment from 'moment'
 const ENDPOINT = domain
 const socket = io(ENDPOINT);
 
@@ -76,7 +77,7 @@ function Messages() {
                         <div key={Math.random()} style={{ display: 'flex', justifyContent: message.myId === appInfo.userInfo.id ? 'flex-start' : 'flex-end' }} >
                             <div id="message" className={'callAborted'} >
                                 <span>{'live call was aborted'}</span>{" "}
-                                {/* <span>{format(message.createdAt)}</span> */}
+                                <span>{moment(message.createdAt).fromNow(true)}</span>
                             </div>
                         </div>
                     )
@@ -87,7 +88,7 @@ function Messages() {
                         <div key={Math.random()} style={{ display: 'flex', justifyContent: message.myId === appInfo.userInfo.id ? 'flex-start' : 'flex-end' }} >
                             <div id="message" className={'callEnded'} >
                                 <span>{'users attended a live call'}</span>{" "}
-                                {/* <span>{format(message.createdAt)}</span> */}
+                                <span>{moment(message.createdAt).fromNow(true)}</span>
                             </div>
                         </div>
                     )
