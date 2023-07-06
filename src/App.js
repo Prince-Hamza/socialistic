@@ -22,7 +22,7 @@ import './App.css'
 const fireAuth = new webAuth()
 
 function App() {
-
+    
     const [appData, setAppData] = useState({
         userInfo: {},
         profileUser: {},

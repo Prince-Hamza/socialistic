@@ -12,7 +12,7 @@ import Audio from './Audio'
 
 
 const ENDPOINT = domain
-const socket = io(ENDPOINT);
+const socket = io(ENDPOINT, { transports: ["websocket"] })
 
 function GlobalSocketListener() {
 

@@ -6,7 +6,7 @@ import { io } from "socket.io-client"
 import { domain } from '../../constants/constants'
 import moment from 'moment'
 const ENDPOINT = domain
-const socket = io(ENDPOINT);
+const socket = io(ENDPOINT, { transports: ["websocket"] })
 
 function Messages() {
     const { appInfo, setAppInfo } = useContext(AppContext)

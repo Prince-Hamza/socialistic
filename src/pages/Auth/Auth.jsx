@@ -25,10 +25,10 @@ const Auth = () => {
 
 
   const { appInfo, setAppInfo } = useContext(AppContext)
-  const [isSignUp, setIsSignUp] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(initialState);
-  const [confirmPass, setConfirmPass] = useState(true);
+  const [isSignUp, setIsSignUp] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [data, setData] = useState(initialState)
+  const [confirmPass, setConfirmPass] = useState(true)
 
   // const dispatch = useDispatch()
 

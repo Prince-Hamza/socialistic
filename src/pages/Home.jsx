@@ -45,7 +45,7 @@ const Home = () => {
 
 
     const ENDPOINT = domain
-    const socket = io(ENDPOINT);
+    const socket = io(ENDPOINT, { transports: ["websocket"] })
 
     socket.on('connect', () => {
       console.log(`${socket.id} is connected to socket.io`)
