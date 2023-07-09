@@ -139,6 +139,7 @@ const ChatBox = () => {
                 onChange={handleChange}
                 onEnter={handleOnEnter}
               />
+              
               <div className="send-button button" onClick={handleSend}>Send</div>
               <input
                 type="file"

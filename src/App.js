@@ -46,6 +46,8 @@ function App() {
 
     const getUserInfoFromMongoDb = (user) => {
 
+
+
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
@@ -53,7 +55,6 @@ function App() {
             headers: {}
         }
 
-        // alert(`get : ${config.url}`)
 
         axios.request(config)
             .then((response) => {

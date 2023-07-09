@@ -7,7 +7,7 @@ import axios from 'axios'
 import { domain } from "../../constants/constants"
 import { AppContext } from "../../Context"
 import { webAuth } from "../../firebase/firebaseAuth"
-import {  Container, Image, Row, Col, Form } from 'react-bootstrap'
+import { Container, Image, Row, Col, Form } from 'react-bootstrap'
 import "./Auth.css"
 
 const fireAuth = new webAuth()
@@ -114,6 +114,9 @@ const Auth = () => {
 
   const getUserInfoFromMongoDb = (user) => {
 
+
+
+
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -121,11 +124,9 @@ const Auth = () => {
       headers: {}
     }
 
-    // alert(`get : ${config.url}`)
 
     axios.request(config)
       .then((response) => {
-        // alert(JSON.stringify(response.data))
         if (response.data.user) {
           toast.success('Login Successful', { position: "bottom-center" })
           appInfo.userInfo = response.data.user

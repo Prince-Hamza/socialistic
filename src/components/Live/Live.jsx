@@ -99,7 +99,6 @@ function Live() {
 
     const effect = () => {
 
-        alert('effect')
         socketListener()
 
         main(notify, appInfo, setAppInfo, navigate)
@@ -119,12 +118,12 @@ function Live() {
 
             <video style={Styles.video} id="webcamVideo" controls width={'900px'} height={'500px'} autoPlay playsInline></video>
             <video style={Styles.video} id="remoteVideo" controls width={'900px'} height={'500px'} autoPlay playsInline></video>
-            {!answerClicked &&
+            {/* {!answerClicked &&
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '70%' }} >
                     <h6> Loading </h6>
                     <RotateCircleLoading />
                 </div>
-            }
+            } */}
 
             <button style={Styles.Button} id="webcamButton">Start webcam</button>
             <br />
@@ -142,7 +141,7 @@ function Live() {
 
 
 
-            <input style={{ display: 'none' }} id="callInput" placeholder='livestream id' />
+            <input style={{ display: 'block' }} id="callInput" placeholder='livestream id' />
             <br />
             <br />
 
@@ -179,7 +178,7 @@ const Styles = ({
         border: 'none',
         color: 'white',
         cursor: 'pointer',
-        display: 'none'
+        // display: 'none'
     },
     abortButton: {
         font: "14px roboto",

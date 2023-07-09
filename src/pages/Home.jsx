@@ -32,7 +32,6 @@ const Home = () => {
       const response = await axios.request(config)
       let user = response.data
       console.log(`user by doc id : ${JSON.stringify(user)}`)
-      // alert(`user by doc id : ${JSON.stringify(user)}`)
       return user
     } catch (ex) {
       console.log(`ex : ${ex}`)

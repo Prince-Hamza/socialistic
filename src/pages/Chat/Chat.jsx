@@ -12,9 +12,11 @@ import Live from "../../components/Live/Live"
 import axios from 'axios'
 import { domain } from "../../constants/constants";
 import ChatBoxAndLive from "../../components/ChatBoxAndLive/ChatBoxAndLive";
+
+
 const Chat = () => {
 
-  const socket = useRef();
+  const socket = useRef()
 
   const { appInfo, setAppInfo } = useContext(AppContext)
   const [onlineUsers, setOnlineUsers] = useState([])
